@@ -1,7 +1,7 @@
 const config={
     database:"sarbini",
     user:"root",
-    password:"0000"
+    password:"407000"
 
 }
 
