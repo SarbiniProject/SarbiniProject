@@ -28,7 +28,7 @@ function Collaborators() {
         getcontrollers()
         getlocations()
         getcontnames()
-    },[users])
+    },[])
 
     const getlocations=()=>{
         axios.get('http://localhost:3000/api/sarbini/admin/locations')
