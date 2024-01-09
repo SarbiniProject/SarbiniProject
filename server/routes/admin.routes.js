@@ -1,8 +1,9 @@
 const usersRoute = require('express').Router();
-const {getAdmin} = require('../controllers/admin.controller');
+const {getAdmin,generateToken, getAllcontrollers} = require('../controllers/admin.controller');
 
 
 
-usersRoute.get('/users',getAdmin)
+usersRoute.get('/admins',getAdmin)
+usersRoute.get('/controllers',getAllcontrollers)
 
 module.exports=usersRoute;
