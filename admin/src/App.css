@@ -1,0 +1,152 @@
+.bigdiv_login{
+  display: flex;
+}
+
+.div1_login{
+  background-color: white;
+  float: left;
+  margin-top: 8em;
+  margin-bottom: 5em;
+  width: 65%;
+  height: 40em;
+  margin-left: -10em;
+  border-radius: 15%;
+}
+.div2_login{
+  float: right;
+  color: white;
+  text-align: center;
+  margin-right: 10em;
+  margin-top: 5%;
+}
+.img_logo{
+  margin-left: 30em;
+  width: 40em;
+  margin-top: -2em;
+}
+.h2_login{
+  font-size: 85px;
+  font-family:serif;
+  font-weight: bolder;
+}
+.p_login{
+margin-top: -5em;
+letter-spacing: 9px;
+}
+.div3_login{
+margin-top: 5em;
+margin-bottom: 3em;
+width: 15em;
+margin-left: 6em;
+}
+.h1_login{
+  font-size: 55px;
+  margin-bottom: -2px;
+  font-family:FreeMono, monospace;
+}
+.p2_login{
+font-size: 20px;
+color: rgb(241, 96, 96);
+letter-spacing: 2px;
+margin-top: -2px;
+}
+.input_login{
+width: 80%;
+margin-top: 1em;
+height: 3.5em;
+border: 5px solid black;
+}
+.flex_login{
+margin-left: 35%;
+margin-top: 2em;
+}
+.button_login{
+  background-color: rgb(222, 63, 63);
+  width: 10em;
+  height: 3.5em;
+  color: white;
+}
+.div_2colla{
+  float: right;
+  width: 80%;
+  color: white;
+  margin-top: 5em;
+}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
+.h2_1colla{
+  font-size: 35px;
+  font-family: 'Open Sans', sans-serif;
+}
+.div_3colla{
+  display: flex;
+}
+.div_4colla{
+  background-color: white;
+  color: red;
+  height: 2em;
+  width: 14em;
+  padding: 0.5em;
+  border-radius: 15px;
+  margin-right: 2em;
+}
+.drop1_colla{
+  cursor: pointer;
+}
+.p1_colla{
+  font-size: 20px;
+  font-family: 'Noto Sans', sans-serif;;
+  margin-top: -1px;  
+}
+.icon1_colla{
+  margin-left: 4em;
+  margin-bottom: 1em;
+}
+.input1_colla{
+  height: 3.4em;
+  border-radius: 15px;
+  width: 20em;
+  color: black;
+}
+.input1_colla::placeholder{
+  color: red;
+  font-weight: 600;
+}
+.btn1_colla{
+  position: absolute;
+  right: 51.5%;
+  top: 22%;
+  background-color: red;
+}
+.table_colla{
+  width: 100%;
+  margin-top: 1em;
+}
+.td1_colla{
+  font-size: 30px;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  padding-left: 0.5em;
+}
+.hr-row hr {
+  border-color: rgb(219, 148, 120);
+}
+.vertical_colla{
+  writing-mode: vertical-rl;  
+  color: whitesmoke;
+}
+.td2_colla{
+  padding-left: 1em;
+  font-size: 20px;
+  text-transform: capitalize;
+}
+.icon2_colla{
+  font-size: 35px;
+  margin-right: 1em;
+  cursor: pointer;
+}
+.icon3_colla{
+  font-size: 35px;
+  color: brown;
+  cursor: pointer;
+
+}
