@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 const config = require('../config/config.js')
 
 const connection = new Sequelize(config.database,config.user,config.password,{
-    host: "127.0.0.1",
+    host: "localhost",
     dialect: "mysql",
     logging:false
   }
