@@ -5,7 +5,7 @@
     border-right: 3px solid #fa9e93;
     box-sizing: border-box;
     width: 3px;
-    height: 2346px;
+    height: 2491px;
 }
 .divider {
     position: absolute;
@@ -1291,7 +1291,7 @@
 }
 .footer {
     position: absolute;
-    top: 2243px;
+    top: 2390px;
     left: 3px;
     width: 1107px;
     height: 100px;
@@ -1550,7 +1550,7 @@
 }
 .side-bar {
     position: absolute;
-    top: 100px;
+    top: 145px;
     left: 0px;
     border-radius: 15px;
     background-color: #262626;
