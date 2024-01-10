@@ -113,8 +113,8 @@ margin-top: 2em;
 }
 .btn1_colla{
   position: absolute;
-  right: 51.5%;
-  top: 22%;
+  right: 44.5%;
+  top: 28.2%;
   background-color: red;
 }
 .table_colla{
@@ -122,7 +122,7 @@ margin-top: 2em;
   margin-top: 1em;
 }
 .td1_colla{
-  font-size: 30px;
+  font-size: 25px;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   padding-left: 0.5em;
@@ -137,15 +137,17 @@ margin-top: 2em;
 .td2_colla{
   padding-left: 1em;
   font-size: 20px;
+  width:10em ;
+  height: 3em;
   text-transform: capitalize;
 }
 .icon2_colla{
-  font-size: 35px;
+  font-size: 25px;
   margin-right: 1em;
   cursor: pointer;
 }
 .icon3_colla{
-  font-size: 35px;
+  font-size: 25px;
   color: brown;
   cursor: pointer;
 
