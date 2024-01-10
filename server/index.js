@@ -1,7 +1,7 @@
 const express = require("express");
 const usersRoute =require('./routes/users.routes')
 const ordersRouter =require('./routes/orders.routes')
-
+const adminRouter =require("./routes/admin.routes")
 const productRouter =require('./routes/product.routes')
 const categoryRoute =require('./routes/category.route')
 const authController =require('./controllers/auth.controller')
@@ -16,12 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(cors())
-
 app.post('/api/sarbini/signup',authController.signUp)
 app.post('/api/sarbini/signin',authController.signIn)
 app.use("/api/sarbini",usersRoute)
 app.use("/api/sarbini",ordersRouter)
 
+app.use("/api/sarbini/admin",adminRouter)
 app.use("/api/sarbini",productRouter)
 app.use("/api/sarbini",categoryRoute)
 
