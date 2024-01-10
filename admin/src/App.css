@@ -54,6 +54,7 @@ margin-top: -2px;
 width: 80%;
 margin-top: 1em;
 height: 3.5em;
+
 border: 5px solid black;
 }
 .flex_login{
@@ -148,5 +149,4 @@ margin-top: 2em;
   font-size: 35px;
   color: brown;
   cursor: pointer;
-
 }
