@@ -103,9 +103,15 @@ function Collaborators() {
 
     }
 };
-        const hundletext=(set,e)=>{
+        const hundletext=(set,e,value)=>{
+          console.log(value);
+          if(e.target.value===""){
+            set(value)
+          }
+          else{
             set(e.target.value)
           }
+        }
 
           const searchbyname=(name)=>{
             let data=users.filter((item)=>{
@@ -117,13 +123,13 @@ function Collaborators() {
             return serach.map(el=>(
                 <>
                 <tr>
-                <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e)}/>):el.user_location}</td>
+                <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,el.user_location)}/>):el.user_location}</td>
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e)} />):el.user_name}</td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,el.user_name)} />):el.user_name}</td>
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e)}/>):el.user_Pseudo}</td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,el.user_Pseudo)}/>):el.user_Pseudo}</td>
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e)}/>):el.user_phone}</td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,el.user_phone)}/>):el.user_phone}</td>
                 <td></td>
                 <td className='td2_colla'>{el.createdAt}</td>
                 <td></td>
