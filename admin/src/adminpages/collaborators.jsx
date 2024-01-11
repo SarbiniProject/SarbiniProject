@@ -9,13 +9,17 @@ import { Button, Flex, Tooltip } from 'antd';
 
 function Collaborators() {
     const[users,setUsers]=useState([])
-    const[locations,setlocations]=useState([])
-    const[contnames,setContnames]=useState([])
-    const[showupdate,setShowupdate]=useState(true)
+    const[locations,setLocations]=useState([])
+    const[contnames,setContname]=useState("")
     const[nlocation,setNlocation]=useState("")
     const[nname,setNname]=useState("")
     const[npseudo,setNpseudo]=useState("")
     const[nphone,setNphone]=useState(null)
+    const[refresh,setRefresh]=useState(true)
+    const[editingUserId, setEditingUserId] = useState(null);
+    const[showsearch,setShowserach]=useState(0)
+    const[serach,setSearch]=useState([])
+
 
     let info={
         user_name:nname,
@@ -27,31 +31,35 @@ function Collaborators() {
     useEffect(()=>{
         getcontrollers()
         getlocations()
-        getcontnames()
-    },[])
 
+    },[refresh])
+
+
+    let getoneloc = (res) => {
+        let uniqueLocationsSet = new Set();
+    
+        res.forEach((item) => {
+            uniqueLocationsSet.add(item.user_location);
+        });
+        let uniqueLocationsArray = Array.from(uniqueLocationsSet);
+        let result = uniqueLocationsArray.map((location) => {
+            return res.find((item) => item.user_location === location);
+        });
+    
+        return result;
+    };
     const getlocations=()=>{
         axios.get('http://localhost:3000/api/sarbini/admin/locations')
         .then((res)=>{
-            setlocations(res.data)
-            console.log(res.data);
+            setLocations(getoneloc(res.data))
+            console.log(getoneloc(res.data));
         })
         .catch((err)=>{
             console.error(err);
         })
     }
 
-    const getcontnames=()=>{
-        axios.get('http://localhost:3000/api/sarbini/admin/byname')
-        .then((res)=>{
-            setContnames(res.data)
-            console.log(res.data);
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
-    }
-
+    
     const getcontrollers=()=>{
         axios.get('http://localhost:3000/api/sarbini/admin/controllers')
         .then((res)=>{
@@ -66,6 +74,7 @@ function Collaborators() {
         axios.put('http://localhost:3000/api/sarbini/admin/update/'+id,info)
         .then(()=>{
             console.log("updated");
+            setRefresh(!refresh)
         })
         .catch((err)=>console.log(err))
       }
@@ -73,6 +82,7 @@ function Collaborators() {
         axios.delete('http://localhost:3000/api/sarbini/admin/delete/'+id)
         .then(()=>{
             console.log("deletes");
+            setRefresh(!refresh)
         })
         .catch((err)=>console.error(err))
       }
@@ -80,22 +90,88 @@ function Collaborators() {
       const menu = (
         <Menu>
           {locations.map((location) => (
-            <Menu.Item>{location.user_location}</Menu.Item>
+            <Menu.Item onClick={()=>{searchbyloc(location.user_location);setShowserach(1)}}>{location.user_location}</Menu.Item>
           ))}
         </Menu>  ) 
 
-        const  handleshow=(id,info)=>{
-            if(showupdate===true){
-                setShowupdate(false)
-            }
-            else{
-                updateuser(id,info)
-                setShowupdate(true)
-            }
-        }
+     const handleshow = (id) => {
+    if (editingUserId === id) {
+        setEditingUserId(null);
+        updateuser(id,info)
+    } else {
+        setEditingUserId(id);
+
+    }
+};
         const hundletext=(set,e)=>{
             set(e.target.value)
           }
+
+          const searchbyname=(name)=>{
+            let data=users.filter((item)=>{
+                return(item.user_name===name)
+            })
+            if(data!=""){
+                setSearch(data)
+            }
+            return serach.map(el=>(
+                <>
+                <tr>
+                <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e)}/>):el.user_location}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e)} />):el.user_name}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e)}/>):el.user_Pseudo}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e)}/>):el.user_phone}</td>
+                <td></td>
+                <td className='td2_colla'>{el.createdAt}</td>
+                <td></td>
+                <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                </tr>
+                <tr>
+                    <td colSpan="12">
+                    <hr />
+                </td>
+            </tr>        
+                </>
+            ))
+        }
+
+    const searchbyloc=(loc)=>{
+        let data=users.filter((item)=>{
+            console.log(loc);
+            return(item.user_location===loc)})
+            console.log("data",data);
+            if(data!=""){
+                setSearch(data)
+            }
+            console.log(serach);
+       return serach.map(el=>(
+            <>
+            <tr>
+            <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e)}/>):el.user_location}</td>
+            <td></td>
+            <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e)} />):el.user_name}</td>
+            <td></td>
+            <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e)}/>):el.user_Pseudo}</td>
+            <td></td>
+            <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e)}/>):el.user_phone}</td>
+            <td></td>
+            <td className='td2_colla'>{el.createdAt}</td>
+            <td></td>
+            <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+            </tr>
+            <tr>
+                <td colSpan="12">
+                <hr />
+            </td>
+        </tr>        
+            </>
+        ))
+    }      
+
+
   return (
 <div>
 
@@ -114,8 +190,8 @@ function Collaborators() {
         </Dropdown>
         </div>
         <div className='div_5colla'>
-        <Input placeholder="Select By Name" className='input1_colla' /> 
-        <Button type="primary" shape="circle" className='btn1_colla' icon={<SearchOutlined />} />
+        <Input placeholder="Select By Name" onChange={(e)=>{hundletext(setContname,e)}} className='input1_colla' /> 
+        <Button type="primary" shape="circle" onClick={()=>{searchbyname(contnames);setShowserach(2) }} className='btn1_colla' icon={<SearchOutlined />} />
         </div>
       </div>
       <div>
@@ -138,20 +214,20 @@ function Collaborators() {
                         <hr />
                     </td>
                 </tr>              
-                {users.map(el=>(
+                {showsearch==0&&users.map(el=>(
                     <>
                     <tr>
-                    <td className='td2_colla' >{showupdate&&el.user_location}{!showupdate&&<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e)}  />}</td>
+                    <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e)}/>):el.user_location}</td>
                     <td></td>
-                    <td className='td2_colla'>{showupdate&&el.user_name}{!showupdate&&<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e)} />}</td>
+                    <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e)} />):el.user_name}</td>
                     <td></td>
-                    <td className='td2_colla'>{showupdate&&el.user_Pseudo}{!showupdate&&<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e)}/>}</td>
+                    <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e)}/>):el.user_Pseudo}</td>
                     <td></td>
-                    <td className='td2_colla'>{showupdate&&el.user_phone}{!showupdate&&<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e)}/>}</td>
+                    <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e)}/>):el.user_phone}</td>
                     <td></td>
                     <td className='td2_colla'>{el.createdAt}</td>
                     <td></td>
-                    <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                    <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
                     </tr>
                     <tr>
                         <td colSpan="12">
@@ -160,6 +236,9 @@ function Collaborators() {
                 </tr>        
                     </>
                 ))}
+                {showsearch==1&&searchbyloc()}
+                {showsearch==2&&searchbyname()}
+
         </table>
       </div>
       </div>
