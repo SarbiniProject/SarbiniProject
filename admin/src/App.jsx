@@ -1,14 +1,18 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Admin from './adminpages/loging'
-import Collaborators from './adminpages/collaborators';
-import Sidebar from './adminpages/sidebar';
+import Dashboard from './adminpages/Dashboard'
+
 function App() {
   return (
     <div className="App">
-      {/* <Admin/> */}
-      {/* <Collaborators /> */}
-      <Sidebar />
+      <Router>
+   <Routes>
+     <Route path='/' element={<Admin/>}></Route>
+     <Route path='/Dashboard' element={<Dashboard/>}></Route>
+    </Routes>
+    </Router>
+
     </div>
   );
 }
