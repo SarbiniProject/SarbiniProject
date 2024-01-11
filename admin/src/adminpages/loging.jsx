@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react'
 import { UserOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
@@ -55,7 +56,6 @@ function Loging() {
   }
   }
 
-
   return (
     <div className='bigdiv_logo'>
         <div className='div1_login'>
@@ -70,10 +70,12 @@ function Loging() {
               {errorPass&&<Input  size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
             <Flex className='flex_login'   gap="small" wrap="wrap">
             <Button className='button_login' onClick={()=>{verif()}}>Login</Button>
+
             </Flex>
         </div>
     </div>
   )
 }
 
-export default Loging
+
+export default loging
