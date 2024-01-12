@@ -12,6 +12,7 @@
     "amqplib": "^0.10.3",
     "ant-design": "^1.0.0",
     "antd": "^5.12.8",
+    "axios": "^1.6.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.0",
