@@ -5,9 +5,11 @@ import { RxDashboard } from "react-icons/rx";
 import { TbBellDown } from "react-icons/tb";
 import { TbBellUp } from "react-icons/tb";
 import Collaborators from './collaborators';
-import Dashboard from './Dashboard'
+import Dashboard from './Dashboard';
+import Regions from './Regions';
+
 function Sidebar() {
-    const [show,setShow]=useState(1)
+    const [show,setShow]=useState(0)
   return (
     <div className='div1_sidebar'>
     <div className="side-bar">
@@ -36,11 +38,11 @@ function Sidebar() {
             </button>
             <h3 className="dashboard1">received alarm</h3>
         </button>
-        <button className="dashboard">
+        <button className="dashboard" onClick={()=>{setShow(2)}}>
             <button className="icons">
                 <FaGlobe  className="group-icon"   />
             </button>
-            <h3 className="dashboard1">user per country</h3>
+            <h3 className="dashboard1" >user per country</h3>
         </button>
     </div>
 </div> 
@@ -48,9 +50,10 @@ function Sidebar() {
 <div className='show_sidebar'>
     {show===0&&<Dashboard/>}
     {show===1&&<Collaborators/>}
+    {show===2&&<Regions/>}
     {show===""&&<Collaborators/>}
     {show===""&&<Collaborators/>}
-    {show===""&&<Collaborators/>}
+    {console.log(show)}
 </div>
 </div>
  )

@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Admin from './adminpages/loging'
-import Dashboard from './adminpages/Dashboard'
+import Regions from './adminpages/Dashboard';
 import Sidebar from './adminpages/Sidebar';
 
 function App() {
