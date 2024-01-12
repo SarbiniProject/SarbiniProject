@@ -5,13 +5,14 @@ import { RxDashboard } from "react-icons/rx";
 import { TbBellDown } from "react-icons/tb";
 import { TbBellUp } from "react-icons/tb";
 import Collaborators from './collaborators';
+import Dashboard from './Dashboard'
 function Sidebar() {
-    const [show,setShow]=useState(0)
+    const [show,setShow]=useState(1)
   return (
     <div className='div1_sidebar'>
     <div className="side-bar">
     <div className="side-bar-content">
-        <button className="dashboard">
+        <button className="dashboard" onClick={()=>{setShow(0)}}>
             <button className="icons">
                 <RxDashboard  className="group-icon" />
             </button>
@@ -23,7 +24,7 @@ function Sidebar() {
             </button>
             <h3 className="dashboard1">User App Installed</h3>
         </button>
-        <button className="dashboard">
+        <button className="dashboard" >
             <button className="icons">
                 <TbBellUp  className="group-icon" />
             </button>
@@ -45,7 +46,7 @@ function Sidebar() {
 </div> 
 <div className='vertical_sidebar'>______________________________________________________________</div>
 <div className='show_sidebar'>
-    {show===""&&<Collaborators/>}
+    {show===0&&<Dashboard/>}
     {show===1&&<Collaborators/>}
     {show===""&&<Collaborators/>}
     {show===""&&<Collaborators/>}
