@@ -19,7 +19,7 @@ function Collaborators() {
     const[editingUserId, setEditingUserId] = useState(null);
     const[showsearch,setShowserach]=useState(0)
     const[serach,setSearch]=useState([])
-
+  console.log("pseudo",npseudo);
 
     let info={
         user_name:nname,
@@ -122,18 +122,18 @@ function Collaborators() {
             }
             return serach.map(el=>(
                 <>
-                <tr>
-                <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
+                   <tr>
+                <td className='td2_colla' >{editingUserId===el.id?(<Input   placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
+                <td className='td2_colla'>{editingUserId===el.id? (<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,(el.user_phone))}/>):el.user_phone}</td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,(el.user_phone))}/>):el.user_phone}</td>
                 <td></td>
                 <td className='td2_colla'>{el.createdAt}</td>
                 <td></td>
-                <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setNphone(el.user_phone); setNpseudo(el.user_Pseudo) ; setNname(el.user_name);setNlocation(el.user_location); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
                 </tr>
                 <tr>
                     <td colSpan="12">
@@ -155,19 +155,19 @@ function Collaborators() {
             console.log(serach);
        return serach.map(el=>(
             <>
-            <tr>
-            <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
-            <td></td>
-            <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
-            <td></td>
-            <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo" value={el.user_Pseudo} onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
-            <td></td>
-            <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,(el.user_phone))}/>):el.user_phone}</td>
-            <td></td>
-            <td className='td2_colla'>{el.createdAt}</td>
-            <td></td>
-            <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
-            </tr>
+           <tr>
+                <td className='td2_colla' >{editingUserId===el.id?(<Input   placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id? (<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,(el.user_phone))}/>):el.user_phone}</td>
+                <td></td>
+                <td className='td2_colla'>{el.createdAt}</td>
+                <td></td>
+                <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setNphone(el.user_phone); setNpseudo(el.user_Pseudo) ; setNname(el.user_name);setNlocation(el.user_location); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                </tr>
             <tr>
                 <td colSpan="12">
                 <hr />
@@ -223,18 +223,18 @@ function Collaborators() {
                 {showsearch==0&&users.map(el=>(
                     <>
                     <tr>
-                    <td className='td2_colla' >{editingUserId===el.id?(<Input  placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
-                    <td></td>
-                    <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
-                    <td></td>
-                    <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new pseudo"  onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
-                    <td></td>
-                    <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,(el.user_phone))}/>):el.user_phone}</td>
-                    <td></td>
-                    <td className='td2_colla'>{el.createdAt}</td>
-                    <td></td>
-                    <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
-                    </tr>
+                <td className='td2_colla' >{editingUserId===el.id?(<Input   placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id? (<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
+                <td></td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new phone" onChange={(e)=>hundletext(setNphone,e,(el.user_phone))}/>):el.user_phone}</td>
+                <td></td>
+                <td className='td2_colla'>{el.createdAt}</td>
+                <td></td>
+                <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setNphone(el.user_phone); setNpseudo(el.user_Pseudo) ; setNname(el.user_name);setNlocation(el.user_location); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                </tr>
                     <tr>
                         <td colSpan="12">
                         <hr />
