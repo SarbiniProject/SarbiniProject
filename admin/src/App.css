@@ -165,3 +165,90 @@ margin-top: 2em;
   font-size: 25px;
   color: brown;
   cursor: pointer;
+}
+.side-bar-content {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 15px;
+}
+.side-bar {
+  position: absolute;
+  top: 150px;
+  left: 0px;
+  border-radius: 15px;
+  background-color: #262626;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+.icons {
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.group-icon {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0%;
+  right: 0%;
+  bottom: 0%;
+  left: 0%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+.dashboard1 {
+  margin: 0;
+  position: relative;
+  font-size: 20px;
+  line-height: 23px;
+  text-transform: capitalize;
+  font-weight: 400;
+  font-family: Roboto;
+  color: #fff;
+  text-align: left;
+}
+.dashboard {
+  cursor: pointer;
+  border: none;
+  padding: 10px;
+  background-color: #c91416;
+  align-self: stretch;
+  border-radius: 10px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  gap: 10px;
+  margin-top: 1em;
+}
+.div1_sidebar{
+  display: flex;
+}
+.show_sidebar{
+  margin-left: 2em;
+}
+.vertical_sidebar{
+  writing-mode: vertical-rl;  
+  color: rgb(202, 102, 102);
+  position: fixed;
+  font-size: 35px;
+  left: 20%;
+  top: 5%;
+}
+.footer_colla{
+position: absolute;
+ }

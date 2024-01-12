@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './dashboard.css';
-import { SideBar } from './SideBar';
+import { SideBar } from './Sidebar';
 import { FaUserCircle } from "react-icons/fa";
 import { FaArrowUp } from "react-icons/fa";
 import { Footer } from './Footer';
@@ -267,7 +267,7 @@ const DarkDashboard = () => {
         				</div>
         				<Footer/>
       			</section>
-<SideBar/>
+{/* <SideBar/> */}
       			<header className="header">
         				<div className="login-button-wrapper">
           					<div className="login-button">

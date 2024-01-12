@@ -79,4 +79,4 @@ function Loging() {
 }
 
 
-export default loging
+export default Loging
