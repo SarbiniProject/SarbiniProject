@@ -19,6 +19,17 @@ const getlocation=async(req,res)=>{
     }
 }
 
+const getlocation2 = async (req, res) => {
+    try {
+        const result = await Users.findAll({attributes: ["user_location"],where: { user_role: "controller" }
+        });
+        res.json(result);
+    } catch (error) {
+        res.send(error);
+    }
+};
+
+
 const getonebyname=async (req,res)=>{
     try{
         const result=await Users.findAll({attributes:["user_name"]})
@@ -70,4 +81,4 @@ const generateToken = (id, admin_name) => {
     const expiresIn = 60 * 60 * 24;
     return jwt.sign({id, admin_name}, 'secretKey', { expiresIn: expiresIn });
   };
-  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname}
+  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2}

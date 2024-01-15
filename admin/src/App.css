@@ -252,3 +252,148 @@ margin-top: 2em;
 .footer_colla{
 position: absolute;
  }
+ .searchBox-region {
+  position: absolute;
+  top: 130px;
+  left: 36%;
+  transform:  translate(-40%,50%);
+  background: #d5d5da;
+  height: 20px;
+  border-radius: 40px;
+  padding: 10px;
+
+}
+
+.searchBox-region:hover > .searchButton-region {
+  border:1px;
+  border-color:white;
+  background-color: rgb(205, 15, 15);
+}
+
+.searchButton-region {
+  color: rgb(12, 11, 11);
+  float: right;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #f22c05;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+}
+
+.searchInput-region {
+  border:none;
+  background: none;
+  outline:none;
+  float:left;
+  color: rgb(16, 13, 13);
+  font-size: 16px;
+  transition: 0.4s;
+  line-height: 20px;
+  width: 200px;
+  padding: 0 4px;
+
+}
+
+@media screen and (max-width: 620px) {
+.searchBox-region:hover > .searchInput-region {
+  width: 150px;
+  background-color: white;
+  cursor: pointer;
+}
+}
+/**/
+.super-container-region {
+  margin-left: 435px;
+  margin-top: 200px;
+  -webkit-box-align: center !important;
+  -ms-flex-align: center !important;
+  align-items: center !important;
+  -webkit-box-pack: center !important;
+  -ms-flex-pack:start !important;
+  justify-content: start !important;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  flex:auto auto auto;
+  height: 50%;
+  flex-wrap: wrap;
+  margin-right: 0px;
+  
+}
+
+.btn-region {
+  float: left;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  margin: 1%;
+  width: 300px;
+  height: 100px;
+  line-height: 60px;
+  flex:auto auto auto
+}
+.btn-1-region {
+  
+  background: #d5d5da;
+  border-bottom: 3px solid #d5d5da;
+  -webkit-box-shadow: inset 0 -3px #d5d5da;
+  box-shadow: inset 0 -3px #d5d5da;
+  border-radius: 20px;
+  color:black
+}
+.btn-1-region:hover{
+  background-color: white;
+}
+.textt-region{
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+ 
+}
+.texttt-region{
+  color: rgb(216, 214, 214);
+  font-size: 14px;
+
+}
+.texts-region{ position: absolute;
+  left :460px;
+  top:94px}
+
+  .title-region {
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: black;
+    margin-right:190px ;
+  }
+  .divv-region {
+    display: flex; 
+    align-items: center; 
+    margin-left: 20px; 
+  }
+  .divvv-region {
+    display: flex; 
+    align-items: center; 
+    margin-left: 20px; 
+    margin-bottom: 50px;
+    margin-top: 0px;
+    height: 40px;
+  }
+  
+  .minititle-region {
+    color: red;
+    font-size: 1rem; 
+    margin-bottom: 5px;
+  }
+  
+  .number-region {
+    font-size: 2.7rem; 
+    font-weight: bold; 
+    color: rgb(7, 0, 0); 
+    margin-left: 43px; 
+    margin-bottom: 10px;
+   
+  }
+  .icon-region{ color: red; size:lg }
