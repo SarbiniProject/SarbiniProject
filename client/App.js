@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import Test from './components/test.jsx';
+import OneProduct from './components/OneProduct.js';
 
 const Stack = createStackNavigator();
 
@@ -13,8 +13,8 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="test"
-            component={Test}
+            name="OneProduct"
+            component={OneProduct}
             options={{
               headerShown: false,
             }}
