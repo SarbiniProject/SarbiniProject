@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { UserOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { Button, Flex } from 'antd';
+
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 function Loging() {
   const [admins,setAdmins] = useState([]);
@@ -12,6 +14,8 @@ function Loging() {
   const [password,setPassword]=useState("")
   const [errorPseu,setErrorPseu]=useState(true)
   const [errorPass,setErrorPass]=useState(true)
+
+  const navigate=useNavigate()
 
   useEffect(()=>{
     getadmins()
@@ -46,14 +50,16 @@ function Loging() {
     if (pseudo===""|| password==="") {
       setErrorPass(!errorPass)
       setErrorPseu(!errorPseu)
+      return false
     }
     for(let i=0;i<admins.length;i++){
       if (pseudo!=admins[i].admin_pseudo&&password!=admins[i].admin_password){
         setErrorPass(!errorPass)
         setErrorPseu(!errorPseu)
-
+        return false
     }
   }
+  return true
   }
 
   return (
@@ -70,7 +76,14 @@ function Loging() {
               {!errorPass&&<Input status='error' onClick={()=>{setErrorPass(true)}} size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
               {errorPass&&<Input  size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
             <Flex className='flex_login'   gap="small" wrap="wrap">
-            <Button className='button_login' onClick={()=>{verif()}}>Login</Button>
+            <Button className='button_login' onClick={()=>{
+              if(verif()===false){
+                verif()
+              }
+              else{
+                navigate("/Dashboard")
+              }
+              }}>Login</Button>
 
             </Flex>
         </div>
