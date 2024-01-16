@@ -3,8 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import OneProduct from './components/OneProduct.js';
+import Products from './components/Products.js';
 
+import Order from './components/Order'
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -13,8 +14,8 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="OneProduct"
-            component={OneProduct}
+            name="Products"
+            component={Products}
             options={{
               headerShown: false,
             }}
@@ -34,3 +35,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
