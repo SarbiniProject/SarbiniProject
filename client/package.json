@@ -9,15 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@eva-design/eva": "^2.2.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
-    "@stripe/stripe-react-native": "^0.35.0",
+    "@stripe/stripe-react-native": "0.28.0",
+    "@ui-kitten/components": "^5.3.1",
+    "axios": "^1.6.5",
     "expo": "~49.0.15",
     "expo-image": "^1.5.1",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
-    "react-native-responsive-screen": "^1.4.2"
+    "react-native-responsive-screen": "^1.4.2",
+    "react-native-select-dropdown": "^3.4.0",
+    "react-native-svg": "^13.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
