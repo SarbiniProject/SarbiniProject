@@ -3,8 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-
-import Tables from './components/Tables'
+import Products from './components/Products'
+import Login from './components/Login'
+import Tables from './components/Tables';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -13,7 +14,7 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="Tables"
+            name="tables"
             component={Tables}
             options={{
               headerShown: false,
@@ -34,4 +35,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-

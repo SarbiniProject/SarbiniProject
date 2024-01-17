@@ -11,6 +11,31 @@ const AllProduct = async(req,res) => {
     }
 };
 
+const Productbycaetg =async(req,res)=>{
+    try{
+        let categ=req.params.categoryId
+        const result=await Product.findAll({where:{categoryId:categ}})
+        res.json(result)
+    }
+    catch (error) {
+        res.send(error)    
+        }
+}
+
+const search =async(req,res)=>{
+    try{
+        let search=req.body.product_name
+        const result= await Product.findAll({
+            where: {
+                product_name:search
+            }
+        })
+        res.json(result)
+    }
+    catch (error) {
+        res.send(error)    
+        }
+}
 
 const AddProduct = async(req,res) => {
     try {
@@ -39,4 +64,4 @@ const DeleteProduct= async(req,res) => {
     }
 };
 
-module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct}
+module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct,Productbycaetg,search}
