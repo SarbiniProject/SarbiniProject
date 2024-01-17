@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { UserOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { Button, Flex } from 'antd';
+import {useNavigate} from "react-router-dom"
 import axios from 'axios'
 
 function Loging() {
@@ -12,7 +13,7 @@ function Loging() {
   const [password,setPassword]=useState("")
   const [errorPseu,setErrorPseu]=useState(true)
   const [errorPass,setErrorPass]=useState(true)
-
+  const navigate=useNavigate()
   useEffect(()=>{
     getadmins()
   },[password,pseudo])
@@ -70,7 +71,7 @@ function Loging() {
               {!errorPass&&<Input status='error' onClick={()=>{setErrorPass(true)}} size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
               {errorPass&&<Input  size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
             <Flex className='flex_login'   gap="small" wrap="wrap">
-            <Button className='button_login' onClick={()=>{verif()}}>Login</Button>
+            <Button className='button_login' onClick={()=>{verif();navigate("/Dashboard")}}>Login</Button>
 
             </Flex>
         </div>
