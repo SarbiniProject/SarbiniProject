@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import Products from './components/Products'
 import Login from './components/Login'
+import Tables from './components/Tables';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -13,8 +14,8 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="Products"
-            component={Products}
+            name="tables"
+            component={Tables}
             options={{
               headerShown: false,
             }}
