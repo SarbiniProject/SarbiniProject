@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 
-import Order from './components/Order'
+import Tables from './components/Tables'
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -13,8 +13,8 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="Order"
-            component={Order}
+            name="Tables"
+            component={Tables}
             options={{
               headerShown: false,
             }}

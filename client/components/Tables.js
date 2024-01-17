@@ -2,7 +2,7 @@ import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Color, FontFamily, Padding, Border, FontSize } from "../GlobalStyles";
+import { Color, FontFamily, Padding, Border, FontSize } from "./styles/TablesStyle";
 
 const Tables = () => {
   // const newLocal = <Image
@@ -197,11 +197,7 @@ const Tables = () => {
             </Text>
           </View>
           <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-3-</Text>
-          {/* <Image
-            style={[styles.component1Icon1, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-11.png")}
-          /> */}
+        
         </View>
       </View>
       <View style={[styles.cardMenuContainer, styles.tablesInnerPosition]}>
@@ -423,11 +419,7 @@ const Tables = () => {
           <Text style={[styles.rp1600000, styles.chocolateTypo]}>
             Table-11-
           </Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-110.png")}
-          /> */}
+      
         </View>
         <View style={[styles.cardMenu1, styles.cardLayout]}>
           <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
@@ -450,7 +442,7 @@ const Tables = () => {
           <Text style={[styles.rp1600000, styles.chocolateTypo]}>
             Table-12-
           </Text>
-          {/* {newLocal} */}
+         
         </View>
       </View>
       <View style={styles.searchBarParent}>
@@ -494,6 +486,7 @@ const Tables = () => {
       </View>
       <View style={styles.tablesItem} />
       <Text style={[styles.tables1, styles.chocolateTypo]}>Tables:</Text>
+      
       <View style={[styles.tablesInner, styles.tablesInnerPosition]} />
     </View>
   );

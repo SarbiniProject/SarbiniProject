@@ -56,11 +56,10 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/ellipse-454.png")}
       />
+      
+     
       <View style={[styles.categoryButton, styles.frameSpaceBlock]}>
-        <Text style={[styles.iceCream, styles.iceTypo]}>All</Text>
-      </View>
-      <View style={[styles.iceCreamWrapper, styles.frameSpaceBlock]}>
-        <Text style={[styles.iceCream1, styles.iceTypo1]}>Coffee</Text>
+        <Text style={[styles.iceCream, styles.iceTypo]}>All</Text>  
       </View>
       <View style={[styles.iceCreamContainer, styles.frameSpaceBlock]}>
         <Text style={[styles.iceCream1, styles.iceTypo1]}>Fresh Tea</Text>
@@ -71,6 +70,7 @@ const Products = () => {
       <View style={[styles.frameView, styles.frameViewBorder]}>
         <Text style={[styles.iceCream1, styles.iceTypo1]}>Milk Tea</Text>
       </View>
+     
       <View style={[styles.iconButton1, styles.frameViewBorder]}>
         <Image
           style={styles.filterIcon}
@@ -923,7 +923,7 @@ const styles = StyleSheet.create({
     height: 32,
     alignItems: "center",
     position: "absolute",
-    left: 73,
+    
   },
   iceCream1: {
     color: Color.neutral500,
