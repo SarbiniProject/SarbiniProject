@@ -4,9 +4,9 @@ import { Image } from "expo-image";
 import { Color, FontFamily, FontSize, Border } from "./styles/LoginStyle";
 
 const Login = () => {
-  const [pesudo,setPseudo]=React.useState("")
+  const [pseudo,setPseudo]=React.useState("")
   const [password,setPassword]=React.useState("")
-
+  console.log(pseudo);
 
   return (
     <View style={styles.login}>
@@ -26,7 +26,7 @@ const Login = () => {
         <View style={[styles.label, styles.bg1Layout]}>
           <View style={[styles.bg1, styles.bg1Layout]} />
         </View>
-        <TextInput placeholder="Name_ID" style={[styles.placeholder, styles.placeholderTypo]}>
+        <TextInput placeholder="Name_ID"  onChange={(text)=>{setPseudo(text)}} style={[styles.placeholder, styles.placeholderTypo]}>
           
         </TextInput>
       </View>
@@ -38,7 +38,7 @@ const Login = () => {
       </View>
       <Text style={[styles.pseudo, styles.pseudoTypo]}>Pseudo</Text>
       <Text style={[styles.password, styles.pseudoTypo]}>password</Text>
-      <TextInput placeholder="your password" secureTextEntry={true} style={[styles.yourPassword, styles.login2Typo]}>
+      <TextInput placeholder="Your Password"  onChange={(text)=>{setPassword(text)}} secureTextEntry={true} style={[styles.yourPassword, styles.login2Typo]}>
         
       </TextInput> 
       <View>

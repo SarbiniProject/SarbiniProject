@@ -1,15 +1,22 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
+import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
 import axios from "axios";
+import { useState } from "react/cjs/react.production.min";
 const Products = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
   const [allproducts,setAllproducts]=React.useState([])
   const [onecateg,setOnecateg]=React.useState(0)
   const [filtrprod,setFiltrprod]=React.useState([])
+  const [searched,setSearched]=React.useState([])
+  const [wordsea,setWordsea]=React.useState("")
+  const [dosearch,setDosearch]=React.useState(false)
 
+  let info={
+    product_name:wordsea
+  }
 
   const getcat=()=>{
     axios.get("http://192.168.104.15:3000/api/sarbini/category")
@@ -41,6 +48,16 @@ const Products = () => {
       console.error("error",err);
     })
   }
+  const getsarch=(mot)=>{
+    axios.get("http://192.168.104.15:3000/api/sarbini/searchprod",mot)
+    .then((res)=>{
+      setSearched(res.data)
+      console.log(res.data,"searched2")}
+      )
+    .catch((err)=>{
+      console.log('erreur1',err)
+    })  
+  }
 
   React.useEffect(()=>{
     getcat();
@@ -48,7 +65,7 @@ const Products = () => {
   },[])
   
   const renderbycateg=(categ)=>{
-    console.log('itwork');
+    console.log(categ,"categ");
     return(
     categ.map((el,i)=>{
       return(
@@ -88,11 +105,14 @@ const Products = () => {
   
 
   const conditionCategory=()=>{
+    console.log(searched,"searched");
     if(onecateg==0){
       return renderbycateg(allproducts)
     }
+    else if(dosearch===true){
+      return renderbycateg(searched)
+    }
     else{
-      console.log(filtrprod,'filtered');
      return renderbycateg(filtrprod)
     }
   }
@@ -104,6 +124,10 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/side-bar-manager.png")}
       />
+        <TouchableOpacity style={styles.Products}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tables}>
+        </TouchableOpacity>
       <View style={[styles.buttonLogOut, styles.buttonLogOutFlexBox]}>
         <Image
           style={styles.lucidedoorOpenIcon}
@@ -117,20 +141,26 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
+        
+      
       <View style={styles.searchBarParent}>
         <View style={styles.searchBar}>
           <View style={[styles.rectangleParent, styles.groupChildPosition]}>
+            
             <View style={[styles.groupChild, styles.childBorder]} />
-            <TouchableOpacity>
-              <View>
-            <Image
+            <TouchableOpacity   
+            onPress={()=>{ console.log("search");getsarch(info); setDosearch(true);setOnecateg(null);  }}
+            > 
+      <View style={styles.iconsearch}>
+         <Image
               style={[styles.groupItem, styles.itemLayout]}
-              resizeMode="cover"  
+             
               source={require("../assets/frame-1260.png")}
             />
-             </View>
-            </TouchableOpacity >
-            <TextInput placeholder="Search item" style={[styles.searchItem, styles.iceTypo2]}></TextInput>
+            </View>
+            </TouchableOpacity>
+
+            <TextInput placeholder="Search item" onChangeText={(text)=>{console.log(text);setWordsea(text)}} style={[styles.searchItem, styles.iceTypo2]}></TextInput>
           </View>
         </View>
         <View style={styles.frameWrapper}>
@@ -146,11 +176,11 @@ const Products = () => {
           </View>
         </View>
       </View>
-      <Image
+      {/* <Image
         style={styles.productsChild}
         contentFit="cover"
         source={require("../assets/ellipse-454.png")}
-      />
+      /> */}
       <View style={styles.container} >
         <ScrollView horizontal>
       {category.map((el,i)=>{
@@ -192,6 +222,23 @@ const Products = () => {
 };
 
 const styles = StyleSheet.create({
+  Products:{
+    position:"absolute",
+    top:340,
+    width:80,
+    height:52,
+
+  }, 
+  tables:{
+    position:"absolute",
+    top:420,
+    width:80,
+    height:52
+  },
+  iconsearch:{
+    width:150,
+    height:30,
+  },
   container: {
     flexDirection: 'row', // Affiche les éléments côte à côte
     alignItems: 'center', // Centre les éléments verticalement si nécessaire
@@ -258,7 +305,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   frameViewBorder: {
-    left: 333,
+    left: 353,
     borderWidth: 1.1,
     borderRadius: 5,
     justifyContent: "center",
@@ -440,6 +487,8 @@ const styles = StyleSheet.create({
     zIndex: 0,
     borderRadius: 4,
     height: 30,
+    marginLeft:4,
+    marginRight:4
   },
   text: {
     fontSize: 6,
@@ -475,7 +524,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   productsChild: {
-    left: 294,
+    left: 310,
     width: 33,
     top: 32,
     height: 32,
