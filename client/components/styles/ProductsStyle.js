@@ -40,4 +40,7 @@ export const FontFamily = {
     br_8xs_1: 4,
     br_3xs: 10,
   };
+  export const Blur={
+    blur5:5
+  }
   

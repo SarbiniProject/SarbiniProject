@@ -1,10 +1,72 @@
 import * as React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { Image } from "expo-image";
-import { Color, FontFamily, FontSize, Border, Padding } from "./Style/GlobalStyles";
-
+import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from "react-native";
+import {Image} from 'expo-image'
+import { useState } from "react";
+import { Color, FontFamily, FontSize, Border, Padding } from "./styles/OneProductStyle";
+import axios from 'axios'
 const OneProduct = ({route}) => {
-  const { productData } = route.params;
+  const { productData,refreshData } = route.params;
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [editedProduct, setEditedProduct] = useState({
+    product_name: productData.product_name,
+    price: productData.price.toString(),
+  });
+  console.log(productData)
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleEdit = async () => {
+    try {
+      await updateProductData(productData.id, editedProduct);
+      console.log("Product data updated successfully");
+      toggleModal();
+      refreshData();
+    } catch (error) {
+      console.error("Error updating product data:", error);
+      showToast("Failed to update product data", "error");
+    }
+  };
+
+  const deleteProduct = async () => {
+    try {
+      await deleteProductData(productData.id);
+      console.log("Product deleted successfully");
+      refreshData();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      showToast("Failed to delete product", "error");
+    }
+  };
+
+  const showToast = (message, type = "success") => {
+    Toast.show({
+      type: type,
+      text1: message,
+      visibilityTime: 3000,
+      autoHide: true,
+      topOffset: 30,
+      bottomOffset: 40,
+    });
+  };
+
+  const updateProductData = async (productId, updatedData) => {
+    try {
+      const apiUrl = `http://172.20.10.2:3000/api/sarbini/product/${productId}`;
+      await axios.put(apiUrl, updatedData);
+    } catch (error) {
+      throw new Error(`Failed to update product data: ${error.message}`);
+    }
+  };
+
+  const deleteProductData = async (productId) => {
+    try {
+      const apiUrl = `http://172.20.10.2:3000/api/sarbini/product/${productId}`;
+      await axios.delete(apiUrl);
+    } catch (error) {
+      throw new Error(`Failed to delete product: ${error.message}`);
+    }
+  };
   return (
     <View style={styles.oneProduct}>
       <View style={styles.searchBarParent}>
@@ -74,7 +136,7 @@ const OneProduct = ({route}) => {
       <View style={[styles.namelemonCoffeeParent, styles.cardMenuChildBorder]}>
         <Text style={[styles.namelemonCoffee, styles.price15dtFlexBox]}>
           <Text style={styles.namelemonCoffeeTxtContainer}>
-            <Text style={styles.name}>{productData.name}</Text>
+            <Text style={styles.name}>{productData.product_name}</Text>
             
           </Text>
         </Text>
@@ -88,7 +150,7 @@ const OneProduct = ({route}) => {
           <Image
             style={[styles.cardMenuItem, styles.cardMenuItemLayout]}
             contentFit="cover"
-            source={require("../assets/rectangle-1680.png")}
+            source={productData.image}
           />
           <Text
             style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
@@ -96,24 +158,51 @@ const OneProduct = ({route}) => {
          
           
         </View>
+        <TouchableOpacity onPress={deleteProduct}>
         <Image
-          style={[styles.trashIcon, styles.trashIconLayout]}
+          style={styles.trashIcon}
           source={require("../assets/trash.svg")}
         />
+      </TouchableOpacity>
+        <TouchableOpacity onPress={toggleModal} > 
         <Image
           style={styles.image13Icon}
           contentFit="cover"
           source={require("../assets/image-13.png")}
         />
-      </View>
-      <View style={[styles.paymentButton, styles.buttonFlexBox]}>
-        <View style={[styles.paymentButtonInner, styles.buttonFlexBox]}>
-          <View style={[styles.paymentButtonInner, styles.buttonFlexBox]}>
-            <Text
-              style={[styles.pay, styles.payTypo]}
-            >{`more products->`}</Text>
+        </TouchableOpacity>
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>Edit Name:</Text>
+            <TextInput
+              style={styles.input}
+              value={editedProduct.product_name}
+              onChangeText={(text) => setEditedProduct({ ...editedProduct, product_name: text })}
+            />
+            <Text>Edit Price:</Text>
+            <TextInput
+              style={styles.input}
+              value={editedProduct.price}
+              onChangeText={(text) => setEditedProduct({ ...editedProduct, price: text })}
+              keyboardType="numeric"
+            />
+
+            <TouchableOpacity onPress={handleEdit}>
+              <Text>Save Changes</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={toggleModal}>
+              <Text>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
+      </Modal>
       </View>
     </View>
   );
@@ -467,8 +556,8 @@ const styles = StyleSheet.create({
     height: 22,
   },
   image13Icon: {
-    top: 11,
-    left: 204,
+    top: -11,
+    left: 202,
     width: 18,
     height: 18,
     position: "absolute",
@@ -505,6 +594,25 @@ const styles = StyleSheet.create({
     height: 812,
     overflow: "hidden",
     width: "100%",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 8,
+    marginBottom: 10,
   },
 });
 

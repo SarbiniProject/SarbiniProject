@@ -1,18 +1,35 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
+import { StyleSheet, Text, ScrollView,TouchableOpacity,View, TextInput,KeyboardAvoidingView,TouchableWithoutFeedback,Platform,Keyboard,Modal } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import { AntDesign } from '@expo/vector-icons';
+import ImagePicker from 'react-native-image-picker';
+import { Cloudinary } from '@cloudinary/base';
+import { AdvancedImage } from '@cloudinary/react';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming,
+  useDerivedValue,
+} from "react-native-reanimated";
+
 const Products = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
   const [allproducts,setAllproducts]=React.useState([])
   const [onecateg,setOnecateg]=React.useState(0)
+  const [isModalVisible, setModalVisible] = React.useState(false);
+  const [isFormVisible, setFormVisible] = React.useState(false);
   const [filtrprod,setFiltrprod]=React.useState([])
+  const [productName, setProductName] = React.useState("");
+  const [productPrice, setProductPrice] = React.useState("");
+  const navigation = useNavigation();
 
 
   const getcat=()=>{
-    axios.get("http://192.168.104.15:3000/api/sarbini/category")
+    axios.get("http://172.20.10.2:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -21,8 +38,39 @@ const Products = () => {
       console.error("error",err);
     })
   }
+  const cloudinary = new Cloudinary({
+    cloud: {
+      cloudName: 'Your-Cloudinary-Name', // Replace with your Cloudinary cloud name
+    },
+  });
+  const handleUploadPictureClick = async () => {
+    try {
+      // Open image picker to select an image from the device
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        // Upload the selected image to Cloudinary
+        const response = await cloudinary.upload(result.uri, { folder: 'your-upload-folder' });
+
+        // Get the Cloudinary URL for the uploaded image
+        const cloudinaryUrl = response.secure_url;
+
+        // Use the cloudinaryUrl as needed (store in state, send to server, etc.)
+        console.log('Cloudinary URL:', cloudinaryUrl);
+      }
+    } catch (error) {
+      console.error('Error uploading image to Cloudinary:', error);
+    }
+  };
+
+
   const getproducts=()=> {
-    axios.get("http://192.168.104.15:3000/api/sarbini/products")
+    axios.get("http://172.20.10.2:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -31,7 +79,7 @@ const Products = () => {
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://192.168.104.15:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://172.20.10.2:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -41,11 +89,28 @@ const Products = () => {
       console.error("error",err);
     })
   }
-
+  const refreshData = () => {
+    getcat();
+    getproducts();
+  };
   React.useEffect(()=>{
     getcat();
     getproducts()
-  },[])
+    translateY.value = withTiming(isFormVisible ? 0:500)
+  },[isFormVisible])
+  const translateY = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+      width: "80%",
+      height: "30%",
+      position: "absolute",
+      bottom: 0,
+      left: 45,
+      top:200,
+      };
+  });
   
   const renderbycateg=(categ)=>{
     console.log('itwork');
@@ -53,7 +118,7 @@ const Products = () => {
     categ.map((el,i)=>{
       return(
         <>    
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleProductClick({el})}>
         <View style={[styles.cardMenu1, styles.cardLayout]}>
         <View style={[styles.cardMenuChild, styles.cardPosition]} />
         <Image
@@ -79,11 +144,25 @@ const Products = () => {
       )
     }))
   }
+ 
 
   const handleCategoryPress=(idcat)=>{
     setOnecateg(idcat)
     getprodbycateg(idcat)
+    
   }
+  const handleProductClick = (productData) => {
+    navigation.navigate("OneProduct", { productData:{
+      id:productData.el.id,
+      product_name:productData.el.product_name,
+      price:productData.el.price,
+      image:productData.el.image
+    },refreshData:refreshData});
+    setModalVisible(false)
+  };
+  const closeModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   
 
@@ -96,8 +175,52 @@ const Products = () => {
      return renderbycateg(filtrprod)
     }
   }
+  const handleAddProductClick = () => {
+    setModalVisible(true);
+  };
+  const handleSaveProduct = async () => {
+    try {
+      // Perform validation checks on product name and price
+      if (!productName.trim() || !productPrice.trim()) {
+        console.error('Product name and price are required.');
+        return;
+      }
 
+      // Convert the price to a number (assuming it's a valid number)
+      const parsedPrice = parseFloat(productPrice);
+
+      // Check if the conversion was successful
+      if (isNaN(parsedPrice)) {
+        console.error('Invalid price format.');
+        return;
+      }
+
+      // Prepare the product data to be saved
+      const productDataa = {
+        product_name: productName.trim(),
+        price: parsedPrice,
+        categoryId:Math.random(),
+      };
+
+      // Make an API call to save the product data
+      const response = await axios.post('http://172.20.10.2:3000/api/sarbini/product', productDataa);
+
+      // Handle the API response as needed
+      console.log('Product saved successfully:', response.data);
+
+      // Optionally, reset the form fields and hide the form
+      setProductName('');
+      setProductPrice('');
+      setFormVisible(false);
+
+      // Trigger a refresh of the product data
+      refreshData();
+    } catch (error) {
+      console.error('Error saving product:', error);
+    }
+  };
   return (
+  
     <View style={styles.products}>
       <Image
         style={styles.sideBarManager}
@@ -176,17 +299,53 @@ const Products = () => {
           source={require("../assets/filter.png")}
         />
       </View>
-      <View style={styles.categoryButton1}>
-        <Text style={[styles.iceCream5, styles.iceTypo2]}>Ice Cream</Text>
-      </View>
-    
-      <View style={styles.productsItem} />
-      <View style={styles.productsItem} />
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>
-   
           {conditionCategory()}
       </View>
       <View style={styles.productsChild1} />
+      <TouchableOpacity onPress={handleAddProductClick}>
+        <View style={[styles.iceCreamWrapper1]}>
+
+       <AntDesign name="pluscircle" size={20} color="red" />
+        </View>
+      </TouchableOpacity>
+  
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.blurContainer}>
+          <View style={styles.formContainer}>
+            <TextInput
+              placeholder="Product Name"
+              style={styles.input}
+              value={productName}
+              onChangeText={(text) => setProductName(text)}
+            />
+            <TextInput
+              placeholder="Product Price"
+              style={styles.input}
+              value={productPrice}
+              onChangeText={(text) => setProductPrice(text)}
+            />
+            <TouchableOpacity
+            onPress={handleUploadPictureClick}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Upload Picture</Text>
+          </TouchableOpacity>
+            <TouchableOpacity onPress={handleSaveProduct} style={styles.button}>
+              <Text style={styles.buttonText}>Save Product</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={closeModal} style={styles.button}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+         
     </View>
   );
 };
@@ -198,7 +357,61 @@ const styles = StyleSheet.create({
     position:"absolute",
     width:"83%",
     top:65,
-    left:65,
+    left:70,
+  },
+  cloudinaryIcon: {
+    width: 30,
+    height: 30,
+    marginTop: 10,
+  },
+  button: {
+    backgroundColor: Color.red, // Change the background color as needed
+    padding: Padding.p_3xs,
+    borderRadius: Border.br_5xs,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFFFFF", // Change the text color as needed
+    fontSize: FontSize.size_xs,
+    fontFamily: FontFamily.openSansSemiBold,
+    fontWeight: "600",
+  },
+  blurContainer: {
+    flex: 1,
+    borderRadius: 10,
+    padding: 20,
+    backgroundColor:"rgba(0, 0, 0, 0.5)"
+
+  },
+  formContainer: {
+    position: "relative",
+    top: 190,
+    left: 0,
+    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    zIndex: 10,
+    
+  },
+  input: {
+    marginBottom: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: Color.colorLightgray,
+    borderRadius: Border.br_5xs,
+  },
+  iceCreamWrapper1: {
+    top: 115,
+    left: 80,
+    width: 74,
+    height: 25,
+    flexDirection: "row",    
+  },
+  availableFlexBox: {
+    height: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
   touchableOpacity: {
     padding: 10,
@@ -209,6 +422,32 @@ const styles = StyleSheet.create({
     marginRight:2,
     marginLeft:2,
     
+  },
+  wrapperFlexBox: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paymentLayout: {
+    padding: Padding.p_3xs,
+    height: 47,
+    width: 328,
+    left: 25,
+    borderRadius: Border.br_5xs,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    position: "absolute",
+  },
+  paymentButton1: {
+    top: 719,
+    backgroundColor: Color.red,
+    padding: Padding.p_3xs,
+    height: 47,
+    width: 328,
+    left: 25,
+  },
+  paymentButtonInner: {
+    flexDirection: "row",
   },
   categoryText: {
     color: 'rgb(0, 138, 252)',
@@ -647,7 +886,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardMenu1: {
-    marginLeft: 20,
+    marginLeft: 18,
   },
   statusMenu2: {
     width: 93,
@@ -655,7 +894,7 @@ const styles = StyleSheet.create({
   },
   cardMenuParent: {
     top: 142,
-    left: 71,
+    left: 65,
   },
   cardMenuContainer: {
     top: 618,
@@ -694,7 +933,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   products: {
-    borderRadius: 30,
+    
     backgroundColor: "#fffdfd",
     shadowColor: "rgba(6, 6, 34, 0.4)",
     shadowOffset: {

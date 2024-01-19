@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View ,} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import Products from './components/Products'
-import Login from './components/Login'
+import OneProduct from './components/OneProduct';
+import Report from './components/Report'
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -12,15 +13,27 @@ const App = () => {
     <NavigationContainer>
     <StripeProvider>
       <Stack.Navigator>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Products"
             component={Products}
             options={{
               headerShown: false,
             }}
           />
+           <Stack.Screen
+            name="OneProduct"
+            component={OneProduct}
+            options={{
+              headerShown: false,
+            }}
+          /> */}
+          <Stack.Screen
+              name="Report"
+              component={Report}
+              options={{ headerShown: false }}
+            />
      </Stack.Navigator>
-     </StripeProvider>
+       </StripeProvider>
      </NavigationContainer>
   );
 }
