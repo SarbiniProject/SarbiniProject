@@ -37,9 +37,16 @@ satus3:{
   allowNull: false,
   defaultValue:false
 },
+products:{
+  type:DataTypes.JSON,
+  allowNull:true
+},
+note:{
+  type: DataTypes.STRING,
+  allowNull: false,
+},
 })
-sarbini.Users.belongsToMany(sarbini.Product ,{ through: 'orders' })
-sarbini.Product.belongsToMany(sarbini.Users ,{ through: 'orders' })
+sarbini.Users.hasMany(sarbini.orders)
 
 sarbini.Subscriptions= connection.define('subscriptions',{ 
   deadline:{
