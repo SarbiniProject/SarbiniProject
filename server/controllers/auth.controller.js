@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { AddUser} = require('./users.controller');
-const {Users}=require('../database-Sequelize/index')
+const {Users,Admin}=require('../database-Sequelize/index')
 
 
 const generateToken = (userId, userName) => {
@@ -52,7 +52,39 @@ const signIn = async(req, res) => {
     catch (error) {res.send(error)}
 };
 
+const adminGenerateToken = (userId, userName) => {
+  const expiresIn = 60 * 60 * 24;
+  return jwt.sign({ userId, userName }, 'secretKey', { expiresIn: expiresIn });
+};
+
+const adminSignIn = async (req, res) => {
+  const { admin_Pseudo, admin_password } = req.body;
+
+  try {
+    const result = await Admin.findOne({ where: { admin_Pseudo: admin_Pseudo } });
+
+    if (result === null) {
+      return res.status(404).json({ error: "Pseudonym not found" });
+    }
+
+    const storedPassword = result.dataValues.admin_password;
+    const passwordMatch = await bcrypt.compare(admin_password, storedPassword);
+
+    if (passwordMatch||admin_password===storedPassword) {
+      const token = adminGenerateToken(result.dataValues.id, result.dataValues.admin_name);
+      result.dataValues.tok = token;
+      console.log(result.dataValues);
+      res.status(200).json(result.dataValues);
+    } else {
+      res.status(401).json({ error: "Password mismatch" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 module.exports = {
   signUp,
   signIn,
+  adminSignIn
 };

@@ -14,8 +14,14 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import axios from "axios"
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Regions from "./Regions"
+import { Bar } from 'react-chartjs-2';
+// import 'chartjs-adapter-react';
+import { Chart, registerables } from 'chart.js';
+import{ useNavigate} from "react-router-dom";
+import { Line } from 'react-chartjs-2';
 
-const DarkDashboard = () => {
+
+const DarkDashboard = ({data}) => {
   	const [frameDropdownAnchorEl, setFrameDropdownAnchorEl] = useState(null);
   	const frameDropdownOpen = Boolean(frameDropdownAnchorEl);
     const [users, setUsers] = useState([]);
@@ -23,11 +29,14 @@ const DarkDashboard = () => {
 	const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const navigate=useNavigate()
+	Chart.register(...registerables);
+	
 useEffect(() => {
   const fetchData = async () => {
     try {
       const result = await axios.get("http://localhost:3000/api/sarbini/admin/controllers");
-	  console.log("data",result.data);
+	  console.log("controllers",result.data);
       setUsers(result.data);
       setLoading(false);
     } catch (error) {
@@ -36,14 +45,16 @@ useEffect(() => {
       setLoading(false);
     }
   };
-
-  fetchData();
+fetchData();
 }, []);
+
+console.log("loc0",regions);
+
 useEffect(() => {
 	const fetchData = async () => {
 	  try {
-		const result = await axios.get("http://localhost:3000/api/sarbini/admin/location");
-		console.log("regions",result.data);
+		const result = await axios.get("http://localhost:3000/api/sarbini/admin/loc");
+		console.log("loc1",result.data);
 		setRegions(result.data);
 		setLoading(false);
 	  } catch (error) {
@@ -55,13 +66,28 @@ useEffect(() => {
   
 	fetchData();
   }, []);
+  
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % users.length);
-    }, 4000); 
-    return () => clearInterval(intervalId);
-  }, [users.length]);
+    }, 9000); 
+    
+  }, []);
+
+  const getLast5UniqueValues = (arr) => {
+	const uniqueValues = [...new Set(arr.reverse())];
+	return uniqueValues.slice(0, Math.min(5, uniqueValues.length));
+  };
+  const LastUniqueValues=getLast5UniqueValues(users)
+
+  const handleNumber = (text) => {
+	return regions.filter((el) => el.user_location.toUpperCase().includes(text.toUpperCase()));
+};
+
+const collNumber = (text) => {
+	return handleNumber(text).length;
+};
 
 const filt = (regions) => {
     const uniqueLocations = new Set();
@@ -73,42 +99,163 @@ const filt = (regions) => {
       return false;
     });
   };
-
-  const handleNumber = (text) => {
-    return regions.filter((el) => el.user_location.toUpperCase().includes(text.toUpperCase()));
-};
-
-const collNumber = (text) => {
-    return handleNumber(text).length;
-};
-
-
+ 
   const filteredRegions = filt(regions);
   console.log("filt",filteredRegions);
 
+console.log("bb",LastUniqueValues.map((el)=>el.user_location));
+
+  const chartData = {
+    labels: LastUniqueValues.map((el)=>el.user_location),
+	datasets: [{
+		label: 'Number Of Subscribers:',
+		data: LastUniqueValues.map((el) => collNumber(el.user_location)),
+		backgroundColor: [
+		  'rgba(255, 99, 132, 0.2)',
+		  'rgba(255, 159, 64, 0.2)',
+		  'rgba(255, 205, 86, 0.2)',
+		  'rgba(75, 192, 192, 0.2)',
+		  'rgba(54, 162, 235, 0.2)',
+		  'rgba(153, 102, 255, 0.2)',
+		  'rgba(201, 203, 207, 0.2)'
+		],
+		borderColor: [
+		  'rgb(255, 99, 132)',
+		  'rgb(255, 159, 64)',
+		  'rgb(255, 205, 86)',
+		  'rgb(75, 192, 192)',
+		  'rgb(54, 162, 235)',
+		  'rgb(153, 102, 255)',
+		  'rgb(201, 203, 207)'
+		],
+		borderWidth: 1
+	  }]
+  };
+  console.log("reg",regions);
+  console.log("bar",regions.map((el)=>{{collNumber(el.user_location)}}));
+
+  const chartOptions = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  function getTimeDifference(startDate) {
+	const startTime = new Date(startDate); 
+	const endTime = new Date();
+	
+	if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+	  return "Invalid date format";
+	}
+	
+	const timeDifference = Math.abs(endTime - startTime);
+	
+	const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+	const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+	
+	if (days === 0) {
+	  return `Registered about ${hours} hours and ${minutes} minutes ago`;
+	} else if (days === 1) {
+	  return `Registered about ${days} day, ${hours} hours, and ${minutes} minutes ago`;
+	} else if (hours === 0) {
+	  return `Registered about ${minutes} minutes ago`;
+	} else if (hours === 1) {
+	  return `Registered about ${hours} hour and ${minutes} minutes ago`;
+	} else if (minutes === 0) {
+	  return "Registered just now";
+	} else if (minutes === 1) {
+	  return `Registered about ${minutes} minute ago`;
+	}
+	
+	return `Registered about ${days} days, ${hours} hours, and ${minutes} minutes ago`;
+  }
+  const days=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat','Sun']
+  const usersByDays=(text)=>{
+	var x=[]
+	for (let i = 0; i < users.length; i++) {
+		if( users[i].createdAt.includes(text)){
+			x.push(users[i])	
+	}
+  }return x.length
+  }
+  const Data = {
+    labels:days ,
+	datasets: [{
+		label: 'My First Dataset',
+		data: days.map((el)=>usersByDays(el)),
+		backgroundColor: [
+		  'rgba(255, 99, 132, 0.2)',
+		  'rgba(255, 159, 64, 0.2)',
+		  'rgba(255, 205, 86, 0.2)',
+		  'rgba(75, 192, 192, 0.2)',
+		  'rgba(54, 162, 235, 0.2)',
+		  'rgba(153, 102, 255, 0.2)',
+		  'rgba(201, 203, 207, 0.2)'
+		],
+		borderColor: [
+		  'rgb(255, 99, 132)',
+		  'rgb(255, 159, 64)',
+		  'rgb(255, 205, 86)',
+		  'rgb(75, 192, 192)',
+		  'rgb(54, 162, 235)',
+		  'rgb(153, 102, 255)',
+		  'rgb(201, 203, 207)'
+		],
+		borderWidth: 1
+	  }]
+  };
+  console.log("bar",regions.map((el)=>{{collNumber(el.user_location)}}));
+
+  const Options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+ const months=['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+const Dataa = {
+  labels: months,
+  datasets: [{
+  label: 'Example Area Chart',
+  data:  months.map((el)=>usersByDays(el)),
+  backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+  borderColor: 'rgba(75, 192, 192, 1)', 
+  borderWidth: 1,
+  }]
+};
+
+
+	const optionss = {
+	  scales: {
+		x: {
+		  type: 'category',
+		  labels: Dataa.labels,
+		},
+		y: {
+		  beginAtZero: true,
+		}
+	  }
+	};
+
  console.log(users);
-  	const handleFrameDropdownClick = (event) => {
-    		setFrameDropdownAnchorEl(event.currentTarget);
-  	};
-  	const handleFrameDropdownClose = () => {
-    		setFrameDropdownAnchorEl(null);
-  	};
-	  const getLast5UniqueValues = (arr) => {
-		const uniqueValues = [...new Set(arr.reverse())];
-		return uniqueValues.slice(0, Math.min(5, uniqueValues.length));
-	  };
-	  const LastUniqueValues=getLast5UniqueValues(users)
+  	
   	return (
     		<div className="dark-dashboard">
       			<section className="content">
         				<div className="horizontal-line" />
         				<div className="divider" />
         				<div className="divider1" />
-        				<div className="divider2" />
+						<div className="divider2" />
         				<div className="divider3" />
         				<div className="hey-admin">
           					<div className="divider4" />
-          					<h2 className="time-wise-users">Hey, Admin</h2>
+          					<h2 className="time-wise-users">Welcome , {data.admin_Pseudo}</h2>
           					<div className="latest-registration-users-parent">
             						<div className="latest-registration-users">
               							<div className="latest-registration-users-group">
@@ -122,7 +269,7 @@ const collNumber = (text) => {
         >
           <div className="parent">
             <div className="div">
-              <div className="just-now">Just Now</div>
+              <div className="just-now">{getTimeDifference(el.createdAt)}</div>
               <div className="xyz-name-parent">
                 <b className="xyz-name">{el.user_name}</b>
                 <div className="from-parent">
@@ -147,53 +294,18 @@ const collNumber = (text) => {
               							<div className="usa"></div>
             						</div>
           					</div>
+							
           					<div className="chart">
-            						<div className="bg-lines">
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child" />
-              							<div className="bg-lines-child5" />
-            						</div>
-            						<div className="vertical-line">
-              							<div className="usa">1000</div>
-              							<div className="usa">500</div>
-              							<div className="usa">300</div>
-              							<div className="usa">200</div>
-              							<div className="usa">100</div>
-              							<div className="usa">50</div>
-              							<div className="usa">0</div>
-            						</div>
-            						<div className="horizontal-line1">
-              							<div className="usa">06:00 AM</div>
-              							<div className="usa">09:00 AM</div>
-              							<div className="usa">12:00 AM</div>
-              							<div className="usa">03:00 PM</div>
-              							<div className="usa">06:00 PM</div>
-              							<div className="usa">09:00 PM</div>
-              							<div className="usa">12:00 PM</div>
-            						</div>
-									<div className="rectangle-parent">
-              							<div className="group-child" />
-              							<div className="group-item" />
-              							<div className="group-inner" />
-              							<div className="rectangle-div" />
-              							<div className="group-child1" />
-              							<div className="group-child2" />
-              							<div className="group-child3" />
-              						
-            						</div>
+								<h3 className="latest-registration-users2">Latest Registrations</h3>
+							  <div className='chartt'>
+							  
+      <Bar data={chartData} options={chartOptions} />
+    </div>
           					</div>
 
           					<div className="description-in-country-list">
             						<div className="description-in-country1">
-              							<div className="line" />
-              							
-										  {filteredRegions.map((el,i)=>(
+										  {LastUniqueValues.map((el,i)=>(
 											<div key={i}><div className="usa1">
 											<div className="ellipse-parent">
                   								
@@ -202,9 +314,9 @@ const collNumber = (text) => {
                 								
                   									<div className="group">
 														<FaArrowUp  className="iconsaxlineararrowup"  />
-                    										<div className="div11">{collNumber(el.user_location)}</div>
-                    										<br />
-															<div className="line" />
+                    										<div className="div11"><div>{collNumber(el.user_location)} <br /><br /></div> <div className="line" /></div>
+                    										
+															
                   									</div>
 													
 												
@@ -217,64 +329,34 @@ const collNumber = (text) => {
               							</div>
               							</div>
         			
-        				<div className="time-wise-users-installed-app">
-          					<h2 className="time-wise-users">Users Installed App Today</h2>
-          					<div className="chart1">
-            				
-            						<div className="vertical-line1">
-              							<div className="usa" />
-              							<div className="usa">500</div>
-              							<div className="usa">300</div>
-              							<div className="usa">200</div>
-              							<div className="usa">100</div>
-              							<div className="usa">50</div>
-              							<div className="usa">0</div>
-            						</div>
-            						<div className="horizontal-line2">
-              							<div className="usa">06:00 AM</div>
-              							<div className="usa">08:00 AM</div>
-              							<div className="usa">10:00 AM</div>
-              							<div className="usa">12:00 AM</div>
-              							<div className="usa">02:00 PM</div>
-              							<div className="usa">04:00 PM</div>
-              							<div className="usa">06:00 PM</div>
-              							<div className="usa">08:00 PM</div>
-              							<div className="usa">10:00 PM</div>
-              							<div className="usa">12:00 PM</div>
-            						</div>
-            					
-            						<div className="rectangle-parent">
-              							<div className="group-child" />
-              							<div className="group-item" />
-              							<div className="group-inner" />
-              							<div className="rectangle-div" />
-              							<div className="group-child1" />
-              							<div className="group-child2" />
-              							<div className="group-child3" />
-              							<div className="group-child4" />
-              							<div className="group-child5" />
-              							<div className="group-child6" />
-            						</div>
-          					</div>
-          					<div className="users-count">
-            						<div className="users-count-child" />
-            						<div className="users-count1">Users Count</div>
-          					</div>
-        				</div>
-        				<div className="users-per-country">
+										  <div className='charttt'>
+										  <h3 className="latest-registration-users1">Registrations Per Week</h3>
+      <Bar data={Data} options={Options} />
+    </div>
+        				<div className="users-per-country"><br /><br /><br /><br />
+						<h3 className="latest-registration-users2">Subscripions Across Regions</h3>
           					
 <Regions/>
         				</div>
+
+	<div className="area-chart-container" on>
+	<h3 className="latest-registration-users2">Yearly checkout</h3>
+      <Line data={Dataa} options={optionss} />
+    </div>
+						
         				<Footer/>
       			</section>
       			<header className="header">
-        				<div className="login-button-wrapper">
-          					<div className="login-button">
-            						<div className="profile">
-              							<b className="xyz-name">Safelet</b>
-              							<FaUserCircle  className="profile-child"  />
-            						</div>
-          					</div>
+				  <div className="dropdown">
+<div class="dropdown">
+  <button class="dropbtn"><FaUserCircle className="profile-child_drop"  /> Profile</button>
+  <div class="dropdown-content">
+    <div className="topdrop" onClick={() => navigate('/Profile')}>See Profile</div><br />
+    <div className="bottomdrop" onClick={() => {navigate('/');console.log("clicked");}}>LogOut</div><br />
+  </div>
+</div>
+
+
         				</div>
       			</header>
     		</div>
@@ -286,74 +368,3 @@ export default DarkDashboard;
 
 
 
-{/* export default function DarkDashboard() {
-  const [skipAnimation, setSkipAnimation] = React.useState(false);
-
-  return (
-    <Box
-      sx={{
-        width: '1200px',
-        height: '700px',
-        marginLeft: '300px',
-		color:'white'
-      }}
-    >
-	  <Typography id="input-item-number" gutterBottom>
-        Orders Per Weeks
-      </Typography>
-
-      <BarChart
-        height={300}
-        series={series
-          .slice(0, 4)
-          .map((s) => ({ ...s, data: s.data.slice(0, 12) }))}
-        skipAnimation={skipAnimation}
-      />
-      <FormControlLabel
-        checked={skipAnimation}
-        control={
-          <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
-        }
-        label="skipAnimation"
-        labelPlacement="end"
-      />
-    </Box>
-  );
-}
-
-const highlightScope = {
-  highlighted: 'series',
-  faded: 'global',
-};
-
-const series =  [
-	{
-	  label: 'Week 1',
-	  data: [
-		2423, 2210, 764, 1879, 1478, 1373, 1891, 2171, 620, 1269, 724, 1707, 1188,
-		1879, 626, 1635, 2177, 516, 1793, 1598,
-	  ],
-	},
-	{
-	  label: 'Week 2',
-	  data: [
-		2362, 2254, 1962, 1336, 586, 1069, 2194, 1629, 2173, 2031, 1757, 862, 2446,
-		910, 2430, 2300, 805, 1835, 1684, 2197,
-	  ],
-	},
-	{
-	  label: 'Week 3',
-	  data: [
-		1145, 1214, 975, 2266, 1768, 2341, 747, 1282, 1780, 1766, 2115, 1720, 1057,
-		2000, 1716, 2253, 619, 1626, 1209, 1786,
-	  ],
-	},
-	{
-	  label: 'Week 4',
-	  data: [
-		2361, 979, 2430, 1768, 1913, 2342, 1868, 1319, 1038, 2139, 1691, 935, 2262,
-		1580, 692, 1559, 1344, 1442, 1593, 1889,
-	  ],
-	}
-  ].map((s) => ({ ...s, highlightScope }));
- */}

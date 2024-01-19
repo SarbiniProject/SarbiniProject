@@ -65,7 +65,7 @@ const updateuser = async (req, res) => {
     }
   };
   
-  module.exports = updateuser;
+
 const deleteuser=async(req,res)=>{
     try{
         let id=req.params.id
@@ -77,8 +77,19 @@ const deleteuser=async(req,res)=>{
     }
 }
 
+
+const getOneByPseudo = async (req, res) => {
+    try {
+      const pseudo = req.params.pseudo; 
+      const result = await Admin.findOne({ where: { admin_pseudo: pseudo } });
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
 const generateToken = (id, admin_name) => {
     const expiresIn = 60 * 60 * 24;
     return jwt.sign({id, admin_name}, 'secretKey', { expiresIn: expiresIn });
   };
-  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2}
+  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2,getOneByPseudo}

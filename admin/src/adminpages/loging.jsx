@@ -1,61 +1,57 @@
-
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
-import { Button, Flex } from 'antd';
-import {useNavigate} from "react-router-dom"
-import axios from 'axios'
+import { Input, Button, Flex } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Profile from './Profile';
+import Dashboard from './Dashboard';
+import { useAuth } from './AuthContext'; 
 
-function Loging() {
-  const [admins,setAdmins] = useState([]);
-  const [controllers,setControllers]=useState([])
-  const [pseudo,setPseudo]=useState("")
-  const [password,setPassword]=useState("")
-  const [errorPseu,setErrorPseu]=useState(true)
-  const [errorPass,setErrorPass]=useState(true)
-  const navigate=useNavigate()
-  useEffect(()=>{
-    getadmins()
-  },[password,pseudo])
-
-  const getadmins=()=>{
-    axios.get('http://localhost:3000/api/sarbini/admin/admins')
-    .then((res)=>{
-      setAdmins(res.data)
-      console.log(res.data);
-    })
-    .catch((err)=>{
-      console.error("error",err);
-    })
-  }
-
-  const getcontrollers=()=>{
-    axios.get('http://localhost:3000/api/sarbini/admin/controllers')
-    .then((res)=>{
-      setControllers(res.data)
-      console.log(res.data);
-    })
-    .catch((err)=>{
-      console.log("Error",err)
-    })
-  }
-  //function//
-  const hundletext=(set,e)=>{
-    set(e.target.value)
-  }
-  const verif=()=>{
-    if (pseudo===""|| password==="") {
-      setErrorPass(!errorPass)
-      setErrorPseu(!errorPseu)
+function Login() {
+  const { setToken } = useAuth(); 
+  const [pseudo, setPseudo] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorPseu, setErrorPseu] = useState(true);
+  const [errorPass, setErrorPass] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [admin, setAdmin] = useState({});
+  const [show, setShow] = useState(true);
+  const navigate = useNavigate();
+  
+  const verif = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post('http://localhost:3000/api/sarbini/adminSignIn', {
+        admin_Pseudo: pseudo,
+        admin_password: password,
+      });
+      console.log(response.data);
+      setAdmin(response.data)
+      const { tok, id } = response.data;
+     
+      if (id && tok) {
+        setToken(tok); 
+        setLoading(false);
+        navigate(`/Dashboard`);
+     
+      } else {
+        setErrorPass(!errorPass);
+        setErrorPseu(!errorPseu);
+        setLoading(false);
+      }
+    } catch (error) {
+      setErrorPass(!errorPass);
+      setErrorPseu(!errorPseu);
+      setLoading(false);
+      console.error('Error during login:', error);
     }
-    for(let i=0;i<admins.length;i++){
-      if (pseudo!=admins[i].admin_pseudo&&password!=admins[i].admin_password){
-        setErrorPass(!errorPass)
-        setErrorPseu(!errorPseu)
+  };
 
-    }
-  }
-  }
+  const handleText = (set, e) => {
+    set(e.target.value);
+  };
+
+console.log("dataa",admin);
 
   return (
     <div className='bigdiv_logo'>
@@ -66,18 +62,21 @@ function Loging() {
         <div className='div2_login'>
             <h2 className='h2_login'>Sarbini</h2><p className='p_login' >your safety network</p>
             <div className='div3_login' ><h1 className='h1_login' >Login</h1><hr /><p className='p2_login'>sign into your account</p></div>
-              {!errorPseu&&<Input status='error' onClick={()=>{setErrorPseu(true)}} size="large" onChange={(e)=>{hundletext(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
-              {errorPseu&&<Input  size="large" onChange={(e)=>{hundletext(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
-              {!errorPass&&<Input status='error' onClick={()=>{setErrorPass(true)}} size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
-              {errorPass&&<Input  size="large" onChange={(e)=>{hundletext(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
+              {!errorPseu&&<Input status='error' onClick={()=>{setErrorPseu(true)}} size="large" onChange={(e)=>{handleText(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
+              {errorPseu&&<Input  size="large" onChange={(e)=>{handleText(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
+              {!errorPass&&<Input status='error' onClick={()=>{setErrorPass(true)}} size="large" onChange={(e)=>{handleText(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
+              {errorPass&&<Input  size="large" onChange={(e)=>{handleText(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
             <Flex className='flex_login'   gap="small" wrap="wrap">
-            <Button className='button_login' onClick={()=>{verif();navigate("/Dashboard")}}>Login</Button>
+            <Button className='button_login' onClick={()=>{verif()}}>Login</Button>
 
             </Flex>
         </div>
-    </div>
+        {!show &&(<div>
+          <Dashboard data={admin}/>
+          <Profile data={admin}/></div>)}
+    </div> 
   )
 }
 
 
-export default Loging
+export default Login

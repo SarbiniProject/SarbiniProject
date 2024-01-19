@@ -18,9 +18,9 @@ app.use(express.static(__dirname + "/../client/dist"));
 app.use(cors())
 app.post('/api/sarbini/signup',authController.signUp)
 app.post('/api/sarbini/signin',authController.signIn)
+app.post('/api/sarbini/adminSignIn',authController.adminSignIn)
 app.use("/api/sarbini",usersRoute)
 app.use("/api/sarbini",ordersRouter)
-
 app.use("/api/sarbini/admin",adminRouter)
 app.use("/api/sarbini",productRouter)
 app.use("/api/sarbini",categoryRoute)
