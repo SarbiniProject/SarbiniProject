@@ -1,35 +1,33 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, ScrollView,TouchableOpacity,View, TextInput,KeyboardAvoidingView,TouchableWithoutFeedback,Platform,Keyboard,Modal } from "react-native";
+import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { AntDesign } from '@expo/vector-icons';
-import ImagePicker from 'react-native-image-picker';
-import { Cloudinary } from '@cloudinary/base';
-import { AdvancedImage } from '@cloudinary/react';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withTiming,
-  useDerivedValue,
-} from "react-native-reanimated";
+
 
 const Products = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
   const [allproducts,setAllproducts]=React.useState([])
   const [onecateg,setOnecateg]=React.useState(0)
-  const [isModalVisible, setModalVisible] = React.useState(false);
-  const [isFormVisible, setFormVisible] = React.useState(false);
   const [filtrprod,setFiltrprod]=React.useState([])
-  const [productName, setProductName] = React.useState("");
-  const [productPrice, setProductPrice] = React.useState("");
+  const [searched,setSearched]=React.useState([])
+  const [wordsea,setWordsea]=React.useState("")
+  const [dosearch,setDosearch]=React.useState(false)
+  const [order,setOrder]=React.useState([])
+  const [opnedtable,setOpnedtabel]=React.useState([])
   const navigation = useNavigation();
+console.log(order,"order");
+  ;
 
+
+  let info={
+    product_name:wordsea
+  }
 
   const getcat=()=>{
-    axios.get("http://172.20.10.2:3000/api/sarbini/category")
+    axios.get("http://172.20.10.4:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -38,39 +36,8 @@ const Products = () => {
       console.error("error",err);
     })
   }
-  const cloudinary = new Cloudinary({
-    cloud: {
-      cloudName: 'Your-Cloudinary-Name', // Replace with your Cloudinary cloud name
-    },
-  });
-  const handleUploadPictureClick = async () => {
-    try {
-      // Open image picker to select an image from the device
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        // Upload the selected image to Cloudinary
-        const response = await cloudinary.upload(result.uri, { folder: 'your-upload-folder' });
-
-        // Get the Cloudinary URL for the uploaded image
-        const cloudinaryUrl = response.secure_url;
-
-        // Use the cloudinaryUrl as needed (store in state, send to server, etc.)
-        console.log('Cloudinary URL:', cloudinaryUrl);
-      }
-    } catch (error) {
-      console.error('Error uploading image to Cloudinary:', error);
-    }
-  };
-
-
   const getproducts=()=> {
-    axios.get("http://172.20.10.2:3000/api/sarbini/products")
+    axios.get("http://172.20.10.4:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -79,7 +46,7 @@ const Products = () => {
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://172.20.10.2:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://172.20.10.4:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -89,36 +56,56 @@ const Products = () => {
       console.error("error",err);
     })
   }
-  const refreshData = () => {
-    getcat();
-    getproducts();
-  };
+  const getsarch=(mot)=>{
+    axios.get("http://172.20.10.4:3000/api/sarbini/searchprod",mot)
+    .then((res)=>{
+      setSearched(res.data)
+      console.log(res.data,"searched2")}
+      )
+    .catch((err)=>{
+      console.log('erreur1',err)
+    })  
+  }
+  const getopnedtable=()=>{
+    axios.get("http:/172.20.10.4:3000/api/sarbini/opned")
+    .then((res)=>{
+      setOpnedtabel(res.data.id)
+    })
+    .catch((err)=>{
+      console.log('erreur1',err)
+    })  
+  }
+  const ajoutproduct=(id,info)=>{
+    axios.put("http://172.20.10.4:3000/api/sarbini/addprod/"+id,{products:info})
+    .then(()=>{
+      console.log("added");
+      navigation.navigate("Orders");
+    })
+    .catch((err)=>{
+      console.log('erreur2',err)
+    })  
+  }
+
   React.useEffect(()=>{
     getcat();
     getproducts()
-    translateY.value = withTiming(isFormVisible ? 0:500)
-  },[isFormVisible])
-  const translateY = useSharedValue(0);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }],
-      width: "80%",
-      height: "30%",
-      position: "absolute",
-      bottom: 0,
-      left: 45,
-      top:200,
-      };
-  });
+    getopnedtable()
+  },[])
   
   const renderbycateg=(categ)=>{
-    console.log('itwork');
+    const addToOrder = (el) => {
+      // Create a new array with the current order plus the clicked item
+      const newOrder = [...order, el];
+      setOrder(newOrder);
+    };
+  
     return(
     categ.map((el,i)=>{
       return(
         <>    
-        <TouchableOpacity onPress={() => handleProductClick({el})}>
+        <TouchableOpacity 
+        onPress={()=>{ addToOrder(el)}}
+        >
         <View style={[styles.cardMenu1, styles.cardLayout]}>
         <View style={[styles.cardMenuChild, styles.cardPosition]} />
         <Image
@@ -144,94 +131,50 @@ const Products = () => {
       )
     }))
   }
- 
 
   const handleCategoryPress=(idcat)=>{
     setOnecateg(idcat)
+      
     getprodbycateg(idcat)
-    
   }
-  const handleProductClick = (productData) => {
-    navigation.navigate("OneProduct", { productData:{
-      id:productData.el.id,
-      product_name:productData.el.product_name,
-      price:productData.el.price,
-      image:productData.el.image
-    },refreshData:refreshData});
-    setModalVisible(false)
-  };
-  const closeModal = () => {
-    setModalVisible(!isModalVisible);
-  };
 
   
 
   const conditionCategory=()=>{
+    console.log(searched,"searched");
     if(onecateg==0){
       return renderbycateg(allproducts)
     }
+    else if(dosearch===true){
+      return renderbycateg(searched)
+    }
     else{
-      console.log(filtrprod,'filtered');
      return renderbycateg(filtrprod)
     }
   }
-  const handleAddProductClick = () => {
-    setModalVisible(true);
-  };
-  const handleSaveProduct = async () => {
-    try {
-      // Perform validation checks on product name and price
-      if (!productName.trim() || !productPrice.trim()) {
-        console.error('Product name and price are required.');
-        return;
-      }
 
-      // Convert the price to a number (assuming it's a valid number)
-      const parsedPrice = parseFloat(productPrice);
-
-      // Check if the conversion was successful
-      if (isNaN(parsedPrice)) {
-        console.error('Invalid price format.');
-        return;
-      }
-
-      // Prepare the product data to be saved
-      const productDataa = {
-        product_name: productName.trim(),
-        price: parsedPrice,
-        categoryId:Math.random(),
-      };
-
-      // Make an API call to save the product data
-      const response = await axios.post('http://172.20.10.2:3000/api/sarbini/product', productDataa);
-
-      // Handle the API response as needed
-      console.log('Product saved successfully:', response.data);
-
-      // Optionally, reset the form fields and hide the form
-      setProductName('');
-      setProductPrice('');
-      setFormVisible(false);
-
-      // Trigger a refresh of the product data
-      refreshData();
-    } catch (error) {
-      console.error('Error saving product:', error);
-    }
-  };
   return (
-  
     <View style={styles.products}>
       <Image
         style={styles.sideBarManager}
         contentFit="cover"
         source={require("../assets/side-bar-manager.png")}
       />
+        <TouchableOpacity  
+        onPress={()=>{navigation.navigate("Product");}}
+        style={styles.Products}>
+        </TouchableOpacity>
+        <TouchableOpacity 
+        //////
+        onPress={()=>{navigation.navigate("Tables");
+      }}
+        style={styles.tables}>
+        </TouchableOpacity>
       <View style={[styles.buttonLogOut, styles.buttonLogOutFlexBox]}>
         <Image
           style={styles.lucidedoorOpenIcon}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.svg")}
+          source={require("../assets/lucidedooropen.png")}
         />
         <Text style={styles.logOut}>Log Out</Text>
       </View>
@@ -240,20 +183,26 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
+        
+      
       <View style={styles.searchBarParent}>
         <View style={styles.searchBar}>
           <View style={[styles.rectangleParent, styles.groupChildPosition]}>
+            
             <View style={[styles.groupChild, styles.childBorder]} />
-            <TouchableOpacity>
-              <View>
-            <Image
+            <TouchableOpacity   
+            onPress={()=>{ console.log("search");getsarch(info); setDosearch(true);setOnecateg(null);  }}
+            > 
+      <View style={styles.iconsearch}>
+         <Image
               style={[styles.groupItem, styles.itemLayout]}
-              resizeMode="cover"  
+             
               source={require("../assets/frame-1260.png")}
             />
-             </View>
-            </TouchableOpacity >
-            <TextInput placeholder="Search item" style={[styles.searchItem, styles.iceTypo2]}></TextInput>
+            </View>
+            </TouchableOpacity>
+
+            <TextInput placeholder="Search item" onChangeText={(text)=>{console.log(text);setWordsea(text)}} style={[styles.searchItem, styles.iceTypo2]}></TextInput>
           </View>
         </View>
         <View style={styles.frameWrapper}>
@@ -269,11 +218,11 @@ const Products = () => {
           </View>
         </View>
       </View>
-      <Image
+      {/* <Image
         style={styles.productsChild}
         contentFit="cover"
         source={require("../assets/ellipse-454.png")}
-      />
+      /> */}
       <View style={styles.container} >
         <ScrollView horizontal>
       {category.map((el,i)=>{
@@ -291,127 +240,59 @@ const Products = () => {
       })}
       </ScrollView>
       </View>
-      
+      <TouchableOpacity
+      onPress={()=>{ajoutproduct(opnedtable,order), setTimeout(() => {
+        setOrder([])
+      }, 1000);}}
+      >
       <View style={[styles.iconButton1, styles.frameViewBorder]}>
         <Image
           style={styles.filterIcon}
           contentFit="cover"
-          source={require("../assets/filter.svg")}
+          source={require("../assets/filter.png")}
         />
       </View>
+      </TouchableOpacity>
+      <View style={styles.categoryButton1}>
+        <Text style={[styles.iceCream5, styles.iceTypo2]}>Ice Cream</Text>
+      </View>
+    
+      <View style={styles.productsItem} />
+      <View style={styles.productsItem} />
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>
+   
           {conditionCategory()}
       </View>
       <View style={styles.productsChild1} />
-      <TouchableOpacity onPress={handleAddProductClick}>
-        <View style={[styles.iceCreamWrapper1]}>
-
-       <AntDesign name="pluscircle" size={20} color="red" />
-        </View>
-      </TouchableOpacity>
-  
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.blurContainer}>
-          <View style={styles.formContainer}>
-            <TextInput
-              placeholder="Product Name"
-              style={styles.input}
-              value={productName}
-              onChangeText={(text) => setProductName(text)}
-            />
-            <TextInput
-              placeholder="Product Price"
-              style={styles.input}
-              value={productPrice}
-              onChangeText={(text) => setProductPrice(text)}
-            />
-            <TouchableOpacity
-            onPress={handleUploadPictureClick}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Upload Picture</Text>
-          </TouchableOpacity>
-            <TouchableOpacity onPress={handleSaveProduct} style={styles.button}>
-              <Text style={styles.buttonText}>Save Product</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={closeModal} style={styles.button}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-         
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  Products:{
+    position:"absolute",
+    top:340,
+    width:80,
+    height:52,
+
+  }, 
+  tables:{
+    position:"absolute",
+    top:420,
+    width:80,
+    height:52
+  },
+  iconsearch:{
+    width:150,
+    height:30,
+  },
   container: {
     flexDirection: 'row', // Affiche les éléments côte à côte
     alignItems: 'center', // Centre les éléments verticalement si nécessaire
     position:"absolute",
     width:"83%",
     top:65,
-    left:70,
-  },
-  cloudinaryIcon: {
-    width: 30,
-    height: 30,
-    marginTop: 10,
-  },
-  button: {
-    backgroundColor: Color.red, // Change the background color as needed
-    padding: Padding.p_3xs,
-    borderRadius: Border.br_5xs,
-    marginTop: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#FFFFFF", // Change the text color as needed
-    fontSize: FontSize.size_xs,
-    fontFamily: FontFamily.openSansSemiBold,
-    fontWeight: "600",
-  },
-  blurContainer: {
-    flex: 1,
-    borderRadius: 10,
-    padding: 20,
-    backgroundColor:"rgba(0, 0, 0, 0.5)"
-
-  },
-  formContainer: {
-    position: "relative",
-    top: 190,
-    left: 0,
-    padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    zIndex: 10,
-    
-  },
-  input: {
-    marginBottom: 10,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: Color.colorLightgray,
-    borderRadius: Border.br_5xs,
-  },
-  iceCreamWrapper1: {
-    top: 115,
-    left: 80,
-    width: 74,
-    height: 25,
-    flexDirection: "row",    
-  },
-  availableFlexBox: {
-    height: 16,
-    justifyContent: "center",
-    alignItems: "center",
+    left:65,
   },
   touchableOpacity: {
     padding: 10,
@@ -422,32 +303,6 @@ const styles = StyleSheet.create({
     marginRight:2,
     marginLeft:2,
     
-  },
-  wrapperFlexBox: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  paymentLayout: {
-    padding: Padding.p_3xs,
-    height: 47,
-    width: 328,
-    left: 25,
-    borderRadius: Border.br_5xs,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    position: "absolute",
-  },
-  paymentButton1: {
-    top: 719,
-    backgroundColor: Color.red,
-    padding: Padding.p_3xs,
-    height: 47,
-    width: 328,
-    left: 25,
-  },
-  paymentButtonInner: {
-    flexDirection: "row",
   },
   categoryText: {
     color: 'rgb(0, 138, 252)',
@@ -497,7 +352,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   frameViewBorder: {
-    left: 333,
+    left: 353,
     borderWidth: 1.1,
     borderRadius: 5,
     justifyContent: "center",
@@ -679,6 +534,8 @@ const styles = StyleSheet.create({
     zIndex: 0,
     borderRadius: 4,
     height: 30,
+    marginLeft:4,
+    marginRight:4
   },
   text: {
     fontSize: 6,
@@ -714,7 +571,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   productsChild: {
-    left: 294,
+    left: 310,
     width: 33,
     top: 32,
     height: 32,
@@ -886,7 +743,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardMenu1: {
-    marginLeft: 18,
+    marginLeft: 20,
   },
   statusMenu2: {
     width: 93,
@@ -894,7 +751,7 @@ const styles = StyleSheet.create({
   },
   cardMenuParent: {
     top: 142,
-    left: 65,
+    left: 71,
   },
   cardMenuContainer: {
     top: 618,
@@ -933,7 +790,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   products: {
-    
+    borderRadius: 30,
     backgroundColor: "#fffdfd",
     shadowColor: "rgba(6, 6, 34, 0.4)",
     shadowOffset: {

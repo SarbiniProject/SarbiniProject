@@ -3,9 +3,9 @@ import { StyleSheet, Text, View ,} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import OneProduct from './components/OneProduct';
-import Report from './components/Report'
-import Products from './components/Products'
+import OneProduct from './components/Controller/OneProduct';
+import Report from './components/Controller/Report'
+import Product from './components/Controller/Product'
 import Login from './components/Login'
 import Tables from './components/Tables';
 import Order from './components/Order';
@@ -19,7 +19,7 @@ const App = () => {
       <Stack.Navigator>
           <Stack.Screen
             name="Product"
-            component={Products}
+            component={Product}
             options={{
               headerShown: false,
             }}
