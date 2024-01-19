@@ -3,9 +3,13 @@ import { StyleSheet, Text, View ,} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import Products from './components/Products'
 import OneProduct from './components/OneProduct';
 import Report from './components/Report'
+import Products from './components/Products'
+import Login from './components/Login'
+import Tables from './components/Tables';
+import Order from './components/Order';
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -13,9 +17,23 @@ const App = () => {
     <NavigationContainer>
     <StripeProvider>
       <Stack.Navigator>
-          {/* <Stack.Screen
-            name="Products"
+          <Stack.Screen
+            name="Product"
             component={Products}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Tables"
+            component={Tables}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Orders"
+            component={Order}
             options={{
               headerShown: false,
             }}
@@ -26,12 +44,12 @@ const App = () => {
             options={{
               headerShown: false,
             }}
-          /> */}
-          <Stack.Screen
+          />
+          {/* <Stack.Screen
               name="Report"
               component={Report}
               options={{ headerShown: false }}
-            />
+            /> */}
      </Stack.Navigator>
        </StripeProvider>
      </NavigationContainer>
@@ -47,4 +65,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
 

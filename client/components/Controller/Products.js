@@ -231,7 +231,7 @@ const Products = () => {
         <Image
           style={styles.lucidedoorOpenIcon}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.png")}
+          source={require("../assets/lucidedooropen.svg")}
         />
         <Text style={styles.logOut}>Log Out</Text>
       </View>
@@ -296,7 +296,7 @@ const Products = () => {
         <Image
           style={styles.filterIcon}
           contentFit="cover"
-          source={require("../assets/filter.png")}
+          source={require("../assets/filter.svg")}
         />
       </View>
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>

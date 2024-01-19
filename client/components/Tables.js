@@ -1,14 +1,87 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet,TouchableOpacity,Text, TextInput,View,Modal,Button } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Color, FontFamily, Padding, Border, FontSize } from "../GlobalStyles";
+import { FontFamily, Color, Border, Padding, FontSize } from "../components/styles/TablesStyle";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 const Tables = () => {
-  // const newLocal = <Image
-  //   style={[styles.component1Icon, styles.component1IconPosition]}
-  //   contentFit="cover"
-  //   source={require("../assets/component-111.png")} />;
+  const[ref,setref]=React.useState(false)
+  const[pop,setpop]=React.useState(false)
+  const[tablename,setTablename]=React.useState("")
+  const[tables,setTables]=React.useState([]) 
+  const[status,setsatatus]=React.useState(false)
+  const[status1,setStatus1]=React.useState(false)
+  const[status2,setStatus2]=React.useState(Boolean)
+  const[status3,setStatus3]=React.useState(Boolean)
+  const[color,setcolor]=React.useState("rgb(197, 66, 66)")
+  const [colorMap, setColorMap] =React.useState({}); // Use an object to store colors for each id
+  const navigation = useNavigation();
+
+
+///rgb(61, 206, 61)
+const [selectedItemId, setSelectedItemId] = React.useState(null);
+
+
+  let info={
+    name:tablename,
+  }
+
+  const addtables=(info)=>{
+    axios.post("http://172.20.10.4:3000/api/sarbini/orders",info)
+    .then(()=>{
+      console.log("aded");
+      setref(!ref)
+    })
+    .catch((err)=>console.error(err))
+  }
+
+  const getalltables=()=>{
+    axios.get("http://172.20.10.4:3000/api/sarbini/orders")
+    .then((res)=>{
+      setTables(res.data)
+      console.log(res.data)
+    })
+    .catch((err)=>console.error("error", err))
+  }
+
+const UpdateStatus1=(id,stat)=>{
+  axios.put("http://172.20.10.4:3000/api/sarbini/orders/"+id,{satus1:stat})
+  .then((res)=>{
+    console.log("update",res.data[0]);
+    setref(!ref)
+    setStatus1((prevStatus) => !prevStatus); 
+  })
+  .catch((err)=>console.error("error", err))
+
+}
+
+  React.useEffect(()=>{
+    getalltables();
+  },[!ref])
+///////Functions////////////
+const veriftable = (statut) => {
+  return statut ? 'opened' : 'closed';
+};
+const hundelupdate = async (id, status1) => {
+  console.log("status", status1);
+
+  try {
+    await UpdateStatus1(id, !status1);
+
+    const newColor = status1 === true ? "rgb(197, 66, 66)" : "rgb(61, 206, 61)";
+    setColorMap(prevColorMap => ({ ...prevColorMap, [id]: newColor }));
+
+    // Update the selected item id in the state
+    setSelectedItemId(id);
+  } catch (error) {
+    console.error("Error updating status:", error);
+  }
+};
+
+
+
   return (
     <View style={styles.tables}>
       <Image
@@ -16,453 +89,91 @@ const Tables = () => {
         contentFit="cover"
         source={require("../assets/side-bar-manager.png")}
       />
+      
       <Image
         style={[styles.sideBarManager1, styles.sideLayout]}
         contentFit="cover"
-        source={require("../assets/side-bar-manager1.png")}
+        source={require("../assets/side-bar-manager2.png")}
       />
       <View style={styles.buttonLogOut}>
         <Image
-          style={styles.lucidedoorOpenIcon}
+          style={[styles.lucidedoorOpenIcon, styles.iconLayout]}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.png")}
+          source={require("../assets/lucidedooropen.svg")}
         />
-        <Text style={styles.logOut}>Log Out</Text>
+        <Text style={[styles.logOut, styles.logOutTypo]}>Log Out</Text>
       </View>
+      
       <Image
         style={styles.captureDCran20240113081Icon}
         contentFit="cover"
         source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
-      <View style={[styles.cardMenuParent, styles.cardLayout1]}>
+      
+      {/*////////////////////////////////////////////////////////////////////////*/}
+        <View style={styles.cardMenuParent}>
+      {tables.map((el,i)=>{
+        return(
+          <> 
+          <TouchableOpacity onPress={()=>{hundelupdate(el.id,el.satus1)}}>
         <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <Image
-            style={[styles.cardMenuItem, styles.itemLayout]}
-            contentFit="cover"
-            source={require("../assets/rectangle-1680.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Bluberry Sundae
+            <LinearGradient
+            style={[styles.cardMenuItem, styles.tablesChildBorder]}
+            locations={[0.65, 1]}
+            colors={[colorMap[el.id] || "rgb(197, 66, 66)", "rgba(0, 0, 0, 0.7)"]}
+            />
+          <Text style={[styles.chocolateCookiesSmoothies, styles.tables1Typo]}>
+            {veriftable(el.satus1)}
           </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>
-            Rp 18.000,00
-          </Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          /> */}
+          <Text style={[styles.rp1600000, styles.tables1Typo]}>{el.name}-{i}</Text>
         </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <Image
-            style={[styles.cardMenuItem, styles.itemLayout]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16801.png")}
-          />
-          <Text
-            style={[
-              styles.chocolateCookiesSmoothiesContainer,
-              styles.chocolateTypo,
-            ]}
-          >
-            <Text style={styles.chocolateCookiesSmoothiesContainer1}>
-              <Text style={styles.mango}>Mango</Text>
-              <Text style={styles.text}>{` `}</Text>
-              <Text style={styles.mango}>SUndae</Text>
-            </Text>
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon1, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-11.png")}
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <Image
-            style={[styles.cardMenuItem, styles.itemLayout]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16802.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Coffee Ice Cream
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon1, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-11.png")}
-          />
-        </View>
+        </TouchableOpacity>
+          </>
+        )
+      })}
       </View>
-      <View style={[styles.cardMenuParent, styles.cardLayout1]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Closed
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
+        {/*////////////////////////////////////////////////////////////////////////*/}
+      <TouchableOpacity onPress={()=>{setpop(true)}} >
+      <LinearGradient
+        style={[styles.tablesChild, styles.tablesChildBorder]}
+        locations={[0.65, 1]}
+        colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
+      />
+      <Text style={[styles.text1, styles.text1FlexBox]}>+</Text>
+      </TouchableOpacity>
+        {/*////////////////////////////////////////////////////////////////////////*/}
+      <View>
+        <Modal 
+        transparent={true}
+        visible={pop}
+        >
+          <View style={{backgroundColor:"#000000aa",flex:1}}>
+            <View style={styles.popup1}>
+            <Text style={{fontSize:25,textAlign:"center"}} >Create New Table</Text>
+            <Text style={{fontSize:15,textAlign:"center",marginTop:25}} >Table Name:</Text>
+            <TextInput 
+            onChangeText={(text)=>{setTablename(text)}}
+            style={{width:"100%",borderStyle: "solid",borderColor:"black",borderWidth:1,paddingLeft:5 }}></TextInput>
+            <TouchableOpacity 
+            onPress={()=>{addtables(info),setpop(false)}}
+            style={{backgroundColor:"brown",borderRadius:10,padding:5,marginTop:50, width:150,marginLeft:35}}>
+              <Text style={{textAlign:"center",color:"white",fontSize:15}}>Valid</Text>
+            </TouchableOpacity>
+            </View>
           </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-1-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-12.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-2-</Text>
-          {/* <Image
-            style={[styles.component1Icon1, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-11.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-3-</Text>
-          {/* <Image
-            style={[styles.component1Icon1, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-11.png")}
-          /> */}
-        </View>
+        </Modal>
       </View>
-      <View style={[styles.cardMenuContainer, styles.tablesInnerPosition]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available6, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-4-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-13.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Closed
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-5-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-14.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-6-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-15.png")}
-          /> */}
-        </View>
-      </View>
-      <View style={[styles.frameView, styles.frameViewLayout]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-7-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-16.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-8-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-17.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Closed
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>Table-9-</Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-18.png")}
-          /> */}
-        </View>
-      </View>
-      <View style={[styles.cardMenuParent1, styles.frameViewLayout]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Opened
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>
-            Table-10-
-          </Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-19.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >
-            Closed
-          </Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>
-            Table-11-
-          </Text>
-          {/* <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-            source={require("../assets/component-110.png")}
-          /> */}
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardMenuChildBorder]} />
-          <LinearGradient
-            style={[
-              styles.rectangleLineargradient,
-              styles.cardMenuItemPosition,
-            ]}
-            locations={[0.65, 1]}
-            colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.7)"]}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.chocolateTypo]}
-          >{`Opened `}</Text>
-          <View style={[styles.statusMenu, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.chocolateTypo]}>
-            Table-12-
-          </Text>
-          {/* {newLocal} */}
-        </View>
-      </View>
+      {/*//////////////////////////////////////////////////////////////////////////////////////*/}
       <View style={styles.searchBarParent}>
         <View style={styles.searchBar}>
-          <View style={styles.groupChildPosition}>
+          <View style={[styles.rectangleParent, styles.groupChildPosition]}>
             <View style={[styles.groupChild, styles.groupChildBorder]} />
             <Image
-              style={[styles.groupItem, styles.itemLayout]}
+              style={[styles.groupItem, styles.component1IconLayout]}
               contentFit="cover"
               source={require("../assets/frame-1260.png")}
             />
-            <Text style={[styles.searchItem, styles.text1Typo]}>
+            <Text style={[styles.searchItem, styles.textTypo]}>
               Search item
             </Text>
           </View>
@@ -475,57 +186,97 @@ const Tables = () => {
               source={require("../assets/iconbutton.png")}
             />
             <View style={[styles.wrapper, styles.wrapperFlexBox]}>
-              <Text style={[styles.text1, styles.text1Typo]}>3</Text>
+              <Text style={[styles.text, styles.textTypo]}>3</Text>
             </View>
           </View>
         </View>
       </View>
-      <Image
-        style={[styles.tablesChild, styles.tablesChildPosition]}
-        contentFit="cover"
-        source={require("../assets/ellipse-455.png")}
-      />
-      <View style={[styles.iconButton1, styles.tablesChildPosition]}>
+      <View style={[styles.iconButton1, styles.groupChildBorder]}>
         <Image
           style={styles.filterIcon}
           contentFit="cover"
-          source={require("../assets/filter.png")}
+          source={require("../assets/filter.svg")}
         />
       </View>
       <View style={styles.tablesItem} />
-      <Text style={[styles.tables1, styles.chocolateTypo]}>Tables:</Text>
-      <View style={[styles.tablesInner, styles.tablesInnerPosition]} />
+      <Text style={[styles.tables1, styles.tables1Typo]}>Tables:</Text>
+      <Text style={[styles.createNewTables, styles.text1FlexBox]}>
+        Create New Tables
+      </Text>
+      <View>
+      <TouchableOpacity  
+        onPress={()=>{navigation.navigate("Product");}}
+        style={styles.Products}>
+        </TouchableOpacity>
+        <TouchableOpacity 
+        //////
+        onPress={()=>{navigation.navigate("Tables");
+      }}
+        style={styles.tables}>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  Products:{
+    position:"absolute",
+    top:340,
+    width:80,
+    height:52,
+
+  }, 
+  tables:{
+    position:"absolute",
+    top:420,
+    width:80,
+    height:52
+  },
+  popup1:{
+    backgroundColor:"#ffffff",
+    margin:50,
+    padding:40,
+    borderRadius:10,
+    width:"70%",
+    height:300,
+    position:"absolute",
+    top:100,
+    left:30
+
+  },
   sideLayout: {
     height: 817,
     position: "absolute",
   },
-  cardLayout1: {
-    width: 303,
-    flexDirection: "row",
+  iconLayout: {
+    width: 32,
+    height: 32,
   },
-  cardMenuChildBorder: {
+  logOutTypo: {
+    textAlign: "center",
+    fontFamily: FontFamily.openSansSemiBold,
+    fontWeight: "600",
+    color: Color.neutral100,
+  },
+  tablesChildBorder: {
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    backgroundColor: "transparent",
     borderColor: Color.colorGainsboro,
     borderStyle: "solid",
+    borderRadius: Border.br_5xs,
     position: "absolute",
   },
-  itemLayout: {
-    maxHeight: "100%",
-    maxWidth: "100%",
-    position: "absolute",
-    overflow: "hidden",
-  },
-  chocolateTypo: {
+  tables1Typo: {
+    display: "flex",
     fontFamily: FontFamily.openSansBold,
     fontWeight: "700",
-    display: "flex",
     textAlign: "left",
     alignItems: "center",
     position: "absolute",
+    
   },
   statusPosition: {
     paddingVertical: Padding.p_9xs,
@@ -542,24 +293,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
   },
-  availableTypo: {
-    height: 16,
-    width: 77,
-    fontSize: FontSize.size_xs,
+  wrapperFlexBox: {
     justifyContent: "center",
-    textAlign: "center",
-    color: Color.neutral100,
-    fontFamily: FontFamily.openSansSemiBold,
-    fontWeight: "600",
     alignItems: "center",
   },
-  component1IconPosition: {
-    left: "81.67%",
-    right: "8.33%",
-    width: "10%",
-    marginTop: -131.5,
-    height: 24,
-    top: "50%",
+  component1IconLayout: {
     maxWidth: "100%",
     position: "absolute",
     overflow: "hidden",
@@ -567,42 +305,30 @@ const styles = StyleSheet.create({
   cardLayout: {
     height: 105,
     width: 85,
+    marginRight:16
   },
-  cardMenuItemPosition: {
-    bottom: "16.79%",
-    height: "83.21%",
-    borderRadius: Border.br_5xs,
+  groupChildPosition: {
     left: "0%",
     right: "0%",
     top: "0%",
     width: "100%",
   },
-  tablesInnerPosition: {
-    left: 69,
-    position: "absolute",
-  },
-  frameViewLayout: {
-    height: 148,
-    flexDirection: "row",
-    position: "absolute",
-  },
   groupChildBorder: {
     borderColor: Color.colorLightgray,
     borderStyle: "solid",
     backgroundColor: Color.neutral100,
+    position: "absolute",
   },
-  text1Typo: {
+  textTypo: {
     textAlign: "left",
     fontFamily: FontFamily.openSansSemiBold,
     fontWeight: "600",
   },
-  wrapperFlexBox: {
-    justifyContent: "center",
+  text1FlexBox: {
+    color: Color.colorBlack,
+    display: "flex",
+    textAlign: "left",
     alignItems: "center",
-  },
-  tablesChildPosition: {
-    top: 39,
-    height: 32,
     position: "absolute",
   },
   sideBarManager: {
@@ -617,21 +343,16 @@ const styles = StyleSheet.create({
   },
   lucidedoorOpenIcon: {
     height: 32,
-    width: 32,
   },
   logOut: {
     fontSize: 14,
     width: 100,
     height: 22,
     marginTop: 4,
-    textAlign: "center",
-    color: Color.neutral100,
-    fontFamily: FontFamily.openSansSemiBold,
-    fontWeight: "600",
   },
   buttonLogOut: {
     top: 720,
-    left: -6,
+    left: -5,
     borderRadius: Border.br_3xs,
     width: 72,
     padding: Padding.p_7xs,
@@ -647,38 +368,47 @@ const styles = StyleSheet.create({
   },
   cardMenuChild: {
     borderWidth: 1,
-    backgroundColor: Color.neutral100,
-    borderRadius: Border.br_5xs,
     borderColor: Color.colorGainsboro,
     borderStyle: "solid",
+    backgroundColor: Color.neutral100,
+    borderRadius: Border.br_5xs,
     left: "0%",
     bottom: "0%",
     right: "0%",
     top: "0%",
     height: "100%",
+    position: "absolute",
     width: "100%",
   },
   cardMenuItem: {
-    bottom: "16.79%",
     height: "83.21%",
-    borderRadius: Border.br_5xs,
+    bottom: "16.79%",
     left: "0%",
     right: "0%",
     top: "0%",
     width: "100%",
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    backgroundColor: "transparent",
   },
   chocolateCookiesSmoothies: {
+    width: "92.38%",
     top: "68.57%",
-    display: "flex",
-    textAlign: "left",
     fontSize: FontSize.size_5xs,
     left: "4.17%",
+    fontFamily: FontFamily.openSansBold,
     fontWeight: "700",
-    width: "92.38%",
     color: Color.neutral100,
   },
   available: {
+    fontSize: FontSize.size_xs,
+    width: 77,
+    height: 16,
     display: "none",
+    textAlign: "center",
+    fontFamily: FontFamily.openSansSemiBold,
+    fontWeight: "600",
+    color: Color.neutral100,
   },
   statusMenu: {
     display: "none",
@@ -688,35 +418,19 @@ const styles = StyleSheet.create({
     top: "85.36%",
     fontSize: FontSize.size_3xs,
     color: Color.black,
-    display: "flex",
-    textAlign: "left",
     left: "4.17%",
+    fontFamily: FontFamily.openSansBold,
     fontWeight: "700",
   },
   component1Icon: {
     height: 24,
+    left: "81.67%",
+    right: "8.33%",
+    width: "10%",
+    marginTop: -131.5,
+    maxWidth: "100%",
+    top: "50%",
     display: "none",
-  },
-  mango: {
-    fontSize: FontSize.size_5xs,
-  },
-  text: {
-    fontSize: FontSize.size_base,
-  },
-  chocolateCookiesSmoothiesContainer1: {
-    width: "100%",
-  },
-  chocolateCookiesSmoothiesContainer: {
-    top: "62.86%",
-    display: "flex",
-    textAlign: "left",
-    left: "4.17%",
-    fontWeight: "700",
-    width: "92.38%",
-    color: Color.neutral100,
-  },
-  component1Icon1: {
-    height: 24,
   },
   cardMenu1: {
     marginLeft: 20,
@@ -726,50 +440,42 @@ const styles = StyleSheet.create({
     height: 24,
     display: "none",
   },
+  component1Icon2: {
+    height: 24,
+    left: "81.67%",
+    right: "8.33%",
+    width: "10%",
+    marginTop: -131.5,
+    maxWidth: "100%",
+    top: "50%",
+  },
   cardMenuParent: {
-    top: 123,
-    flexDirection: "row",
-    left: 71,
-    position: "absolute",
-  },
-  rectangleLineargradient: {
-    backgroundColor: "transparent",
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: Color.colorGainsboro,
-    borderStyle: "solid",
-    position: "absolute",
-  },
-  available6: {
-    display: "flex",
-  },
-  cardMenuContainer: {
-    top: 241,
-    height: 140,
-    flexDirection: "row",
+    top: 249,
+    left: 69,
     width: 303,
+    flexDirection: "row",
+    flexWrap:"wrap",
+    position: "absolute",
+    marginLeft:20
   },
-  frameView: {
-    top: 359,
-    left: 70,
-    width: 302,
-  },
-  cardMenuParent1: {
-    top: 480,
-    width: 301,
-    left: 71,
+  tablesChild: {
+    top: 118,
+    left: 87,
+    height: 87,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    backgroundColor: "transparent",
+    width: 85,
   },
   groupChild: {
     borderWidth: 0.8,
     borderRadius: 4,
     left: "0%",
-    bottom: "0%",
     right: "0%",
     top: "0%",
-    height: "100%",
-    position: "absolute",
     width: "100%",
+    bottom: "0%",
+    height: "100%",
   },
   groupItem: {
     height: "90%",
@@ -778,6 +484,7 @@ const styles = StyleSheet.create({
     right: "84.17%",
     bottom: "5%",
     left: "0.83%",
+    maxHeight: "100%",
     borderRadius: 4,
   },
   searchItem: {
@@ -787,17 +494,15 @@ const styles = StyleSheet.create({
     left: "18.89%",
     fontSize: 7,
     color: Color.neutral500,
-    textAlign: "left",
     position: "absolute",
   },
-  groupChildPosition: {
-    left: "0%",
+  rectangleParent: {
     bottom: "0%",
+    height: "100%",
+    left: "0%",
     right: "0%",
     top: "0%",
-    height: "100%",
     position: "absolute",
-    width: "100%",
   },
   searchBar: {
     width: 187,
@@ -809,10 +514,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     height: 24,
   },
-  text1: {
+  text: {
     fontSize: 6,
     color: Color.colorWhite,
-    textAlign: "left",
   },
   wrapper: {
     top: -2,
@@ -833,14 +537,10 @@ const styles = StyleSheet.create({
   },
   searchBarParent: {
     top: 43,
-    left: 68,
+    left: 94,
     width: 226,
     flexDirection: "row",
     position: "absolute",
-  },
-  tablesChild: {
-    left: 289,
-    width: 33,
   },
   filterIcon: {
     width: 17,
@@ -848,16 +548,15 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   iconButton1: {
+    top: 39,
     left: 328,
     borderRadius: 5,
     borderWidth: 1.1,
     padding: 4,
-    borderColor: Color.colorLightgray,
-    borderStyle: "solid",
-    backgroundColor: Color.neutral100,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
+    height: 32,
     width: 32,
   },
   tablesItem: {
@@ -870,18 +569,28 @@ const styles = StyleSheet.create({
   tables1: {
     top: 90,
     left: 75,
-    fontSize: 15,
     color: "#0d0d0e",
     width: 300,
-    height: 12,
-    opacity: 0.16,
-    display: "flex",
-    textAlign: "left",
+    height: 18,
+    opacity: 0.38,
+    fontSize: FontSize.size_mini,
   },
-  tablesInner: {
-    top: 109,
-    width: 293,
-    height: 499,
+  text1: {
+    top: 133,
+    left: 117,
+    fontSize: 40,
+    fontWeight: "300",
+    fontFamily: FontFamily.openSansLight,
+    width: 25,
+    height: 49,
+  },
+  createNewTables: {
+    top: 211,
+    left: 76,
+    fontFamily: FontFamily.openSansRegular,
+    width: 161,
+    height: 18,
+    fontSize: FontSize.size_mini,
   },
   tables: {
     borderRadius: 30,

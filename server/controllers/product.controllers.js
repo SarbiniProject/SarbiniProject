@@ -24,14 +24,13 @@ const Productbycaetg =async(req,res)=>{
 
 const search =async(req,res)=>{
     try{
-        let search=req.body
+        let search=req.body.product_name
         const result= await Product.findAll({
             where: {
-                name: {
-                    [Sequelize.Op.iLike]: `%${search}%` 
-                }
+                product_name:search
             }
-        });
+        })
+        res.json(result)
     }
     catch (error) {
         res.send(error)    
@@ -64,5 +63,14 @@ const DeleteProduct= async(req,res) => {
     res.send(error)    
     }
 };
+const Note=async(req,res)=>{
+    try{
+        const result=await Product.update({description:req.body.description},{where:{id:req.params.id}})
+        res.json(result)
+    }
+    catch (error) {
+        res.send(error)    
+        }
+}
 
-module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct,Productbycaetg,search}
+module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct,Productbycaetg,search,Note}
