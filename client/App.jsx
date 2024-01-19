@@ -6,6 +6,8 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import Products from './components/Products'
 import Login from './components/Login'
 import Tables from './components/Tables';
+import Order from './components/Order';
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -14,8 +16,22 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="tables"
+            name="Product"
+            component={Products}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Tables"
             component={Tables}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Orders"
+            component={Order}
             options={{
               headerShown: false,
             }}
