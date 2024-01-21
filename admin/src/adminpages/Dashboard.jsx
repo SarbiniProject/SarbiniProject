@@ -21,17 +21,19 @@ import{ useNavigate} from "react-router-dom";
 import { Line } from 'react-chartjs-2';
 
 
-const DarkDashboard = ({data}) => {
+const DarkDashboard = () => {
   	const [frameDropdownAnchorEl, setFrameDropdownAnchorEl] = useState(null);
   	const frameDropdownOpen = Boolean(frameDropdownAnchorEl);
     const [users, setUsers] = useState([]);
+	const [admin, setAdmin] = useState({});
 	const [regions, setRegions] = useState([]);
 	const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const id=localStorage.getItem('id')
 	const navigate=useNavigate()
 	Chart.register(...registerables);
-	
+	 
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -39,6 +41,8 @@ useEffect(() => {
 	  console.log("controllers",result.data);
       setUsers(result.data);
       setLoading(false);
+	  
+	
     } catch (error) {
       console.error(error);
       setError("Error fetching data");
@@ -47,14 +51,30 @@ useEffect(() => {
   };
 fetchData();
 }, []);
+useEffect(() => {
+	const fetchAdminData = async () => {
+	  try {
+		const result = await axios.get(`http://localhost:3000/api/sarbini/admin/${id}`);
+		console.log("AdminData",result.data);
+		setAdmin(result.data);
+		setLoading(false);
+		
+	  
+	  } catch (error) {
+		console.error(error);
+		setError("Error fetching data");
+		setLoading(false);
+	  }
+	};
+  fetchAdminData();
+  }, []);
 
-console.log("loc0",regions);
 
 useEffect(() => {
 	const fetchData = async () => {
 	  try {
 		const result = await axios.get("http://localhost:3000/api/sarbini/admin/loc");
-		console.log("loc1",result.data);
+		
 		setRegions(result.data);
 		setLoading(false);
 	  } catch (error) {
@@ -75,11 +95,13 @@ useEffect(() => {
     
   }, []);
 
-  const getLast5UniqueValues = (arr) => {
+  const getLast5UniqueValues = (arr,n) => {
 	const uniqueValues = [...new Set(arr.reverse())];
-	return uniqueValues.slice(0, Math.min(5, uniqueValues.length));
+	return uniqueValues.slice(0, Math.min(n, uniqueValues.length));
   };
-  const LastUniqueValues=getLast5UniqueValues(users)
+  const LastUniqueValues=getLast5UniqueValues(users,5)
+  const LastUniqueValues6=getLast5UniqueValues(users,6)
+  console.log("unique",LastUniqueValues6);
 
   const handleNumber = (text) => {
 	return regions.filter((el) => el.user_location.toUpperCase().includes(text.toUpperCase()));
@@ -101,9 +123,9 @@ const filt = (regions) => {
   };
  
   const filteredRegions = filt(regions);
-  console.log("filt",filteredRegions);
+  
 
-console.log("bb",LastUniqueValues.map((el)=>el.user_location));
+
 
   const chartData = {
     labels: LastUniqueValues.map((el)=>el.user_location),
@@ -131,8 +153,7 @@ console.log("bb",LastUniqueValues.map((el)=>el.user_location));
 		borderWidth: 1
 	  }]
   };
-  console.log("reg",regions);
-  console.log("bar",regions.map((el)=>{{collNumber(el.user_location)}}));
+
 
   const chartOptions = {
     scales: {
@@ -143,19 +164,19 @@ console.log("bb",LastUniqueValues.map((el)=>el.user_location));
   };
 
   function getTimeDifference(startDate) {
-	const startTime = new Date(startDate); 
+	const startTime = new Date(startDate);
 	const endTime = new Date();
-	
+  
 	if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
 	  return "Invalid date format";
 	}
-	
+  
 	const timeDifference = Math.abs(endTime - startTime);
-	
+  
 	const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 	const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-	
+  
 	if (days === 0) {
 	  return `Registered about ${hours} hours and ${minutes} minutes ago`;
 	} else if (days === 1) {
@@ -169,7 +190,7 @@ console.log("bb",LastUniqueValues.map((el)=>el.user_location));
 	} else if (minutes === 1) {
 	  return `Registered about ${minutes} minute ago`;
 	}
-	
+  
 	return `Registered about ${days} days, ${hours} hours, and ${minutes} minutes ago`;
   }
   const days=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat','Sun']
@@ -207,7 +228,7 @@ console.log("bb",LastUniqueValues.map((el)=>el.user_location));
 		borderWidth: 1
 	  }]
   };
-  console.log("bar",regions.map((el)=>{{collNumber(el.user_location)}}));
+
 
   const Options = {
     scales: {
@@ -243,7 +264,7 @@ const Dataa = {
 	  }
 	};
 
- console.log(users);
+console.log("regions",regions);
   	
   	return (
     		<div className="dark-dashboard">
@@ -255,7 +276,7 @@ const Dataa = {
         				<div className="divider3" />
         				<div className="hey-admin">
           					<div className="divider4" />
-          					<h2 className="time-wise-users">Welcome , {data.admin_Pseudo}</h2>
+          					 <h2 className="time-wise-users">Welcome , {admin.admin_Pseudo}</h2> 
           					<div className="latest-registration-users-parent">
             						<div className="latest-registration-users">
               							<div className="latest-registration-users-group">
@@ -336,11 +357,11 @@ const Dataa = {
         				<div className="users-per-country"><br /><br /><br /><br />
 						<h3 className="latest-registration-users2">Subscripions Across Regions</h3>
           					
-<Regions/>
+<Regions values={LastUniqueValues6} regions={regions}/>
         				</div>
 
 	<div className="area-chart-container" on>
-	<h3 className="latest-registration-users2">Yearly checkout</h3>
+	<h3 className="latest-registration-users3">Yearly checkout</h3>
       <Line data={Dataa} options={optionss} />
     </div>
 						

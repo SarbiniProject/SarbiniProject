@@ -15,6 +15,7 @@ function Login() {
   const [errorPass, setErrorPass] = useState(true);
   const [loading, setLoading] = useState(false);
   const [admin, setAdmin] = useState({});
+  const [Id, setId] = useState(0);
   const [show, setShow] = useState(true);
   const navigate = useNavigate();
   
@@ -25,11 +26,15 @@ function Login() {
         admin_Pseudo: pseudo,
         admin_password: password,
       });
-      console.log(response.data);
       setAdmin(response.data)
+      const data= await response.data
+      
       const { tok, id } = response.data;
-     
-      if (id && tok) {
+      localStorage.setItem("id",id)
+      const adId =localStorage.getItem("id")
+      setId(adId)
+      console.log("dataaaaa ",admin);
+      if (admin&& id && tok) {
         setToken(tok); 
         setLoading(false);
         navigate(`/Dashboard`);
@@ -51,7 +56,7 @@ function Login() {
     set(e.target.value);
   };
 
-console.log("dataa",admin);
+
 
   return (
     <div className='bigdiv_logo'>
@@ -60,20 +65,21 @@ console.log("dataa",admin);
         </div>
         <div><h1 className=''>hdgdgdgdg</h1></div>
         <div className='div2_login'>
-            <h2 className='h2_login'>Sarbini</h2><p className='p_login' >your safety network</p>
+            <h2 className='h2_login'>Sarbini</h2><p className='p_login' >your safety network </p>
             <div className='div3_login' ><h1 className='h1_login' >Login</h1><hr /><p className='p2_login'>sign into your account</p></div>
               {!errorPseu&&<Input status='error' onClick={()=>{setErrorPseu(true)}} size="large" onChange={(e)=>{handleText(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
               {errorPseu&&<Input  size="large" onChange={(e)=>{handleText(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
               {!errorPass&&<Input status='error' onClick={()=>{setErrorPass(true)}} size="large" onChange={(e)=>{handleText(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
               {errorPass&&<Input  size="large" onChange={(e)=>{handleText(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
             <Flex className='flex_login'   gap="small" wrap="wrap">
-            <Button className='button_login' onClick={()=>{verif()}}>Login</Button>
+            <Button className='button_login' onClick={()=>{verif() ,console.log("onclick admin ",admin);
+              }}>Login</Button>
 
             </Flex>
         </div>
         {!show &&(<div>
-          <Dashboard data={admin}/>
-          <Profile data={admin}/></div>)}
+          <Dashboard id={Id} />
+          <Profile id={Id}/></div>)}
     </div> 
   )
 }

@@ -60,7 +60,17 @@
     line-height: 23px;
     font-weight: 400;
     font-family: inherit;
-    left:0px
+    left:0px;
+    color:white
+}
+.latest-registration-users3 {
+    top: 0px;
+    position: relative;
+    font-size: inherit;
+    line-height: 23px;
+    font-weight: 400;
+    font-family: inherit;
+    color: white;
 }
 .latest-registration-users2 {
     top: 0px;
@@ -70,6 +80,7 @@
     font-weight: 400;
     font-family: inherit;
     color: white;
+    margin-left: 120px;
 }
 .just-now {
     position: relative;
