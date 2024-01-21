@@ -43,7 +43,7 @@ products:{
 },
 note:{
   type: DataTypes.STRING,
-  allowNull: false,
+  allowNull: true,
 },
 })
 sarbini.Users.hasMany(sarbini.orders)

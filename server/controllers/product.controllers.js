@@ -63,14 +63,6 @@ const DeleteProduct= async(req,res) => {
     res.send(error)    
     }
 };
-const Note=async(req,res)=>{
-    try{
-        const result=await Product.update({description:req.body.description},{where:{id:req.params.id}})
-        res.json(result)
-    }
-    catch (error) {
-        res.send(error)    
-        }
-}
 
-module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct,Productbycaetg,search,Note}
+
+module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct,Productbycaetg,search}

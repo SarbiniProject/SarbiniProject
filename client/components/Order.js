@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal } from "react-native";
+import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal, Alert } from "react-native";
 import { Image } from "expo-image";
 import { FontFamily, Color, Padding, Border, FontSize } from "./styles/OrderStyle";
 import axios from "axios";
@@ -13,18 +13,24 @@ const Order = () => {
   const[pop,setPop]=React.useState(false)
   const[note,setNote]=React.useState("")
   const[idnote,setIdnote]=React.useState(null)
-  const[total,setTotal]=React.useState(null)
+  const[total,setTotal]=React.useState(0)
   // console.log(products[0].price);
   React.useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async () =>  {
       await getproducts();
       await Tableon();
     };
     fetchData();
-  }, [ref]);
+  },[ref]);
+  React.useEffect(()=>{
+    setTimeout(() => {
+      
+      totall()
+    }, 2000);
+  },[products])
   const getproducts = async () => {
     try {
-      const res = await axios.get("http://172.20.10.4:3000/api/sarbini/orders/products");
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
       console.log("allprod", res.data[0].products);
       setProducts(res.data[0].products);
       
@@ -33,9 +39,16 @@ const Order = () => {
     }
   }
   
+  const SendIt=(id)=>{
+    axios.put("http://172.20.10.6:3000/api/sarbini/orders2/"+id,{satus2:true})
+    .then(()=>{
+      Alert.alert("send it")
+    }).catch((err)=>{console.error(err);})
+  }
+
   const Tableon = async () => {
     try {
-      const res = await axios.get("http://172.20.10.4:3000/api/sarbini/orderon");
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orderon");
       console.log("data", res.data);
       setTableon(res.data);
     } catch (err) {
@@ -44,7 +57,7 @@ const Order = () => {
   }
   const Addnote=async(id,info)=>{
     try{
-      const res = await axios.put("http://172.20.10.4:3000/api/sarbini/note/"+id,{description:info})
+      const res = await axios.put("http://172.20.10.6:3000/api/sarbini/addnote/"+id,{note:info})
       .then(()=>{
         console.log("note added ");
       })
@@ -55,7 +68,7 @@ const Order = () => {
   }
 
   const DeleteProd=(id,info)=>{
-    axios.put("http://172.20.10.4:3000/api/sarbini/deleteprod/"+id,{id:info})
+    axios.put("http://172.20.10.6:3000/api/sarbini/deleteprod/"+id,{id:info})
     .then(()=>{
       console.log("deleted");
       setRef(!ref)
@@ -64,29 +77,27 @@ const Order = () => {
   }
   
   ////////////function/////////
-  // const totall=()=>{
-  //   if(total===null){
-  //     setTotal(products[0].price)
-  //     return "Loading..."
-  //   }
-  //   else{
-
-  //     return (products[0].price)
-  //   }
-  // }
-  const hundleNote=(id)=>{
+  const totall=()=>{
+    let result=0
+    for(i=0;i<products.length;i++){
+      result+=(products[i].price)
+    }
+    return setTotal(result)
+  }
+  const hundleNote=()=>{
     if(pop===true){
-      Addnote(idnote,note)
+      Addnote(tableon[0].id,note)
       setRef(!ref)
       setPop(false)
     }
     else{
-      setIdnote(id)
+      setIdnote(tableon[0].id )
       setPop(true)
     }
   }
 
   return (
+    
     <View style={styles.order}>
       <View style={styles.orderDetailWrapper}>
         <Text style={styles.orderDetail}>Order Detail</Text>
@@ -140,33 +151,11 @@ const Order = () => {
           </View>
           <View style={styles.frameView}>
             <View style={styles.frameParent1}>
-              <View style={styles.noteParent}>
-                <Text style={[styles.note, styles.noteTypo]}>
-                  <Text style={styles.noteTxt}>
-                    <Text style={styles.note1}>Note</Text>
-                    <Text style={styles.text1}>{`: `}</Text>
-                  </Text>
-                </Text>
-                <Text style={[styles.putTheRed, styles.noteTypo]}>
-                  {el.description}
-                </Text>
-              </View>
             </View>
 
           </View>
         </View>
         
-        <TouchableOpacity 
-        onPress={()=>{hundleNote(el.id)}}
-        >
-        <View style={styles.customerInput1}>
-          <View style={styles.tableNParent}>
-            <View style={styles.tableNParent}>
-              <Text style={[styles.edit, styles.editTypo]}>Add Note</Text>
-            </View>
-          </View>
-        </View>
-          </TouchableOpacity>
         </View>
 )
 }): <>
@@ -201,34 +190,40 @@ const Order = () => {
         <View style={[styles.total1, styles.total1Position]}>
           <Text style={[styles.total2, styles.textPosition]}>total</Text>
           <View style={[styles.btnCancelParent, styles.total1Position]}>
+            <TouchableOpacity>
             <View style={[styles.btnCancel, styles.btnSpaceBlock]}>
               <Text style={[styles.cancelOrder, styles.textTypo]}>
                 cancel order
               </Text>
             </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{SendIt(tableon[0].id)}}>
             <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
               <Text style={[styles.sendOrder, styles.textTypo]}>
                 send order
               </Text>
             </View>
+            </TouchableOpacity>
           </View>
-          <Text style={[styles.text5, styles.textPosition]}>DT</Text>
+          <Text style={[styles.text5, styles.textPosition]}>{total}DT</Text>
         </View>
         <View style={styles.specifications}>
           <View
             style={[styles.specificationsChild, styles.productSelectedBorder]}
           />
-          <View style={[styles.subTotal, styles.subPosition]}>
-            <Text style={[styles.subtotal, styles.textTypo]}>subtotal</Text>
-            <Text style={[styles.text6, styles.textTypo]}>$35,00</Text>
+          <Text style={{fontSize:20,marginLeft:5}}>Note : {tableon.length>0&&products.length>0?note:""}</Text>
+        <TouchableOpacity 
+        onPress={()=>{hundleNote()}}
+        >
+        <View style={styles.customerInput1}>
+          <View style={styles.tableNParent}>
+            <View style={styles.tableNParent}>
+              <Text style={[styles.edit, styles.editTypo]}>Add Note</Text>
+            </View>
           </View>
-          <View style={[styles.subTotal1, styles.subPosition]}>
-            <Text style={[styles.serviceCharge, styles.textTypo]}>
-              service charge
-            </Text>
-            <Text style={[styles.text7, styles.textPosition]}>10%</Text>
-            <Text style={[styles.text8, styles.textTypo]}>£3,50</Text>
-          </View>
+        </View>
+          </TouchableOpacity>
+          
         </View>
       </View>
     </View>
@@ -542,7 +537,9 @@ const styles = StyleSheet.create({
     padding: Padding.p_3xs,
     width: 362,
     borderWidth: 1,
-    marginTop: 8,
+    position:"absolute",
+    top: 20,
+    left:10,
     borderRadius: Border.br_3xs,
     flexDirection: "row",
     alignItems: "center",

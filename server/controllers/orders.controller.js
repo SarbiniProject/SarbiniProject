@@ -30,15 +30,7 @@ const UpdateStatus1 = async(req,res) => {
 }
 const UpdateStatus2 = async(req,res) => {
     try {
-        const result=await orders.update({satus2:req.body.satus1},{where:{id:req.params.id}})
-        res.json(result)
-    } catch (error) {
-        res.send("err",error)
-    }
-}
-const UpdateStatus3 = async(req,res) => {
-    try {
-        const result=await orders.update({satus3:req.body.satus1},{where:{id:req.params.id}})
+        const result=await orders.update({satus2:req.body.satus2},{where:{id:req.params.id}})
         res.json(result)
     } catch (error) {
         res.send("err",error)
@@ -85,7 +77,7 @@ const Orderon = async(req,res) => {
 };
 const Note=async(req,res)=>{
     try{
-        const result=await orders.update({description:req.body.description},{where:{id:req.params.id}})
+        const result=await orders.update({note:req.body.note},{where:{id:req.params.id}})
         res.json(result)
     }
     catch (error) {
@@ -125,24 +117,6 @@ const Deleteprod = async (req, res) => {
       res.status(500).json({ error: 'Erreur lors de la suppression du produit', details: error.message });
     }
   };
-// const Deleteprod=async(req,res)=>{
-//     const idprodtodelete=req.body.id
-//     const idorder=req.params.id
-//     try{
-//         const result=await orders.update({
-//             products:Sequelize.literal(`CONCAT(REPLACE(CONCAT(',', "products", ','), ',${idprodtodelete},', ','), ',')`)
-//         },
-//         {
-//             where:{id:idorder},returning:true,plain:true
-//         }
-//         )
-//         const updatedDocument = result[1];
-//         res.json(updatedDocument)
-//     }
-//     catch (error) {
-//         res.send(error)    
-//         }
-// }
 
 
-module.exports={AllOrders,AddOrders,UpdateStatus1,UpdateStatus2,UpdateStatus3,AjoutProduct,Opnedtable,Getproduct,Orderon,Note,Deleteprod}
+module.exports={AllOrders,AddOrders,UpdateStatus1,UpdateStatus2,AjoutProduct,Opnedtable,Getproduct,Orderon,Note,Deleteprod}
