@@ -19,7 +19,7 @@ const Products = () => {
   }
 
   const getcat=()=>{
-    axios.get("http://192.168.104.15:3000/api/sarbini/category")
+    axios.get("http://192.168.56.1:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -29,7 +29,7 @@ const Products = () => {
     })
   }
   const getproducts=()=> {
-    axios.get("http://192.168.104.15:3000/api/sarbini/products")
+    axios.get("http://192.168.56.1:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -38,7 +38,7 @@ const Products = () => {
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://192.168.104.15:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://192.168.56.1:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -49,7 +49,7 @@ const Products = () => {
     })
   }
   const getsarch=(mot)=>{
-    axios.get("http://192.168.104.15:3000/api/sarbini/searchprod",mot)
+    axios.get("http://192.168.56.1:3000/api/sarbini/searchprod",mot)
     .then((res)=>{
       setSearched(res.data)
       console.log(res.data,"searched2")}

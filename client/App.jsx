@@ -5,22 +5,36 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import Products from './components/Products'
 import Login from './components/Login'
-import Tables from './components/Tables';
+import Dashboard from './components/cashier/dashboard.jsx'
+import Order from './components/cashier/order.jsx';
+
+const STRIPE_KEY =
+  'pk_test_51NfOUIFIt3rgcksJfXUm5Pv71NeMwybINDDYSd6XL4HDfdJXUN1NJnfsA9pnbVNIFVL2gfobuer8ORndXw7ZsobV00tj4N01N0';
+
+
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-    <StripeProvider>
+      <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
       <Stack.Navigator>
           <Stack.Screen
-            name="tables"
-            component={Tables}
+            name="Dashboard"
+            component={Dashboard}
+            options={{
+              headerShown: true,
+            }}
+          />
+           <Stack.Screen
+            name="Order"
+            component={Order}
             options={{
               headerShown: false,
             }}
           />
      </Stack.Navigator>
+     
      </StripeProvider>
      </NavigationContainer>
   );
