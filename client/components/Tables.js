@@ -165,39 +165,10 @@ const hundelupdate = async (id, status1) => {
       </View>
       {/*//////////////////////////////////////////////////////////////////////////////////////*/}
       <View style={styles.searchBarParent}>
-        <View style={styles.searchBar}>
-          <View style={[styles.rectangleParent, styles.groupChildPosition]}>
-            <View style={[styles.groupChild, styles.groupChildBorder]} />
-            <Image
-              style={[styles.groupItem, styles.component1IconLayout]}
-              contentFit="cover"
-              source={require("../assets/frame-1260.png")}
-            />
-            <Text style={[styles.searchItem, styles.textTypo]}>
-              Search item
-            </Text>
-          </View>
-        </View>
-        <View style={styles.frameWrapper}>
-          <View>
-            <Image
-              style={styles.iconButton}
-              contentFit="cover"
-              source={require("../assets/iconbutton.png")}
-            />
-            <View style={[styles.wrapper, styles.wrapperFlexBox]}>
-              <Text style={[styles.text, styles.textTypo]}>3</Text>
-            </View>
-          </View>
-        </View>
+        
+   
       </View>
-      <View style={[styles.iconButton1, styles.groupChildBorder]}>
-        <Image
-          style={styles.filterIcon}
-          contentFit="cover"
-          source={require("../assets/filter.png")}
-        />
-      </View>
+   
       <View style={styles.tablesItem} />
       <Text style={[styles.tables1, styles.tables1Typo]}>Tables:</Text>
       <Text style={[styles.createNewTables, styles.text1FlexBox]}>

@@ -3,6 +3,7 @@ import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal, Aler
 import { Image } from "expo-image";
 import { FontFamily, Color, Padding, Border, FontSize } from "./styles/OrderStyle";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 
 const Order = () => {
@@ -14,6 +15,8 @@ const Order = () => {
   const[note,setNote]=React.useState("")
   const[idnote,setIdnote]=React.useState(null)
   const[total,setTotal]=React.useState(0)
+  const navigation = useNavigation();
+
   // console.log(products[0].price);
   React.useEffect(() => {
     const fetchData = async () =>  {
@@ -43,6 +46,9 @@ const Order = () => {
     axios.put("http://172.20.10.6:3000/api/sarbini/orders2/"+id,{satus2:true})
     .then(()=>{
       Alert.alert("send it")
+      setTimeout(() => {
+        navigation.navigate("Product")
+      }, 2000);
     }).catch((err)=>{console.error(err);})
   }
 
@@ -190,7 +196,7 @@ const Order = () => {
         <View style={[styles.total1, styles.total1Position]}>
           <Text style={[styles.total2, styles.textPosition]}>total</Text>
           <View style={[styles.btnCancelParent, styles.total1Position]}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>{navigation.navigate("Product")}}>
             <View style={[styles.btnCancel, styles.btnSpaceBlock]}>
               <Text style={[styles.cancelOrder, styles.textTypo]}>
                 cancel order
