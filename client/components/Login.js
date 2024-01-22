@@ -2,11 +2,13 @@ import * as React from "react";
 import { Text, StyleSheet,TouchableOpacity,View ,TextInput} from "react-native";
 import { Image } from "expo-image";
 import { Color, FontFamily, FontSize, Border } from "./styles/LoginStyle";
+import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
   const [pseudo,setPseudo]=React.useState("")
   const [password,setPassword]=React.useState("")
   console.log(pseudo);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.login}>
@@ -42,7 +44,11 @@ const Login = () => {
         
       </TextInput> 
       <View>
-      <TouchableOpacity style={styles.btn_login1}>
+      <TouchableOpacity
+      onPress={()=>{navigation.navigate("Product");}}
+      style={styles.btn_login1}  
+      
+      >
         <Text style={styles.btn_login2}>LOGIN</Text>
       </TouchableOpacity>
     </View>

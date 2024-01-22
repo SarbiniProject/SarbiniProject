@@ -29,7 +29,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
   }
 
   const addtables=(info)=>{
-    axios.post("http://172.20.10.6:3000/api/sarbini/orders",info)
+    axios.post("http://192.168.104.3:3000/api/sarbini/orders",info)
     .then(()=>{
       console.log("aded");
       setref(!ref)
@@ -38,7 +38,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
   }
 
   const getalltables=()=>{
-    axios.get("http://172.20.10.6:3000/api/sarbini/orders")
+    axios.get("http://192.168.104.3:3000/api/sarbini/orders")
     .then((res)=>{
       setTables(res.data)
       console.log(res.data)
@@ -47,7 +47,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
   }
 
 const UpdateStatus1=(id,stat)=>{
-  axios.put("http://172.20.10.6:3000/api/sarbini/orders/"+id,{satus1:stat})
+  axios.put("http://192.168.104.3:3000/api/sarbini/orders/"+id,{satus1:stat})
   .then((res)=>{
     console.log("update",res.data[0]);
     setref(!ref)
