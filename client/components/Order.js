@@ -1,10 +1,109 @@
 import * as React from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal, Alert } from "react-native";
 import { Image } from "expo-image";
 import { FontFamily, Color, Padding, Border, FontSize } from "./styles/OrderStyle";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+
 
 const Order = () => {
+
+  const[ref,setRef]=React.useState(true)
+  const[products,setProducts]=React.useState([])
+  const[tableon,setTableon]=React.useState([])
+  const[pop,setPop]=React.useState(false)
+  const[note,setNote]=React.useState("")
+  const[idnote,setIdnote]=React.useState(null)
+  const[total,setTotal]=React.useState(0)
+  const navigation = useNavigation();
+
+  // console.log(products[0].price);
+  React.useEffect(() => {
+    const fetchData = async () =>  {
+      await getproducts();
+      await Tableon();
+    };
+    fetchData();
+  },[ref]);
+  React.useEffect(()=>{
+    setTimeout(() => {
+      
+      totall()
+    }, 2000);
+  },[products])
+  const getproducts = async () => {
+    try {
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
+      console.log("allprod", res.data[0].products);
+      setProducts(res.data[0].products);
+      
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  }
+  
+  const SendIt=(id)=>{
+    axios.put("http://172.20.10.6:3000/api/sarbini/orders2/"+id,{satus2:true})
+    .then(()=>{
+      Alert.alert("send it")
+      setTimeout(() => {
+        navigation.navigate("Product")
+      }, 2000);
+    }).catch((err)=>{console.error(err);})
+  }
+
+  const Tableon = async () => {
+    try {
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orderon");
+      console.log("data", res.data);
+      setTableon(res.data);
+    } catch (err) {
+      console.error("Error fetching tableon:", err);
+    }
+  }
+  const Addnote=async(id,info)=>{
+    try{
+      const res = await axios.put("http://172.20.10.6:3000/api/sarbini/addnote/"+id,{note:info})
+      .then(()=>{
+        console.log("note added ");
+      })
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+  const DeleteProd=(id,info)=>{
+    axios.put("http://172.20.10.6:3000/api/sarbini/deleteprod/"+id,{id:info})
+    .then(()=>{
+      console.log("deleted");
+      setRef(!ref)
+    })
+    .catch((err)=>console.error(err))
+  }
+  
+  ////////////function/////////
+  const totall=()=>{
+    let result=0
+    for(i=0;i<products.length;i++){
+      result+=(products[i].price)
+    }
+    return setTotal(result)
+  }
+  const hundleNote=()=>{
+    if(pop===true){
+      Addnote(tableon[0].id,note)
+      setRef(!ref)
+      setPop(false)
+    }
+    else{
+      setIdnote(tableon[0].id )
+      setPop(true)
+    }
+  }
+
   return (
+    
     <View style={styles.order}>
       <View style={styles.orderDetailWrapper}>
         <Text style={styles.orderDetail}>Order Detail</Text>
@@ -12,11 +111,11 @@ const Order = () => {
       <View style={styles.customerInput} />
       <Text style={[styles.order1, styles.editTypo]}>{`Order: `}</Text>
       <Text style={[styles.agust2023, styles.order1Position]}>
-        26 Agust 2023
+  {tableon.length > 0 ? tableon[0].createdAt.slice(0, 10) : "Date non disponible"}
       </Text>
       <View style={styles.frameParent}>
         <View style={styles.tableNParent}>
-          <Text style={[styles.tableN, styles.editTypo]}>Table N:</Text>
+          <Text style={[styles.tableN, styles.editTypo]}>{tableon.length > 0 ? tableon[0].name:"table"}</Text>
           <Image
             style={[styles.profileIcon, styles.iconLayout]}
             contentFit="cover"
@@ -24,59 +123,104 @@ const Order = () => {
           />
         </View>
         <View style={styles.statusMenu}>
-          <Text style={[styles.available, styles.noteTypo]}>1</Text>
+          <Text style={[styles.available, styles.noteTypo]}>{tableon.length > 0 ? tableon[0].id:"id"}</Text>
         </View>
       </View>
+      {/*////////////////////////order details/////////////////////////////////*/}
       <View style={styles.cardDetailProduct}>
+      <ScrollView>
+      {products&&products.length > 0?products.map((el,i)=>{
+        return(
+          <View style={{marginBottom:20}}>
         <View>
           <View style={styles.frameContainer}>
             <View style={styles.frameContainer}>
               <Image
                 style={styles.frameChild}
                 contentFit="cover"
-                source={require("../assets/rectangle-1680.png")}
+                source={el.image}
               />
               <Text style={[styles.chocolateCookiesSmoothies, styles.noteTypo]}>
-                Coffe Mi-Shake
+                {el.product_name}
               </Text>
             </View>
             <View style={styles.trashParent}>
+              <TouchableOpacity onPress={()=>{DeleteProd(tableon[0].id,el.id)}}>
               <Image
                 style={[styles.trashIcon, styles.iconLayout]}
                 contentFit="cover"
                 source={require("../assets/trash.png")}
               />
-              <Text style={styles.text}>16.000</Text>
+              </TouchableOpacity>
+              <Text style={styles.text}>{el.price}DT</Text>
             </View>
           </View>
           <View style={styles.frameView}>
             <View style={styles.frameParent1}>
-              <View style={styles.noteParent}>
-                <Text style={[styles.note, styles.noteTypo]}>
-                  <Text style={styles.noteTxt}>
-                    <Text style={styles.note1}>Note</Text>
-                    <Text style={styles.text1}>{`: `}</Text>
-                  </Text>
-                </Text>
-                <Text style={[styles.putTheRed, styles.noteTypo]}>
-                  Put the red beans on top!
-                </Text>
-              </View>
-              <View style={styles.pearlParent}>
-                <Text style={[styles.pearl, styles.pearlTypo]}>Pearl</Text>
-                <Text style={[styles.text2, styles.textTypo1]}>+6.000</Text>
-              </View>
-              <View style={styles.pearlParent}>
-                <Text style={[styles.pearl, styles.pearlTypo]}>Red Beans</Text>
-                <Text style={[styles.text2, styles.textTypo1]}>+5.000</Text>
-              </View>
             </View>
-            <View style={styles.totalParent}>
-              <Text style={[styles.total, styles.pearlTypo]}>Total</Text>
-              <Text style={[styles.text4, styles.textTypo1]}>27.000</Text>
-            </View>
+
           </View>
         </View>
+        
+        </View>
+)
+}): <>
+<TouchableOpacity onPress={()=>{getproducts()}}><Text>press here!</Text>
+</TouchableOpacity>
+<Text>Loading....</Text>
+</>}
+</ScrollView>
+</View>
+<View>
+      <Modal transparent={true} visible={pop}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Note</Text>
+            <TextInput
+              multiline
+              style={styles.textInput}
+              placeholder="add..."
+              onChangeText={(text)=>{setNote(text)}}
+            />
+            <TouchableOpacity style={styles.addButton} 
+            onPress={()=>{hundleNote()}}
+            >
+              <Text style={styles.buttonText}>+ Add Note</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+      {/*/////////////////////////////////////////////////////////////////////*/}
+      <View style={[styles.productSelected, styles.productSelectedBorder]}>
+        <View style={[styles.total1, styles.total1Position]}>
+          <Text style={[styles.total2, styles.textPosition]}>total</Text>
+          <View style={[styles.btnCancelParent, styles.total1Position]}>
+            <TouchableOpacity onPress={()=>{navigation.navigate("Product")}}>
+            <View style={[styles.btnCancel, styles.btnSpaceBlock]}>
+              <Text style={[styles.cancelOrder, styles.textTypo]}>
+                cancel order
+              </Text>
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{SendIt(tableon[0].id)}}>
+            <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
+              <Text style={[styles.sendOrder, styles.textTypo]}>
+                send order
+              </Text>
+            </View>
+            </TouchableOpacity>
+          </View>
+          <Text style={[styles.text5, styles.textPosition]}>{total}DT</Text>
+        </View>
+        <View style={styles.specifications}>
+          <View
+            style={[styles.specificationsChild, styles.productSelectedBorder]}
+          />
+          <Text style={{fontSize:20,marginLeft:5}}>Note : {tableon.length>0&&products.length>0?note:""}</Text>
+        <TouchableOpacity 
+        onPress={()=>{hundleNote()}}
+        >
         <View style={styles.customerInput1}>
           <View style={styles.tableNParent}>
             <View style={styles.tableNParent}>
@@ -84,39 +228,8 @@ const Order = () => {
             </View>
           </View>
         </View>
-      </View>
-      <View style={[styles.productSelected, styles.productSelectedBorder]}>
-        <View style={[styles.total1, styles.total1Position]}>
-          <Text style={[styles.total2, styles.textPosition]}>total</Text>
-          <View style={[styles.btnCancelParent, styles.total1Position]}>
-            <View style={[styles.btnCancel, styles.btnSpaceBlock]}>
-              <Text style={[styles.cancelOrder, styles.textTypo]}>
-                cancel order
-              </Text>
-            </View>
-            <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
-              <Text style={[styles.sendOrder, styles.textTypo]}>
-                send order
-              </Text>
-            </View>
-          </View>
-          <Text style={[styles.text5, styles.textPosition]}>$38,50</Text>
-        </View>
-        <View style={styles.specifications}>
-          <View
-            style={[styles.specificationsChild, styles.productSelectedBorder]}
-          />
-          <View style={[styles.subTotal, styles.subPosition]}>
-            <Text style={[styles.subtotal, styles.textTypo]}>subtotal</Text>
-            <Text style={[styles.text6, styles.textTypo]}>$35,00</Text>
-          </View>
-          <View style={[styles.subTotal1, styles.subPosition]}>
-            <Text style={[styles.serviceCharge, styles.textTypo]}>
-              service charge
-            </Text>
-            <Text style={[styles.text7, styles.textPosition]}>10%</Text>
-            <Text style={[styles.text8, styles.textTypo]}>£3,50</Text>
-          </View>
+          </TouchableOpacity>
+          
         </View>
       </View>
     </View>
@@ -124,6 +237,54 @@ const Order = () => {
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    borderWidth: 1,
+    top: 0,
+    backgroundColor: 'rgba(128, 128, 128, 0.55)',
+  },
+  modalContent: {
+    height: 400,
+    width: '95%',
+    position: 'absolute',
+    top: 165,
+    left: '2.5%',
+    backgroundColor: 'white',
+    padding: 25,
+    borderRadius:15
+  },
+  modalTitle: {
+    fontSize: 25,
+    fontWeight: '700',
+  },
+  textInput: {
+    borderWidth: 1,
+    height: 200,
+    width: 330,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    marginTop: 25,
+    marginLeft: 6,
+    marginBottom: 20,
+    padding: 10,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 50,
+    right: 25,
+    padding: 10,
+    backgroundColor: 'red',
+    borderRadius: 15,
+    width:330,
+    height:40
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    color:"white",
+    textAlign:"center"
+  },
   editTypo: {
     fontFamily: FontFamily.openSansSemiBold,
     fontWeight: "600",
@@ -200,7 +361,7 @@ const styles = StyleSheet.create({
   orderDetail: {
     fontFamily: FontFamily.openSansBold,
     width: 207,
-    height: 19,
+    height: 22,
     fontWeight: "700",
     textAlign: "left",
     color: Color.black,
@@ -229,7 +390,7 @@ const styles = StyleSheet.create({
   },
   order1: {
     width: 92,
-    height: 16,
+    height: 18,
     fontSize: FontSize.size_base,
     left: 18,
     textAlign: "left",
@@ -242,12 +403,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: FontFamily.openSansRegular,
     width: 85,
-    height: 14,
+    height: 18,
   },
   tableN: {
     color: Color.neutral600,
     textAlign: "center",
     fontSize: FontSize.size_lg,
+    textTransform: "capitalize",
   },
   profileIcon: {
     marginLeft: 8,
@@ -381,7 +543,9 @@ const styles = StyleSheet.create({
     padding: Padding.p_3xs,
     width: 362,
     borderWidth: 1,
-    marginTop: 8,
+    position:"absolute",
+    top: 20,
+    left:10,
     borderRadius: Border.br_3xs,
     flexDirection: "row",
     alignItems: "center",
@@ -391,17 +555,20 @@ const styles = StyleSheet.create({
     backgroundColor: Color.neutral100,
   },
   cardDetailProduct: {
-    top: 168,
+    top: 150,
     shadowColor: "rgba(0, 0, 0, 0.05)",
     shadowRadius: 30,
     elevation: 30,
-    height: 209,
+    height: "44%",
     padding: Padding.p_5xs,
+    padding:10,
     borderRadius: Border.br_3xs,
-    left: 0,
+    left: 18,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Color.neutral100,
+    borderBlockColor:"black",
+    borderWidth:1,
     position: "absolute",
     shadowOpacity: 1,
     shadowOffset: {
@@ -519,8 +686,8 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   productSelected: {
-    top: 507,
-    left: -12,
+    top: 540,
+    left: 12,
     borderTopLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
     backgroundColor: Color.actionsExtrasLightGray50,

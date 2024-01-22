@@ -3,8 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import Products from './components/Products'
+import Login from './components/Login'
+import Tables from './components/Tables';
+import Order from './components/Order';
 
-import Order from './components/Order'
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -13,7 +16,21 @@ const App = () => {
     <StripeProvider>
       <Stack.Navigator>
           <Stack.Screen
-            name="Order"
+            name="Product"
+            component={Products}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Tables"
+            component={Tables}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Orders"
             component={Order}
             options={{
               headerShown: false,

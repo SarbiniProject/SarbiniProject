@@ -9,6 +9,7 @@ body{
 
 body {
   margin: 0; line-height: normal;
+  color: rgba(128, 128, 128, 0.13);
 }
 
 
@@ -392,6 +393,7 @@ position: absolute;
   }
   .icon-region{ color: red; size:lg }
 
+
   @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap'); 
 
 
@@ -629,3 +631,7 @@ html,
               font-size: 20px;
               margin-left: -10px;
              }
+ .test{
+  background-image: url("");
+ }
+

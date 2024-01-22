@@ -1,9 +1,186 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+
 
 const Products = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [category,setCategorys]= React.useState([])
+  const [allproducts,setAllproducts]=React.useState([])
+  const [onecateg,setOnecateg]=React.useState(0)
+  const [filtrprod,setFiltrprod]=React.useState([])
+  const [searched,setSearched]=React.useState([])
+  const [wordsea,setWordsea]=React.useState("")
+  const [dosearch,setDosearch]=React.useState(false)
+  const [order,setOrder]=React.useState([])
+  const [opnedtable,setOpnedtabel]=React.useState([])
+  const navigation = useNavigation();
+console.log(order,"order");
+  console.log(wordsea);
+  console.log(searched,'searchedfor');
+
+
+  // let info={
+  //  product_name:wordsea
+  // }
+  const getOrder = async () => {
+    try {
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
+      console.log("allprod", res.data[0].products);
+      setOrder(res.data[0].products);
+      setIsLoading(!isLoading)
+      
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  }
+  const getcat=()=>{
+    axios.get("http://172.20.10.6:3000/api/sarbini/category")
+    .then((res)=>{
+      setCategorys(res.data)
+      console.log(res.data);
+    })
+    .catch((err)=>{
+      console.error("error",err);
+    })
+  }
+  const getproducts=()=> {
+    axios.get("http://172.20.10.6:3000/api/sarbini/products")
+    .then((res)=>{
+      setAllproducts(res.data)
+    })
+    .catch((err)=>{
+      console.error("error",err);
+    })
+  }
+  const getprodbycateg=(idcat)=>{
+    axios.get("http://172.20.10.6:3000/api/sarbini/prodbycateg/"+idcat)
+    .then((res)=>{
+      setOnecateg(idcat)
+      setFiltrprod(res.data)
+      console.log(res.data,'hello');
+    })
+    .catch((err)=>{
+      console.error("error",err);
+    })
+  }
+  const getsarch = () => {
+    axios.get("http://172.20.10.6:3000/api/sarbini/searchprod/"+wordsea)
+    .then((res) => {
+      console.log('Données de la réponse Axios :', res.data);
+      setSearched(res.data);
+    })
+    .catch((err) => {
+      console.log('Erreur lors de la requête Axios :', err);
+    });
+  }
+  
+  const getopnedtable=()=>{
+    axios.get("http:/172.20.10.6:3000/api/sarbini/opned")
+    .then((res)=>{
+      console.log("id",res.data.id);
+      setOpnedtabel(res.data)
+    })
+    .catch((err)=>{
+      console.log('erreur1',err)
+    })  
+  }
+  const ajoutproduct = (id, info) => {
+    axios.get("http://172.20.10.6:3000/api/sarbini/orders/products")
+      .then(response => {
+        const existingProducts = response.data[0]?.products || [];
+        const updatedProducts = [...existingProducts, info];
+  
+        axios.put("http://172.20.10.6:3000/api/sarbini/addprod/" + id, { products: updatedProducts })
+          .then(() => {
+            console.log("added");
+            // navigation.navigate("Orders");
+          })
+          .catch((err) => {
+            console.log('erreur2', err);
+          });
+      })
+      .catch((err) => {
+        console.log('erreur1', err);
+      });
+  }
+  
+
+  React.useEffect(()=>{
+    getcat();
+    getproducts()
+    getopnedtable()
+  },[!isLoading])
+  
+  const renderbycateg=(categ)=>{
+
+    return(
+    categ.map((el,i)=>{
+      return(
+        <>    
+        <TouchableOpacity 
+        onPress={()=>{ajoutproduct(opnedtable.id,el)
+        }}
+        >
+        <View style={[styles.cardMenu1, styles.cardLayout]}>
+        <View style={[styles.cardMenuChild, styles.cardPosition]} />
+        <Image
+          style={[styles.cardMenuItem, styles.cardPosition]}
+          contentFit="cover"
+          source={el.image}
+        />
+        <Text style={styles.chocolatePosition}>
+          <Text style={styles.chocolateCookiesSmoothiesContainer1}>
+            <Text style={styles.mango}>{el.product_name}</Text>
+          </Text>
+        </Text>
+        <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
+          {el.price} DT
+        </Text>
+        <Image
+          style={[styles.component1Icon, styles.component1IconPosition]}
+          contentFit="cover"
+          />
+          </View>
+          </TouchableOpacity>
+        </>
+      )
+    }))
+  }
+
+  const handleCategoryPress=(idcat)=>{
+    setOnecateg(idcat)
+    setDosearch(false)
+    getprodbycateg(idcat)
+  }
+
+  
+  const hundelsearch=()=>{
+    console.log("search");
+    getsarch();
+    setTimeout(() => {
+
+      setOnecateg(null);
+      setDosearch(true);      
+    }, 2000);
+
+  }
+
+  const conditionCategory = () => {
+    console.log(searched, "searched");
+    
+    if (dosearch===true) {
+      return renderbycateg(searched);
+    } else if (onecateg === 0) {
+      return renderbycateg(allproducts);
+    } else {
+      return renderbycateg(filtrprod);
+    }
+  }
+
   return (
     <View style={styles.products}>
       <Image
@@ -11,6 +188,16 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/side-bar-manager.png")}
       />
+        <TouchableOpacity  
+        onPress={()=>{navigation.navigate("Product");}}
+        style={styles.Products}>
+        </TouchableOpacity>
+        <TouchableOpacity 
+        ////
+        onPress={()=>{navigation.navigate("Tables");
+      }}
+        style={styles.tables}>
+        </TouchableOpacity>
       <View style={[styles.buttonLogOut, styles.buttonLogOutFlexBox]}>
         <Image
           style={styles.lucidedoorOpenIcon}
@@ -24,18 +211,28 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
+        
+      
       <View style={styles.searchBarParent}>
         <View style={styles.searchBar}>
           <View style={[styles.rectangleParent, styles.groupChildPosition]}>
+            
             <View style={[styles.groupChild, styles.childBorder]} />
-            <Image
+            <TouchableOpacity   
+            onPress={hundelsearch}
+            > 
+      <View style={styles.iconsearch}>
+         <Image
               style={[styles.groupItem, styles.itemLayout]}
-              contentFit="cover"
+             
               source={require("../assets/frame-1260.png")}
             />
-            <Text style={[styles.searchItem, styles.iceTypo2]}>
-              Search item
-            </Text>
+            </View>
+            </TouchableOpacity>
+
+            <TextInput placeholder="Search item" onChangeText={(text) => {
+  setWordsea(text);
+}}style={[styles.searchItem, styles.iceTypo2]}></TextInput>
           </View>
         </View>
         <View style={styles.frameWrapper}>
@@ -51,26 +248,34 @@ const Products = () => {
           </View>
         </View>
       </View>
-      <Image
+      {/* <Image
         style={styles.productsChild}
         contentFit="cover"
         source={require("../assets/ellipse-454.png")}
-      />
-      <View style={[styles.categoryButton, styles.frameSpaceBlock]}>
-        <Text style={[styles.iceCream, styles.iceTypo]}>All</Text>
+      /> */}
+      <View style={styles.container} >
+        <ScrollView horizontal>
+      {category.map((el,i)=>{
+        return (
+      
+        <View>
+        <TouchableOpacity
+          onPress={() => handleCategoryPress(el.id)}
+          style={styles.touchableOpacity}
+        >
+          <Text style={styles.categoryText}>{el.ca_name}</Text>
+        </TouchableOpacity>
       </View>
-      <View style={[styles.iceCreamWrapper, styles.frameSpaceBlock]}>
-        <Text style={[styles.iceCream1, styles.iceTypo1]}>Coffee</Text>
+        )
+      })}
+      </ScrollView>
       </View>
-      <View style={[styles.iceCreamContainer, styles.frameSpaceBlock]}>
-        <Text style={[styles.iceCream1, styles.iceTypo1]}>Fresh Tea</Text>
-      </View>
-      <View style={[styles.iceCreamFrame, styles.frameSpaceBlock]}>
-        <Text style={[styles.iceCream1, styles.iceTypo1]}>Milk Tea</Text>
-      </View>
-      <View style={[styles.frameView, styles.frameViewBorder]}>
-        <Text style={[styles.iceCream1, styles.iceTypo1]}>Milk Tea</Text>
-      </View>
+      <TouchableOpacity
+      onPress={()=>{ajoutproduct(opnedtable.id,order),
+        navigation.navigate("Orders");
+      
+      ;}}
+      >
       <View style={[styles.iconButton1, styles.frameViewBorder]}>
         <Image
           style={styles.filterIcon}
@@ -78,571 +283,13 @@ const Products = () => {
           source={require("../assets/filter.png")}
         />
       </View>
-      <View style={styles.categoryButton1}>
-        <Text style={[styles.iceCream5, styles.iceTypo2]}>Ice Cream</Text>
-      </View>
-    
+      </TouchableOpacity>
+
       <View style={styles.productsItem} />
       <View style={styles.productsItem} />
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-1680.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Bluberry Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16801.png")}
-          />
-          <Text style={styles.chocolatePosition}>
-            <Text style={styles.chocolateCookiesSmoothiesContainer1}>
-              <Text style={styles.mango}>Mango</Text>
-              <Text style={styles.text1}>{` `}</Text>
-              <Text style={styles.mango}>SUndae</Text>
-            </Text>
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16802.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Coffee Ice Cream
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-      </View>
-      <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-1680.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Bluberry Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16801.png")}
-          />
-          <Text style={styles.chocolatePosition}>
-            <Text style={styles.chocolateCookiesSmoothiesContainer1}>
-              <Text style={styles.mango}>Mango</Text>
-              <Text style={styles.text1}>{` `}</Text>
-              <Text style={styles.mango}>SUndae</Text>
-            </Text>
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16802.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Coffee Ice Cream
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-      </View>
-      <View style={[styles.cardMenuContainer, styles.cardParentLayout1]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-1680.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Bluberry Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16801.png")}
-          />
-          <Text style={styles.chocolatePosition}>
-            <Text style={styles.chocolateCookiesSmoothiesContainer1}>
-              <Text style={styles.mango}>Mango</Text>
-              <Text style={styles.text1}>{` `}</Text>
-              <Text style={styles.mango}>SUndae</Text>
-            </Text>
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16802.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Coffee Ice Cream
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-      </View>
-      <View style={[styles.cardMenuParent1, styles.cardParentLayout1]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-1680.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Bluberry Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16801.png")}
-          />
-          <Text style={styles.chocolatePosition}>
-            <Text style={styles.chocolateCookiesSmoothiesContainer1}>
-              <Text style={styles.mango}>Mango</Text>
-              <Text style={styles.text1}>{` `}</Text>
-              <Text style={styles.mango}>SUndae</Text>
-            </Text>
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16802.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Coffee Ice Cream
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={styles.component1IconPosition}
-            contentFit="cover"
-            source={require("../assets/component-1.png")}
-          />
-        </View>
-      </View>
-      <View style={[styles.cardMenuParent2, styles.cardParentLayout1]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16803.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Blueberry Mi-Shake
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available12, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 20.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16804.png")}
-          />
-          <Text
-            style={[
-              styles.chocolateCookiesSmoothies9,
-              styles.chocolatePosition,
-            ]}
-          >
-            Strawberry Mi-Shake
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 18.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16805.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Eat Soil Mi-Shake
-          </Text>
-          <View style={[styles.statusMenu2, styles.statusPosition]}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 16.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-      </View>
-      <View style={[styles.cardMenuParent3, styles.cardParentLayout]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16806.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Coffee Mi-Shake
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 20.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16807.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Oreo Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 22.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16808.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Strawberry Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 20.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-      </View>
-      <View style={[styles.cardMenuParent4, styles.cardParentLayout]}>
-        <View style={styles.cardLayout}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16806.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Coffee Mi-Shake
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 20.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16807.png")}
-          />
-          <Text
-            style={[styles.chocolateCookiesSmoothies, styles.rp1600000Typo]}
-          >
-            Oreo Sundae
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 22.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
-        <View style={[styles.cardMenu1, styles.cardLayout]}>
-          <View style={[styles.cardMenuChild, styles.cardPosition]} />
-          <Image
-            style={[styles.cardMenuItem, styles.cardPosition]}
-            contentFit="cover"
-            source={require("../assets/rectangle-16808.png")}
-          />
-          <Text style={styles.chocolatePosition}>
-            <Text style={styles.chocolateCookiesSmoothiesContainer1}>
-              <Text style={styles.mango}>Strawberry</Text>
-              <Text style={styles.text1}>{` `}</Text>
-              <Text style={styles.mango}>Sundae</Text>
-            </Text>
-          </Text>
-          <View style={styles.statusPosition}>
-            <Text style={[styles.available, styles.availableTypo]}>
-              116 Available
-            </Text>
-          </View>
-          <Text style={[styles.rp1600000, styles.rp1600000Typo]}>
-            Rp 20.000,00
-          </Text>
-          <Image
-            style={[styles.component1Icon, styles.component1IconPosition]}
-            contentFit="cover"
-          />
-        </View>
+   
+          {conditionCategory()}
       </View>
       <View style={styles.productsChild1} />
     </View>
@@ -650,9 +297,51 @@ const Products = () => {
 };
 
 const styles = StyleSheet.create({
+  Products:{
+    position:"absolute",
+    top:340,
+    width:80,
+    height:52,
+
+  }, 
+  tables:{
+    position:"absolute",
+    top:420,
+    width:80,
+    height:52
+  },
+  iconsearch:{
+    width:150,
+    height:30,
+  },
+  container: {
+    flexDirection: 'row', // Affiche les éléments côte à côte
+    alignItems: 'center', // Centre les éléments verticalement si nécessaire
+    position:"absolute",
+    width:"83%",
+    top:65,
+    left:65,
+  },
+  touchableOpacity: {
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+    borderColor: 'rgb(0, 138, 252)',  // Couleur de la bordure
+    borderWidth: 1,  // Largeur de la bordure
+    marginRight:2,
+    marginLeft:2,
+    
+  },
+  categoryText: {
+    color: 'rgb(0, 138, 252)',
+    textAlign: 'center',
+    fontSize:12,
+    textTransform: 'capitalize' 
+  },
   buttonLogOutFlexBox: {
     alignItems: "center",
     position: "absolute",
+    
   },
   groupChildPosition: {
     left: "0%",
@@ -691,7 +380,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   frameViewBorder: {
-    left: 333,
+    left: 353,
     borderWidth: 1.1,
     borderRadius: 5,
     justifyContent: "center",
@@ -704,8 +393,9 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   cardParentLayout1: {
-    width: 303,
     flexDirection: "row",
+    flexWrap:"wrap",
+    width: "100%",
     position: "absolute",
   },
   cardPosition: {
@@ -715,6 +405,7 @@ const styles = StyleSheet.create({
     top: "0%",
     position: "absolute",
     width: "100%",
+    
   },
   rp1600000Typo: {
     left: "4.17%",
@@ -777,6 +468,11 @@ const styles = StyleSheet.create({
     color: Color.neutral100,
     alignItems: "center",
     position: "absolute",
+    backgroundColor:"  color: rgba(0, 0, 0, 0.356)",
+    borderRadius:15,  
+    padding:4,
+    textAlign:"center"
+    
   },
   cardParentLayout: {
     height: 148,
@@ -841,11 +537,11 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   searchItem: {
-    height: "48.33%",
+    height: "58.33%",
     width: "74.44%",
-    top: "26.67%",
+    top: "22.67%",
     left: "18.89%",
-    fontSize: 7,
+    fontSize: 10,
     textAlign: "left",
     position: "absolute",
   },
@@ -858,13 +554,15 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     width: 187,
-    height: 24,
+    height: 30,
   },
   iconButton: {
-    width: 24,
+    width: 30,
     zIndex: 0,
     borderRadius: 4,
-    height: 24,
+    height: 30,
+    marginLeft:4,
+    marginRight:4
   },
   text: {
     fontSize: 6,
@@ -878,9 +576,9 @@ const styles = StyleSheet.create({
     left: 19,
     borderRadius: 12,
     backgroundColor: Color.redNonActive,
-    width: 9,
-    height: 9,
-    padding: 3,
+    width: 14,
+    height: 12,
+    padding: 2,
     zIndex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -900,7 +598,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   productsChild: {
-    left: 294,
+    left: 310,
     width: 33,
     top: 32,
     height: 32,

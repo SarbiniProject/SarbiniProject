@@ -18,13 +18,35 @@ sarbini.Users = require ('./users.js')(connection,DataTypes)
 sarbini.Product = require ('./product.js')(connection,DataTypes)
 sarbini.Categories = require ('./categories.js')(connection,DataTypes)
 sarbini.orders= connection.define('orders',{ 
- satus:{
+  name:{
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+ satus1:{
   type: DataTypes.BOOLEAN,
   allowNull: false,
   defaultValue:false
-}})
-sarbini.Users.belongsToMany(sarbini.Product ,{ through: 'orders' })
-sarbini.Product.belongsToMany(sarbini.Users ,{ through: 'orders' })
+},
+satus2:{
+  type: DataTypes.BOOLEAN,
+  allowNull: false,
+  defaultValue:false
+},
+satus3:{
+  type: DataTypes.BOOLEAN,
+  allowNull: false,
+  defaultValue:false
+},
+products:{
+  type:DataTypes.JSON,
+  allowNull:true
+},
+note:{
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+})
+sarbini.Users.hasMany(sarbini.orders)
 
 sarbini.Subscriptions= connection.define('subscriptions',{ 
   deadline:{
