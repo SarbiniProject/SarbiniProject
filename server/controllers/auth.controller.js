@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { AddUser} = require('./users.controller');
-const {Users}=require('../database-Sequelize/index')
+const {Users,Admin}=require('../database-Sequelize/index')
 
 
 const generateToken = (userId, userName) => {
@@ -9,14 +9,15 @@ const generateToken = (userId, userName) => {
   return jwt.sign({ userId, userName }, 'secretKey', { expiresIn: expiresIn });
 };
 const signUp = async (req, res) => {
-  const { user_name, user_Pseudo, user_password ,user_role } = req.body;
+  const { user_location,user_phone,user_name, user_Pseudo, user_password ,user_role } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(user_password, 10);
 
     const newUser = {
+      user_location,
+      user_phone,
       user_name,
-      user_password,
       user_Pseudo,
       user_role,
       user_password: hashedPassword}
@@ -65,6 +66,7 @@ const signIn = async (req, res) => {
       return res.status(404).send("Pseudo not found");
     }
 
+
     const storedPassword = result.dataValues.user_password;
 
     if (user_password === storedPassword) {
@@ -86,9 +88,41 @@ const signIn = async (req, res) => {
   } catch (error) {
     console.error('Error during sign-in:', error);
     res.status(500).send('Internal Server Error');
+
+const adminGenerateToken = (userId, userName) => {
+  const expiresIn = 60 * 60 * 24;
+  return jwt.sign({ userId, userName }, 'secretKey', { expiresIn: expiresIn });
+};
+
+const adminSignIn = async (req, res) => {
+  const { admin_Pseudo, admin_password } = req.body;
+
+  try {
+    const result = await Admin.findOne({ where: { admin_Pseudo: admin_Pseudo } });
+
+    if (result === null) {
+      return res.status(404).json({ error: "Pseudonym not found" });
+    }
+
+    const storedPassword = result.dataValues.admin_password;
+    const passwordMatch = await bcrypt.compare(admin_password, storedPassword);
+
+    if (passwordMatch||admin_password===storedPassword) {
+      const token = adminGenerateToken(result.dataValues.id, result.dataValues.admin_name);
+      result.dataValues.tok = token;
+      console.log(result.dataValues);
+      res.status(200).json(result.dataValues);
+    } else {
+      res.status(401).json({ error: "Password mismatch" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+
   }
 };
 module.exports = {
   signUp,
   signIn,
+  adminSignIn
 };

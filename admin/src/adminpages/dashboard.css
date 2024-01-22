@@ -5,11 +5,11 @@
     border-right: 3px solid #fa9e93;
     box-sizing: border-box;
     width: 3px;
-    height: 2491px;
+    height: 2300px;
 }
 .divider {
     position: absolute;
-    top: 544.5px;
+    top: 614.5px;
     left: 19.5px;
     border-top: 1px solid #fa9e93;
     box-sizing: border-box;
@@ -18,7 +18,7 @@
 }
 .divider1 {
     position: absolute;
-    top: 1114.5px;
+    top: 1000px;
     left: 19.5px;
     border-top: 1px solid #fa9e93;
     box-sizing: border-box;
@@ -27,7 +27,7 @@
 }
 .divider2 {
     position: absolute;
-    top: 1503.5px;
+    top: 2250.5px;
     left: 19.5px;
     border-top: 1px solid #fa9e93;
     box-sizing: border-box;
@@ -36,7 +36,7 @@
 }
 .divider3 {
     position: absolute;
-    top: 2192.5px;
+    top: 1600px;
     left: 19.5px;
     border-top: 1px solid #fa9e93;
     box-sizing: border-box;
@@ -54,11 +54,33 @@
 }
 .latest-registration-users1 {
     margin: 0;
+    top: 0px;
     position: relative;
     font-size: inherit;
     line-height: 23px;
     font-weight: 400;
     font-family: inherit;
+    left:0px;
+    color:white
+}
+.latest-registration-users3 {
+    top: 0px;
+    position: relative;
+    font-size: inherit;
+    line-height: 23px;
+    font-weight: 400;
+    font-family: inherit;
+    color: white;
+}
+.latest-registration-users2 {
+    top: 0px;
+    position: relative;
+    font-size: inherit;
+    line-height: 23px;
+    font-weight: 400;
+    font-family: inherit;
+    color: white;
+    margin-left: 120px;
 }
 .just-now {
     position: relative;
@@ -171,13 +193,7 @@
     width: 1040px;
     height: 144px;
 }
-.frame-child {
-    position: relative;
-    border-radius: 50%;
-    background-color: #5858fa;
-    width: 10px;
-    height: 10px;
-}
+
 .usa {
     position: relative;
 }
@@ -316,8 +332,8 @@
 .chart {
     position: absolute;
     top: 85px;
-    left: 0px;
-    width: 788px;
+    left: 100px;
+    width: 650px;
     height: 236px;
     color: #808080;
 }
@@ -327,8 +343,11 @@
     box-sizing: border-box;
     width: 200.5px;
     height: 0.5px;
+    margin-left: -100px;
 }
 .div11 {
+    display: flex;
+    flex-direction:column ;
     position: relative;
     font-weight: 300;
 }
@@ -411,7 +430,7 @@
 }
 .description-in-country-list {
     position: absolute;
-    top: 33px;
+    top: 127px;
     left: 810px;
     border-radius: 15px;
     background-color: #262626;
@@ -434,7 +453,7 @@
 }
 .latest-registrations {
     position: absolute;
-    top: 174px;
+    top: 100px;
     left: 20px;
     width: 1040px;
     height: 321px;
@@ -1235,8 +1254,8 @@
 }
 .users-per-country {
     position: absolute;
-    top: 1554px;
-    left: 0px;
+    top: 500px;
+    left: 20px;
     width: 1061px;
     height: 589px;
     color: #191919;
@@ -1250,7 +1269,7 @@
     bottom: 0%;
     left: 0%;
     border-radius: 15px 15px 0px 0px;
-    background-color: #737373;
+    background-color: #fbf7f7;
 }
 .terms-of-use {
     position: relative;
@@ -1272,7 +1291,7 @@
     color: #fa9e93;
 }
 .made-with-love {
-    color: #737373;
+    color: #f9f6f6;
 }
 .copyright-2023-safelet-all-parent {
     position: absolute;
@@ -1283,15 +1302,15 @@
     bottom: 40%;
     left: 1.81%;
     border-radius: 15px 15px 0px 0px;
-    background-color: #737373;
+    background-color: #faf9f9;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
 .footer {
-    position: absolute;
-    top: 2390px;
+    position:relative;
+    margin-top: 150px;
     left: 3px;
     width: 1107px;
     height: 100px;
@@ -1302,11 +1321,10 @@
     top: 147px;
     left: 291px;
     width: 1111px;
-    height: 100%;
     overflow-y: auto;
     text-align: left;
     font-size: 24px;
-    color: #fff;
+    color: #a20e0e;
     font-family: Roboto;
 }
 .group-icon {
@@ -1549,11 +1567,11 @@
     gap: 15px;
 }
 .side-bar {
-    position: absolute;
+    position: fixed;
     top: 145px;
     left: 0px;
     border-radius: 15px;
-    background-color: #262626;
+    background-color: #030303;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1668,4 +1686,91 @@
     color: #fff;
     font-family: Roboto;
 }
+.fade-enter {
+    opacity: 0;
+  }
+  
+  .fade-enter-active {
+    opacity: 1;
+    transition: opacity 3000ms;  }
+  
+  .fade-exit {
+    opacity: 1;
+  }
+  
+  .fade-exit-active {
+    opacity: 0;
+    transition: opacity 3000ms; }
+.charttt {
+    box-sizing: border-box;
+    display: block;
+    height: 430px;
+    width: 1000px;
+margin-top: 1100px;
+margin-left: 150px;}
+.area-chart-container {
+    width: 80%;
+    height: 400px;
+    margin-top: 100px;
+    margin-left: 120px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .dropbtn {
+    background-color: white;
+    color: #bf101f;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    left: 1000px;
+    top: 20p;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 600px;
+    margin-top: 50px;
+    cursor: pointer;
+  }
+  .topdrop{
+margin-top: 10px;
+margin-left: 12px;
+cursor: pointer;
+  }
 
+  .bottomdrop{
+    margin-bottom: 15px;
+    margin-left: 12px;
+    cursor: pointer;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 100px;
+    height: 80px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    cursor: pointer;
+    border-radius: 20px;
+
+    
+  }
+  
+  .dropdown-content a {
+    color: #bf101f;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  .dropdown:hover .dropdown-content {display: block;}
+  
+  .dropdown:hover .dropbtn {background-color: #bf101f;
+color: white;
+cursor: pointer;}

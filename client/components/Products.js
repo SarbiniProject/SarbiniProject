@@ -19,12 +19,13 @@ const Products = () => {
   const [opnedtable,setOpnedtabel]=React.useState([])
   const navigation = useNavigation();
 console.log(order,"order");
-  ;
+  console.log(wordsea);
+  console.log(searched,'searchedfor');
 
 
-  let info={
-    product_name:wordsea
-  }
+  // let info={
+  //  product_name:wordsea
+  // }
   const getOrder = async () => {
     try {
       const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orders/products");
@@ -66,19 +67,23 @@ console.log(order,"order");
       console.error("error",err);
     })
   }
-  const getsarch=(mot)=>{
-    axios.get("http://172.20.10.3:3000/api/sarbini/searchprod",mot)
-    .then((res)=>{
-      setSearched(res.data)
-      console.log(res.data,"searched2")}
-      )
-    .catch((err)=>{
-      console.log('erreur1',err)
-    })  
+
+  const getsarch = () => {
+    axios.get("http://172.20.10.6:3000/api/sarbini/searchprod/"+wordsea)
+    .then((res) => {
+      console.log('Données de la réponse Axios :', res.data);
+      setSearched(res.data);
+    })
+    .catch((err) => {
+      console.log('Erreur lors de la requête Axios :', err);
+    });
+
   }
+  
   const getopnedtable=()=>{
     axios.get("http:/172.20.10.3:3000/api/sarbini/opned")
     .then((res)=>{
+      console.log("id",res.data.id);
       setOpnedtabel(res.data)
     })
     .catch((err)=>{
@@ -150,22 +155,31 @@ console.log(order,"order");
 
   const handleCategoryPress=(idcat)=>{
     setOnecateg(idcat)
-      
+    setDosearch(false)
     getprodbycateg(idcat)
   }
 
   
+  const hundelsearch=()=>{
+    console.log("search");
+    getsarch();
+    setTimeout(() => {
 
-  const conditionCategory=()=>{
-    console.log(searched,"searched");
-    if(onecateg==0){
-      return renderbycateg(allproducts)
-    }
-    else if(dosearch===true){
-      return renderbycateg(searched)
-    }
-    else{
-     return renderbycateg(filtrprod)
+      setOnecateg(null);
+      setDosearch(true);      
+    }, 2000);
+
+  }
+
+  const conditionCategory = () => {
+    console.log(searched, "searched");
+    
+    if (dosearch===true) {
+      return renderbycateg(searched);
+    } else if (onecateg === 0) {
+      return renderbycateg(allproducts);
+    } else {
+      return renderbycateg(filtrprod);
     }
   }
 
@@ -181,7 +195,7 @@ console.log(order,"order");
         style={styles.Products}>
         </TouchableOpacity>
         <TouchableOpacity 
-        //////
+        ////
         onPress={()=>{navigation.navigate("Tables");
       }}
         style={styles.tables}>
@@ -207,7 +221,7 @@ console.log(order,"order");
             
             <View style={[styles.groupChild, styles.childBorder]} />
             <TouchableOpacity   
-            onPress={()=>{ console.log("search");getsarch(info); setDosearch(true);setOnecateg(null);  }}
+            onPress={hundelsearch}
             > 
       <View style={styles.iconsearch}>
          <Image
@@ -218,7 +232,9 @@ console.log(order,"order");
             </View>
             </TouchableOpacity>
 
-            <TextInput placeholder="Search item" onChangeText={(text)=>{console.log(text);setWordsea(text)}} style={[styles.searchItem, styles.iceTypo2]}></TextInput>
+            <TextInput placeholder="Search item" onChangeText={(text) => {
+  setWordsea(text);
+}}style={[styles.searchItem, styles.iceTypo2]}></TextInput>
           </View>
         </View>
         <View style={styles.frameWrapper}>
@@ -259,9 +275,7 @@ console.log(order,"order");
       <TouchableOpacity
       onPress={()=>{
         navigation.navigate("Orders");
-      //   setTimeout(() => {
-      //   setOrder([])
-      // }, 1000)
+      
       ;}}
       >
       <View style={[styles.iconButton1, styles.frameViewBorder]}>
@@ -272,10 +286,7 @@ console.log(order,"order");
         />
       </View>
       </TouchableOpacity>
-      <View style={styles.categoryButton1}>
-        <Text style={[styles.iceCream5, styles.iceTypo2]}>Ice Cream</Text>
-      </View>
-    
+
       <View style={styles.productsItem} />
       <View style={styles.productsItem} />
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>
@@ -384,7 +395,6 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   cardParentLayout1: {
-    width: 303,
     flexDirection: "row",
     flexWrap:"wrap",
     width: "100%",
