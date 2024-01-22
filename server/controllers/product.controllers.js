@@ -64,4 +64,5 @@ const DeleteProduct= async(req,res) => {
     }
 };
 
+
 module.exports={AllProduct,AddProduct,UpdateProduct,DeleteProduct,Productbycaetg,search}

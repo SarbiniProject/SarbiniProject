@@ -11,13 +11,15 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Dashboard = () => {
+const Dashboard = ({}) => {
   const [waiter, setWaiter] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
+ const userId =route.params?.userId;
 
   const fetchWaiters = () => {
     axios
@@ -46,18 +48,19 @@ const Dashboard = () => {
         setLoading(false);
       });
   };
+  // useEffect(() => {
+  //   fetchOrders();
+  // }, [loading]);
 
   useEffect(() => {
     fetchWaiters();
   }, []);
 
-  const handleOrderPress = (orderId) => {
-    // Add logic to navigate to order details screen or perform any other action
-    console.log(`Order ${orderId} pressed`);
-    // Example navigation action:
-    // navigation.navigate('OrderDetails', { orderId });
-  };
 
+  // const handleLogout = async () => {
+  //   await AsyncStorage.removeItem('authToken');
+  //   // Additional logout logic if needed
+  // };
   return (
     <View style={styles.container}>
       {/* Left side for Category Filters */}
@@ -85,13 +88,13 @@ const Dashboard = () => {
             data={orders}
             keyExtractor={(item) => (item && item.id ? item.id.toString() : 'default_key')}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() =>  navigation.navigate('Order')}>
+              <TouchableOpacity   onPress={()=> navigation.navigate('OrderW', { idOrder: item.id,fetchOrders:fetchOrders})}>
                 <View style={styles.card}>
                   <Image source={{ uri: 'https://png.pngtree.com/png-vector/20190130/ourlarge/pngtree-cartoon-restaurant-table-element-design-tabletable-and-chairillustrationhotel-png-image_680996.jpg' }} style={styles.profileImage} />
                   <View style={styles.textContainer}>
                     <Text style={styles.username}>{item.name || 'N/A'}</Text>
-                    <Text style={styles.category}>{item.satus1 ? "Closed" : "Open"}</Text>
-                    <Text style={styles.category}>{item.satus2 ? 'Completed' : 'In Process'}</Text>
+                    <Text style={styles.category}>{item.satus1 ? "open" : "closed"}</Text>
+                    <Text style={styles.category}>{item.satus2 ? 'finished' : 'In Process'}</Text>
                   </View>
                 </View>
               </TouchableOpacity>

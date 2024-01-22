@@ -3,7 +3,9 @@ import { Image } from "expo-image";
 import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
 import axios from "axios";
-import { useState } from "react/cjs/react.production.min";
+import { useNavigation } from "@react-navigation/native";
+
+
 const Products = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
@@ -13,13 +15,29 @@ const Products = () => {
   const [searched,setSearched]=React.useState([])
   const [wordsea,setWordsea]=React.useState("")
   const [dosearch,setDosearch]=React.useState(false)
+  const [order,setOrder]=React.useState([])
+  const [opnedtable,setOpnedtabel]=React.useState([])
+  const navigation = useNavigation();
+console.log(order,"order");
+  ;
+
 
   let info={
     product_name:wordsea
   }
-
+  const getOrder = async () => {
+    try {
+      const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orders/products");
+      console.log("allprod", res.data[0].products);
+      setOrder(res.data[0].products);
+      setIsLoading(!isLoading)
+      
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  }
   const getcat=()=>{
-    axios.get("http://192.168.56.1:3000/api/sarbini/category")
+    axios.get("http://172.20.10.3:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -29,7 +47,7 @@ const Products = () => {
     })
   }
   const getproducts=()=> {
-    axios.get("http://192.168.56.1:3000/api/sarbini/products")
+    axios.get("http://172.20.10.3:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -38,7 +56,7 @@ const Products = () => {
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://192.168.56.1:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://172.20.10.3:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -49,7 +67,7 @@ const Products = () => {
     })
   }
   const getsarch=(mot)=>{
-    axios.get("http://192.168.56.1:3000/api/sarbini/searchprod",mot)
+    axios.get("http://172.20.10.3:3000/api/sarbini/searchprod",mot)
     .then((res)=>{
       setSearched(res.data)
       console.log(res.data,"searched2")}
@@ -58,19 +76,52 @@ const Products = () => {
       console.log('erreur1',err)
     })  
   }
+  const getopnedtable=()=>{
+    axios.get("http:/172.20.10.3:3000/api/sarbini/opned")
+    .then((res)=>{
+      setOpnedtabel(res.data)
+    })
+    .catch((err)=>{
+      console.log('erreur1',err)
+    })  
+  }
+  const ajoutproduct = (id, info) => {
+    axios.get("http://172.20.10.3:3000/api/sarbini/orders/products")
+      .then(response => {
+        const existingProducts = response.data[0]?.products || [];
+        const updatedProducts = [...existingProducts, info];
+  
+        axios.put("http://172.20.10.3:3000/api/sarbini/addprod/" + id, { products: updatedProducts })
+          .then(() => {
+            console.log("added");
+            // navigation.navigate("Orders");
+          })
+          .catch((err) => {
+            console.log('erreur2', err);
+          });
+      })
+      .catch((err) => {
+        console.log('erreur1', err);
+      });
+  }
+  
 
   React.useEffect(()=>{
     getcat();
     getproducts()
-  },[])
+    getopnedtable()
+  },[!isLoading])
   
   const renderbycateg=(categ)=>{
-    console.log(categ,"categ");
+
     return(
     categ.map((el,i)=>{
       return(
         <>    
-        <TouchableOpacity>
+        <TouchableOpacity 
+        onPress={()=>{ajoutproduct(opnedtable.id,el)
+        }}
+        >
         <View style={[styles.cardMenu1, styles.cardLayout]}>
         <View style={[styles.cardMenuChild, styles.cardPosition]} />
         <Image
@@ -99,6 +150,7 @@ const Products = () => {
 
   const handleCategoryPress=(idcat)=>{
     setOnecateg(idcat)
+      
     getprodbycateg(idcat)
   }
 
@@ -124,9 +176,15 @@ const Products = () => {
         contentFit="cover"
         source={require("../assets/side-bar-manager.png")}
       />
-        <TouchableOpacity style={styles.Products}>
+        <TouchableOpacity  
+        onPress={()=>{navigation.navigate("Product");}}
+        style={styles.Products}>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tables}>
+        <TouchableOpacity 
+        //////
+        onPress={()=>{navigation.navigate("Tables");
+      }}
+        style={styles.tables}>
         </TouchableOpacity>
       <View style={[styles.buttonLogOut, styles.buttonLogOutFlexBox]}>
         <Image
@@ -198,7 +256,14 @@ const Products = () => {
       })}
       </ScrollView>
       </View>
-      
+      <TouchableOpacity
+      onPress={()=>{
+        navigation.navigate("Orders");
+      //   setTimeout(() => {
+      //   setOrder([])
+      // }, 1000)
+      ;}}
+      >
       <View style={[styles.iconButton1, styles.frameViewBorder]}>
         <Image
           style={styles.filterIcon}
@@ -206,6 +271,7 @@ const Products = () => {
           source={require("../assets/filter.png")}
         />
       </View>
+      </TouchableOpacity>
       <View style={styles.categoryButton1}>
         <Text style={[styles.iceCream5, styles.iceTypo2]}>Ice Cream</Text>
       </View>

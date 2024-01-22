@@ -40,7 +40,11 @@ satus3:{
 products:{
   type:DataTypes.JSON,
   allowNull:true
-}
+},
+note:{
+  type: DataTypes.STRING,
+  allowNull: true,
+},
 })
 sarbini.Users.hasMany(sarbini.orders)
 

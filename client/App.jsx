@@ -6,10 +6,13 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import Products from './components/Products'
 import Login from './components/Login'
 import Dashboard from './components/cashier/dashboard.jsx'
-import Order from './components/cashier/order.jsx';
-
+import Order from './components/Order.js';
+import OrderW from './components/cashier/OrderW.jsx'
 const STRIPE_KEY =
   'pk_test_51NfOUIFIt3rgcksJfXUm5Pv71NeMwybINDDYSd6XL4HDfdJXUN1NJnfsA9pnbVNIFVL2gfobuer8ORndXw7ZsobV00tj4N01N0';
+
+
+import Tables from './components/Tables';
 
 
 const Stack = createStackNavigator();
@@ -19,18 +22,49 @@ const App = () => {
     <NavigationContainer>
       <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
       <Stack.Navigator>
-          <Stack.Screen
+      <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerShown: true,
+            }}
+          />
+            <Stack.Screen
             name="Dashboard"
             component={Dashboard}
             options={{
               headerShown: true,
             }}
           />
-           <Stack.Screen
-            name="Order"
+
+          <Stack.Screen
+            name="Product"
+            component={Products}
+            options={{
+              headerShown: true,
+            }}
+          />
+      
+        
+          <Stack.Screen
+            name="Orders"
             component={Order}
             options={{
               headerShown: false,
+            }}
+          />
+            <Stack.Screen
+            name="Tables"
+            component={Tables}
+            options={{
+              headerShown: false,
+            }}
+          />
+            <Stack.Screen
+            name="OrderW"
+            component={OrderW}
+            options={{
+              headerShown: true,
             }}
           />
      </Stack.Navigator>

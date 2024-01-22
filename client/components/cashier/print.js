@@ -1,9 +1,13 @@
-export const html2 = `
+export const Print =({products,tables,total})=>{
+  
+
+return (
+  `
 <html>
   <body>
   <div class="div">
   <span class="span">
-    <div class="div-2">order #: 12564878</div>
+    <div class="div-2">order #: ${tables.id}</div>
     <div class="div-3">
       <span class="span-2">
         <img
@@ -12,7 +16,7 @@ export const html2 = `
           class="img"
         />
         <div class="div-4">table:</div>
-        <div class="div-5">1</div>
+        <div class="div-5">${tables.name}</div>
       </span>
       <span class="span-3">
         <img
@@ -21,7 +25,7 @@ export const html2 = `
           class="img-2"
         />
         <div class="div-6">time:</div>
-        <div class="div-7">20:02 pm</div>
+        <div class="div-7">${tables.createdAt.slice(0, 10)}</div>
       </span>
     </div>
   </span>
@@ -31,27 +35,16 @@ export const html2 = `
       <div class="div-10">item</div>
       <div class="div-11">price</div>
     </span>
-    <span class="span-5">
-      <span class="span-6">
-        <div class="div-12">Chicken wings</div>
-        <div class="div-13">(starter)</div>
-      </span>
-      <div class="div-14">$20,00</div>
-    </span>
-    <span class="span-5">
-       <span class="span-6">
-           <div class="div-12">Chicken wings</div>
-          <div class="div-13">(starter)</div>
-      </span>
-         <div class="div-14">$20,00</div>
-    </span>
-    <span class="span-5">
-    <span class="span-6">
-      <div class="div-12">Chicken wings</div>
-      <div class="div-13">(starter)</div>
-    </span>
-    <div class="div-14">$20,00</div>
-  </span>
+  
+    ${products.map((item, index) => `
+              <span class="span-5">
+                <span class="span-6">
+                  <div class="div-12">${item.product_name}</div>
+                </span>
+                <div class="div-14">${item.price}DT</div>
+              </span>
+              <div class="div-15"></div>
+            `).join('')}
   
     <div class="div-15"></div>
 
@@ -61,7 +54,7 @@ export const html2 = `
   </div>
   <span class="span-11">
     <div class="div-24">total</div>
-    <div class="div-25">$43,50</div>
+    <div class="div-25">${total}dt</div>
   </span>
   <span class="span-12">
     <div class="div-26">tables open:</div>
@@ -73,7 +66,7 @@ export const html2 = `
           class="img"
         />
         <div class="div-28">table:</div>
-        <div class="div-29">1</div>
+        <div class="div-29">${tables.id}</div>
       </span>
       <span class="span-14">
         <img
@@ -82,7 +75,7 @@ export const html2 = `
           class="img"
         />
         <div class="div-30">table:</div>
-        <div class="div-31">5</div>
+        <div class="div-31">${tables.name}</div>
       </span>
     </div>
   </span>
@@ -422,4 +415,5 @@ export const html2 = `
 
   </body>
 </html>
-`;
+`)
+}
