@@ -1,12 +1,67 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Text, StyleSheet,TouchableOpacity,View ,TextInput} from "react-native";
 import { Image } from "expo-image";
 import { Color, FontFamily, FontSize, Border } from "./styles/LoginStyle";
+import Cookies from 'js-cookie';
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import safeStringify from 'json-stringify-safe';
 
 const Login = () => {
-  const [pseudo,setPseudo]=React.useState("")
-  const [password,setPassword]=React.useState("")
-  console.log(pseudo);
+  const [pseudo, setPseudo] = useState("");
+  const [password, setPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigation = useNavigation();
+
+
+
+
+ const handleSubmit = async () => {
+  try {
+    const response = await axios.post('http://172.20.10.3:3000/api/sarbini/signin', {
+      user_Pseudo: pseudo,
+      user_password: password,
+    });
+
+    const { token, id, user_name, user_role } = response.data;
+
+    if (id && token) {
+      // Exclude circular references manually
+      const cleanedData = {
+        id,
+        user_name,
+        token,
+        user_role, // Include other properties as needed
+      };
+
+      // Use safeStringify to handle circular references
+      const jsonString = safeStringify(cleanedData);
+
+      // Store the token in AsyncStorage
+      await AsyncStorage.setItem('authToken', jsonString);
+
+      setErrorMessage('');
+      setSuccessMessage('Login successful');
+
+      // Navigate based on user role
+      if (user_role === "controller") {
+        navigation.navigate('controller', { userId: id });
+      } else if (user_role === "waiter") {
+        navigation.navigate('Product', { userId: id });
+      } else {
+        navigation.navigate('Dashboard', { userId: id });
+      }
+    } else {
+      setErrorMessage('Login failed. Please check your credentials.');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    setErrorMessage('Error during login. Please try again.');
+  }
+};
+  
 
   return (
     <View style={styles.login}>
@@ -42,7 +97,7 @@ const Login = () => {
         
       </TextInput> 
       <View>
-      <TouchableOpacity style={styles.btn_login1}>
+      <TouchableOpacity style={styles.btn_login1} onPress={()=>{ navigation.navigate('Dashboard')}}>
         <Text style={styles.btn_login2}>LOGIN</Text>
       </TouchableOpacity>
     </View>

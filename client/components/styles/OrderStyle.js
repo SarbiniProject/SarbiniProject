@@ -9,7 +9,7 @@ export const FontFamily = {
 };
 /* font sizes */
 export const FontSize = {
-  subtitles_size: 15,
+  subtitles_size: 17,
   titlesAndTotals_size: 30,
   size_base: 16,
   size_lg: 18,
