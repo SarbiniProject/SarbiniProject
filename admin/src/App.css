@@ -111,6 +111,8 @@ margin-top: 2em;
   font-size: 20px;
   font-family: 'Noto Sans', sans-serif;;
   margin-top: -1px;  
+  background-color: white;
+  border: none;
 }
 
 .icon_colla0{
@@ -581,7 +583,7 @@ html,
                 border: #a71c12 solid 1px;
                 margin-right: 2em;
                 cursor: pointer;
-                margin-bottom: 450px;
+                margin-bottom: 50px;
               }
               .div_popup1{
                 display: block;
@@ -597,8 +599,10 @@ html,
                 margin-left: 170px;
               }
               .contpopup{
-                height: 800px;
+                display: flex;
+                height: 100px;
                 width: 1000px;
+                margin-left: 240px;
               }
              .divvpopup{
               display: flex;

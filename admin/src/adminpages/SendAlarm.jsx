@@ -145,7 +145,7 @@ function SentAlarms() {
                 <td></td>
                 <td className='td2_colla'>{el.createdAt}</td>
                 <td></td>
-                <td className='td2_colla'>  <EditOutlined className='icon2_colla' onClick={()=>{ console.log(el.id); setNphone(el.user_phone); setNpseudo(el.user_Pseudo) ; setNname(el.user_name);setNlocation(el.user_location); setEditingUserId(el.id); handleshow(el.id,info)}} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                <td className='td2_colla'> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
                 </tr>
                 <tr>
                     <td colSpan="12">
@@ -155,6 +155,17 @@ function SentAlarms() {
                 </>
             ))
         }
+
+        const searchbyloc1=(loc)=>{
+          let data=users.filter((item)=>{
+              console.log(loc);
+              return(item.user_location===loc)})
+              console.log("data",data);
+              if(data!=""){
+                  setSearch(data)
+              }
+              console.log(serach);
+         return serach.map(el=>(el.user_name))}
 
     const searchbyloc=(loc)=>{
         let data=users.filter((item)=>{
@@ -271,35 +282,36 @@ function SentAlarms() {
           </Button>
           <h1 className="h1popup">Add New Alarm</h1>
           <div className="contpopup">
-            
-              <Dropdown overlay={menu} className='div_popup' trigger={['click']}>
-                <a onClick={(e) => e.preventDefault()}>
-                  <Space>
-                    <p className='p1_colla'>Select Country</p>
-                    <DownOutlined className='icon1_colla' />
-                  </Space>
-                </a>
-              </Dropdown>
-              
-              <Dropdown overlay={menu} className='div_popup' trigger={['click']}>
-              <a onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <p className='p1_colla'>Select Collaborator</p>  
-                  <DownOutlined className='icon1_colla' />
-                </Space>
-              </a>
-            </Dropdown><br /><br /><br />
-            <Dropdown overlay={menu} className='div_popup1' trigger={['click']}>
-              <a onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <p className='p1_colla'>Select Subject</p>
-                  <DownOutlined className='icon1_colla' />
-                </Space>
-              </a>
-            </Dropdown>
-            <Input className="inputpopup1" placeholder="ADD Phone Number" /><br /><br />
+        
+            <div className='div_popup'>
+                  <label for="subject"></label>
+      <select onClick={(e) => e.preventDefault()} className='p1_colla' placeholder="Subject line" name="subject"  required>
+        <option disabled hidden selected>Select Region</option>
+        {locations.map((location) => (
+            <option onClick={()=>{searchbyloc(location.user_location);setShowserach(1)}}>{location.user_location}</option>
+          ))}
+      </select>
+                  </div>
+            <div className='div_popup'>
+                  <label for="subject"></label>
+      <select onClick={(e) => e.preventDefault()} className='p1_colla' placeholder="Subject line" name="subject"  required>
+        <option disabled hidden selected>Select Collaborator</option>
+        (<option>{searchbyloc1(location.user_location)}</option>)
+      </select>
+                  </div></div>
+
+                  <div className='div_popup1'>
+                  <label for="subject"></label>
+      <select className='p1_colla' placeholder="Subject line" name="subject"  required>
+        <option disabled hidden selected>Subject line</option>
+        <option>DeadLine Checking</option>
+        <option>Question Asking</option>
+        <option>proposal Making</option>
+      </select>
+                  </div>
+            <Input className="inputpopup1" placeholder="ADD Message..." /><br /><br />
             <Button className="buttonpopup1">Add +</Button>
-          </div>
+          
         </div>
         </div>
       )}      

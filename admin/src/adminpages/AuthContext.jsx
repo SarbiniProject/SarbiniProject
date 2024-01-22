@@ -53,5 +53,8 @@ const useAuth = () => {
   }
   return context;
 };
+const logout = () => {
+  clearToken();
+};
 
-export { AuthProvider, useAuth };
+export { AuthProvider, useAuth ,logout };

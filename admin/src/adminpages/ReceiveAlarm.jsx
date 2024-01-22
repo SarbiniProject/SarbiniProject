@@ -245,7 +245,7 @@ function ReceivedAlarms() {
                 <td></td>
                 <td className='td2_colla'>{el.createdAt}</td>
                 <td></td>
-                <td className='td2_colla'> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                <td className='td2_colla'> <EditOutlined className='icon2_colla' onClick={()=>{ }} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
                 </tr>
                     <tr>
                         <td colSpan="12">

@@ -6,7 +6,7 @@ const Users =(connection,DataTypes)=>{
    },
    user_phone:{
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
    },
    user_Pseudo: {
      type: DataTypes.STRING,
@@ -22,7 +22,7 @@ const Users =(connection,DataTypes)=>{
   },
   user_location :{
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   }
  
  })

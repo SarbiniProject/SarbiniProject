@@ -17,11 +17,10 @@ console.log("values",values);
 
 const collNumber = (text) => {
     return handleNumber(text).length;
-};console.log("handle",collNumber("bizert"));
+};console.log("handle",collNumber("bizerte"));
 
   return (
     <div className="regions">
-    {loading ? <p>Loading...</p> : 
     <div className="bg-[#191919] flex flex-row justify-center w-full">
       <div className="bg-maincolorsecondary w-[1440px] h-[1024px] relative"></div>
       <div className="bigDiv">
@@ -40,7 +39,7 @@ const collNumber = (text) => {
             </div>
         ))}</div>
       </div>
-    </div>}
+    </div>
     </div>
   );
 };

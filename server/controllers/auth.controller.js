@@ -9,17 +9,17 @@ const generateToken = (userId, userName) => {
   return jwt.sign({ userId, userName }, 'secretKey', { expiresIn: expiresIn });
 };
 const signUp = async (req, res) => {
-  const { user_name, user_Pseudo, user_password ,user_role } = req.body;
+  const { user_location,user_phone,user_name, user_Pseudo, user_password ,user_role } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(user_password, 10);
 
     const newUser = {
+      user_location,
+      user_phone,
       user_name,
-      user_password,
       user_Pseudo,
       user_role,
-      user_img:'https://cdn-icons-png.flaticon.com/512/149/149071.png',
       user_password: hashedPassword}
      
       AddUser({ body: newUser }, res);

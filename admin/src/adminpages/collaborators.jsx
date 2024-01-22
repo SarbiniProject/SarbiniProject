@@ -88,13 +88,15 @@ function Collaborators() {
         })
       }
       const addController=()=>{
-        axios.post("http://localhost:3000/api/sarbini/Signup",{user_name: name,
+        axios.post("http://localhost:3000/api/sarbini/Signup",{
+        user_name: name,
         user_phone:phone,
         user_Pseudo: pseudo,
         user_password: password,
         user_role :"controller",
         user_location : location}).then((result)=>{console.log(result)})
        .catch((err)=>console.log(err))}
+
       const addcont=()=>{
         for (let i = 0; i < users.length; i++) {
           if(users[i].user_Pseudo===pseudo){
@@ -111,7 +113,6 @@ function Collaborators() {
           if(typeof phone[i]===NaN){
             return(alert("Check your phone Number"))
           }
-          
         }
         if(name===""||phone===""||pseudo===""||password===""||location===""){
           return(alert("you should fill your Sheet Properly"))

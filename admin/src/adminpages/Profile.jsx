@@ -9,9 +9,7 @@ const Profile = () => {
   const [userName, setUserName] = useState('');
   const [userPseudo, setUserPseudo] = useState('');
   const [userPassword, setUserPassword] = useState('');
-  const [userName1, setUserName1] = useState(userName);
-  const[userPseudo1,setUserPseudo1]=useState(userPseudo)
-  const [userPassword1, setUserPassword1] = useState(userPassword);
+  const [userPassword1, setUserPassword1] = useState('');
   const id=localStorage.getItem('id');
   const navigate=useNavigate();
 
@@ -34,39 +32,59 @@ const Profile = () => {
     }, [refresh]);
   
    
-    const handleUpdate = () => {
+    const handleUpdate = async (updatedUserName, updatedUserPseudo, updatedUserPassword) => {
       try {
-      const result = axios.put(`http://localhost:3000/api/sarbini/admin/${id}`,{ admin_name: userName,
-      admin_Pseudo: userPseudo,
-      admin_password: userPassword})
-      setRefresh(!refresh)
+        const result = await axios.put(`http://localhost:3000/api/sarbini/admin/${id}`, {
+          admin_name: updatedUserName,
+          admin_Pseudo: updatedUserPseudo,
+          admin_password: updatedUserPassword,
+        });
+        console.log(result.data);
+        alert("User updated");
       } catch (error) {
-      console.error(error);
-      
-          }
+        console.error(error);
+        alert("Error updating user");
+      }
+    };
+
+    const updateCont = async () => {
+      const updatedUserName = userName === "" ? admin.admin_name : userName;
+      const updatedUserPseudo = userPseudo === "" ? admin.admin_Pseudo : userPseudo;
+      const updatedUserPassword = userPassword === "" ? admin.admin_password : userPassword;
+    
+      for (let i = 0; i < admin.length; i++) {
+        if (admin[i].admin_Pseudo === userPseudo) {
+          return alert("User Pseudo Exists");
         }
-
-
-  const handleDoubleClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      setIsEditing(false);
-  
-      const updatedUserName = userName === "" ? userName1 : userName;
-      const updatedUserPseudo = userPseudo === "" ? userPseudo1 : userPseudo;
-      const updatedUserPassword = userPassword === "" ? userPassword1 : userPassword;
-  
-  
-      handleUpdate(updatedUserName, updatedUserPseudo, updatedUserPassword);
-  
+      }
+    
+      if (userPassword !== userPassword1) {
+        return alert("Unmatched Password");
+      }
+    
+      if (userPassword.length < 8 && userPassword.length !==0 ) {
+        return alert("Your Password Should Have At Least 8 Characters");
+      }
+    
+      await handleUpdate(updatedUserName, updatedUserPseudo, updatedUserPassword);
       setRefresh(!refresh);
-      alert("User updated");
-    }
-  };
-  
+    };
+    
+    
+    const handleKeyPress = async (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        setIsEditing(false);
+        updateCont()
+
+        
+      }
+    };
+    const handleDoubleClick = () => {
+      setIsEditing(true);
+    };
+    
+    
+    
 
 
   return(
@@ -84,8 +102,10 @@ const Profile = () => {
           <div className="grid-child-followers" onDoubleClick={handleDoubleClick}>
             {isEditing ? (
               <input
+              className="inputProfile"
                 type="text"
                 name="userName"
+                placeholder="update Name..."
                 value={userName}
                 onChange={(e)=>{setUserName(e.target.value)}}
                 onKeyPress={handleKeyPress}
@@ -103,7 +123,9 @@ const Profile = () => {
             {isEditing ? (
               <input
                 type="text"
+                placeholder="update Pseudo..."
                 name="userPseudo"
+                className="inputProfile"
                 value={userPseudo}
                 onChange={(e)=>{setUserPseudo(e.target.value)}}
                 onKeyPress={handleKeyPress}
@@ -121,13 +143,26 @@ const Profile = () => {
             {isEditing ? (
               <div>
               <input
+               className="inputProfile"
+               placeholder="update Password..."
+                type="text"
+                name="userPassword"
+                value={userPassword1}
+                onChange={(e)=>{setUserPassword1(e.target.value)}}
+                onKeyPress={handleKeyPress}
+              />
+              <br />
+              <input
+               className="inputProfile"
+               placeholder="Confirm Password..."
                 type="text"
                 name="userPassword"
                 value={userPassword}
                 onChange={(e)=>{setUserPassword(e.target.value)}}
-                onKeyPress={handleKeyPress}
+                
               />
               </div>
+              
 
             ) : (<div>
               <span>{admin.admin_password}</span>

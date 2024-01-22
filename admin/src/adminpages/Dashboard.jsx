@@ -19,6 +19,8 @@ import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import{ useNavigate} from "react-router-dom";
 import { Line } from 'react-chartjs-2';
+import {logout} from './AuthContext'
+import MapComponent from "./Map"
 
 
 const DarkDashboard = () => {
@@ -101,7 +103,7 @@ useEffect(() => {
   };
   const LastUniqueValues=getLast5UniqueValues(users,5)
   const LastUniqueValues6=getLast5UniqueValues(users,6)
-  console.log("unique",LastUniqueValues6);
+  console.log("unique",LastUniqueValues);
 
   const handleNumber = (text) => {
 	return regions.filter((el) => el.user_location.toUpperCase().includes(text.toUpperCase()));
@@ -357,15 +359,14 @@ console.log("regions",regions);
         				<div className="users-per-country"><br /><br /><br /><br />
 						<h3 className="latest-registration-users2">Subscripions Across Regions</h3>
           					
-<Regions values={LastUniqueValues6} regions={regions}/>
+<Regions values={LastUniqueValues} regions={regions}/>
         				</div>
 
 	<div className="area-chart-container" on>
 	<h3 className="latest-registration-users3">Yearly checkout</h3>
       <Line data={Dataa} options={optionss} />
     </div>
-						
-        				<Footer/>
+		<Footer/>
       			</section>
       			<header className="header">
 				  <div className="dropdown">
