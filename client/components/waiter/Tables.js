@@ -2,7 +2,7 @@ import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet,TouchableOpacity,Text, TextInput,View,Modal,Button } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontFamily, Color, Border, Padding, FontSize } from "../components/styles/TablesStyle";
+import { FontFamily, Color, Border, Padding, FontSize } from "../styles/TablesStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 

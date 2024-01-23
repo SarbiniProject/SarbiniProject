@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
-import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
+import { Color, FontFamily, FontSize, Border, Padding } from "../styles/ProductsStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 
