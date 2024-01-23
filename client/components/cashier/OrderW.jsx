@@ -1,92 +1,167 @@
 import * as React from "react";
-import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal } from "react-native";
+import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal, Alert } from "react-native";
 import { Image } from "expo-image";
-import { FontFamily, Color, Padding, Border, FontSize } from "./styles/OrderStyle";
+import { FontFamily, Color, Padding, Border, FontSize } from "../../components/styles/OrderStyle";
 import axios from "axios";
+import { useRoute } from '@react-navigation/native';
+import { useStripe } from "@stripe/stripe-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { printToFileAsync } from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+import { useState, useEffect } from "react";
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {Print} from './print.js'
+
+const OrderW = () => {
 
 
-const Order = () => {
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [isPaymentSheetInitialized, setIsPaymentSheetInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
+  const[products,setProducts]=useState([])
+  const[total,setTotal]=useState(0)
+  const[tables,setTables]=useState({})
+  const[pop,setpop]=useState(false) 
+  const route = useRoute();
+  const idOrder = route.params?.idOrder;
+  const fetchOrders= route.params?.fetchOrders
 
-  const[ref,setRef]=React.useState(true)
-  const[products,setProducts]=React.useState([])
-  const[tableon,setTableon]=React.useState([])
-  const[pop,setPop]=React.useState(false)
-  const[note,setNote]=React.useState("")
-  const[idnote,setIdnote]=React.useState(null)
-  const[total,setTotal]=React.useState(null)
-  // console.log(products[0].price);
-  React.useEffect(() => {
-    const fetchData = async () => {
-      await getproducts();
-      await Tableon();
+console.log('====================================');
+console.log(idOrder);
+console.log('====================================');
+
+
+  useEffect(() => {
+    const fetchData = async () =>  {
+      getalltables()
+    
     };
     fetchData();
-  }, [ref]);
-  const getproducts = async () => {
-    try {
-      const res = await axios.get("http://172.20.10.4:3000/api/sarbini/orders/products");
-      console.log("allprod", res.data[0].products);
-      setProducts(res.data[0].products);
+  },[idOrder]);
+   useEffect(()=>{
+    setTimeout(() => {
       
-    } catch (err) {
-      console.error("Error fetching products:", err);
-    }
-  }
-  
-  const Tableon = async () => {
-    try {
-      const res = await axios.get("http://172.20.10.4:3000/api/sarbini/orderon");
-      console.log("data", res.data);
-      setTableon(res.data);
-    } catch (err) {
-      console.error("Error fetching tableon:", err);
-    }
-  }
-  const Addnote=async(id,info)=>{
-    try{
-      const res = await axios.put("http://172.20.10.4:3000/api/sarbini/note/"+id,{description:info})
-      .then(()=>{
-        console.log("note added ");
-      })
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
+      totall()
+    }, 2000);
+  },[products])
 
-  const DeleteProd=(id,info)=>{
-    axios.put("http://172.20.10.4:3000/api/sarbini/deleteprod/"+id,{id:info})
-    .then(()=>{
-      console.log("deleted");
-      setRef(!ref)
+
+
+  const getalltables=()=>{
+    axios.get(`http://172.20.10.6:3000/api/sarbini/ordersOne/${idOrder}`)
+    .then((res)=>{
+      console.log(res.data);
+      setTables(res.data)
+      
+      setProducts(res.data.products);
+     
+
     })
-    .catch((err)=>console.error(err))
+    .catch((err)=>console.error("error", err))
   }
   
-  ////////////function/////////
-  // const totall=()=>{
-  //   if(total===null){
-  //     setTotal(products[0].price)
-  //     return "Loading..."
-  //   }
-  //   else{
+  
 
-  //     return (products[0].price)
-  //   }
-  // }
-  const hundleNote=(id)=>{
-    if(pop===true){
-      Addnote(idnote,note)
-      setRef(!ref)
-      setPop(false)
+  const totall=()=>{
+    let result=0
+    for(i=0;i<products.length;i++){
+      result+=(products[i].price)
     }
-    else{
-      setIdnote(id)
-      setPop(true)
-    }
+    return setTotal(result)
   }
+
+
+ ////////////////////////PAYMENT/////////////////////////////////////////////////////
+ const initializePaymentSheet = async (amount) => {
+  try {
+    setIsLoading(true);
+
+    const response = await axios.post('http://172.20.10.6:3000/api/sarbini/pay', {
+      amount: 100* amount,
+    });
+
+    const { error } = await initPaymentSheet({
+      paymentIntentClientSecret: response.data.clientSecret,
+      merchantDisplayName: 'Your Merchant Name', // Provide a valid merchant display name
+    });
+
+    if (error) {
+      console.error('Error initializing payment sheet:', error);
+    } else {
+      setIsPaymentSheetInitialized(true);
+    }
+  } catch (error) {
+    console.error('Error fetching client secret:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+const pay = async () => {
+  try {
+    if (!isPaymentSheetInitialized) {
+      console.error('Payment sheet is not initialized yet.');
+      return;
+    }
+
+    const { error } = await presentPaymentSheet();
+
+    if (error) {
+      console.error('Error presenting payment sheet:', error);
+      Alert.alert('Error', 'Payment failed. Please try again.');
+      setpop(false)
+    } else {
+      await axios.put(`http://172.20.10.6:3000/api/sarbini/orders3/${idOrder}`);
+      Alert.alert('Success', 'Payment successful!');
+      setpop(false)
+      fetchOrders(tables.userId)
+      navigation.navigate("Dashboard");
+    }
+   
+    
+    
+  } catch (error) {
+    console.error('Error during payment:', error);
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////
+
+const payCash= async ()=>{
+  await axios.put(`http://172.20.10.6:3000/api/sarbini/orders3/${idOrder}`);
+  Alert.alert('Success', 'Payment successful!');
+  setpop(false)
+  fetchOrders(tables.userId)
+  navigation.navigate("Dashboard");
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+let generatePdf = async () => {
+  
+  const htmlString = Print({products,tables,total});
+  const file = await printToFileAsync({
+    html: htmlString,
+    base64: false
+  });
+
+  await shareAsync(file.uri);
+};
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 
   return (
+    
     <View style={styles.order}>
       <View style={styles.orderDetailWrapper}>
         <Text style={styles.orderDetail}>Order Detail</Text>
@@ -94,19 +169,19 @@ const Order = () => {
       <View style={styles.customerInput} />
       <Text style={[styles.order1, styles.editTypo]}>{`Order: `}</Text>
       <Text style={[styles.agust2023, styles.order1Position]}>
-  {tableon.length > 0 ? tableon[0].createdAt.slice(0, 10) : "Date non disponible"}
+  { tables.createdAt?.slice(0, 10)}
       </Text>
       <View style={styles.frameParent}>
         <View style={styles.tableNParent}>
-          <Text style={[styles.tableN, styles.editTypo]}>{tableon.length > 0 ? tableon[0].name:"table"}</Text>
+          <Text style={[styles.tableN, styles.editTypo]}>table N°{tables.name}</Text>
           <Image
             style={[styles.profileIcon, styles.iconLayout]}
             contentFit="cover"
-            source={require("../assets/profile.png")}
+            source={require("../../assets/profile.png")}
           />
         </View>
         <View style={styles.statusMenu}>
-          <Text style={[styles.available, styles.noteTypo]}>{tableon.length > 0 ? tableon[0].id:"id"}</Text>
+          <Text style={[styles.available, styles.noteTypo]}>waiter id :{tables.userId}</Text>
         </View>
       </View>
       {/*////////////////////////order details/////////////////////////////////*/}
@@ -128,111 +203,107 @@ const Order = () => {
               </Text>
             </View>
             <View style={styles.trashParent}>
-              <TouchableOpacity onPress={()=>{DeleteProd(tableon[0].id,el.id)}}>
-              <Image
-                style={[styles.trashIcon, styles.iconLayout]}
-                contentFit="cover"
-                source={require("../assets/trash.svg")}
-              />
-              </TouchableOpacity>
               <Text style={styles.text}>{el.price}DT</Text>
             </View>
           </View>
           <View style={styles.frameView}>
             <View style={styles.frameParent1}>
-              <View style={styles.noteParent}>
-                <Text style={[styles.note, styles.noteTypo]}>
-                  <Text style={styles.noteTxt}>
-                    <Text style={styles.note1}>Note</Text>
-                    <Text style={styles.text1}>{`: `}</Text>
-                  </Text>
-                </Text>
-                <Text style={[styles.putTheRed, styles.noteTypo]}>
-                  {el.description}
-                </Text>
-              </View>
             </View>
 
           </View>
         </View>
         
-        <TouchableOpacity 
-        onPress={()=>{hundleNote(el.id)}}
-        >
-        <View style={styles.customerInput1}>
-          <View style={styles.tableNParent}>
-            <View style={styles.tableNParent}>
-              <Text style={[styles.edit, styles.editTypo]}>Add Note</Text>
-            </View>
-          </View>
-        </View>
-          </TouchableOpacity>
         </View>
 )
 }): <>
-<TouchableOpacity onPress={()=>{getproducts()}}><Text>press here!</Text>
-</TouchableOpacity>
+
 <Text>Loading....</Text>
 </>}
 </ScrollView>
 </View>
-<View>
-      <Modal transparent={true} visible={pop}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add Note</Text>
-            <TextInput
-              multiline
-              style={styles.textInput}
-              placeholder="add..."
-              onChangeText={(text)=>{setNote(text)}}
-            />
-            <TouchableOpacity style={styles.addButton} 
-            onPress={()=>{hundleNote()}}
-            >
-              <Text style={styles.buttonText}>+ Add Note</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
+
       {/*/////////////////////////////////////////////////////////////////////*/}
       <View style={[styles.productSelected, styles.productSelectedBorder]}>
         <View style={[styles.total1, styles.total1Position]}>
           <Text style={[styles.total2, styles.textPosition]}>total</Text>
           <View style={[styles.btnCancelParent, styles.total1Position]}>
+            <TouchableOpacity  onPress={()=>{navigation.navigate("Dashboard")}}>
             <View style={[styles.btnCancel, styles.btnSpaceBlock]}>
               <Text style={[styles.cancelOrder, styles.textTypo]}>
                 cancel order
               </Text>
             </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+              !tables.satus2?Alert.alert('you cannot process the payment the table still open ') :(
+              initializePaymentSheet(total),
+              setpop(true))}}>
             <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
               <Text style={[styles.sendOrder, styles.textTypo]}>
-                send order
+                pay   order
               </Text>
             </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={generatePdf}>
+            <View style={[styles.btnCancel2, styles.btnSpaceBlock]}>
+              <Text style={[styles.sendOrder, styles.textTypo]}>
+                print order
+              </Text>
+            </View>
+            </TouchableOpacity>
           </View>
-          <Text style={[styles.text5, styles.textPosition]}>DT</Text>
+          <Text style={[styles.text5, styles.textPosition]}>{total}DT</Text>
         </View>
         <View style={styles.specifications}>
           <View
             style={[styles.specificationsChild, styles.productSelectedBorder]}
           />
-          <View style={[styles.subTotal, styles.subPosition]}>
-            <Text style={[styles.subtotal, styles.textTypo]}>subtotal</Text>
-            <Text style={[styles.text6, styles.textTypo]}>$35,00</Text>
+               {/*////////////////////////////////////////////////////////////////////////*/}
+      <View>
+        <Modal 
+        transparent={true}
+        visible={pop}
+        >
+          <View style={{backgroundColor:"#000000aa",flex:1}}>
+            <View style={styles.popup1}>
+            <Text style={{fontSize:25,textAlign:"center"}} >Payment Method</Text>
+            <Text style={{fontSize:15,textAlign:"center",marginTop:25}} > </Text>
+            <Icon name="shopping-cart" size={30}  style={{marginLeft:115 }} />
+            <TouchableOpacity onPress={payCash}>
+            <View style={[styles.btnCancel3, styles.btnSpaceBlock]}>
+             
+              <Text style={[styles.sendOrder, styles.textTypo]}>
+              cash payment
+              </Text>
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={pay}>
+            <View style={[styles.btnCancel4, styles.btnSpaceBlock]}>
+              <Text style={[styles.sendOrder, styles.textTypo]}>
+              cart payment
+              </Text>
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={()=>{setpop(false)}}>
+            <View style={[styles.btnCancel5, styles.btnSpaceBlock]}>
+              <Text style={[styles.cancelOrder, styles.textTypo]}>
+                cancel payment
+              </Text>
+            </View>
+            </TouchableOpacity>
+            </View>
           </View>
-          <View style={[styles.subTotal1, styles.subPosition]}>
-            <Text style={[styles.serviceCharge, styles.textTypo]}>
-              service charge
-            </Text>
-            <Text style={[styles.text7, styles.textPosition]}>10%</Text>
-            <Text style={[styles.text8, styles.textTypo]}>£3,50</Text>
-          </View>
+        </Modal>
+      </View>
+      {/*//////////////////////////////////////////////////////////////////////////////////////*/}
+  
+          
         </View>
       </View>
     </View>
   );
+
+
 };
 
 const styles = StyleSheet.create({
@@ -253,6 +324,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 25,
     borderRadius:15
+  },
+  popup1:{
+    backgroundColor:"#ffffff",
+    margin:50,
+    padding:40,
+    borderRadius:10,
+    width:"80%",
+    height:320,
+    position:"absolute",
+    top:290,
+    left:-8
+
   },
   modalTitle: {
     fontSize: 25,
@@ -414,6 +497,8 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   tableNParent: {
+    width: 100,
+    marginLeft:10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -421,7 +506,7 @@ const styles = StyleSheet.create({
   available: {
     fontSize: FontSize.size_xs,
     color: Color.neutral100,
-    width: 77,
+    width: 80,
     textAlign: "center",
     height: 16,
     justifyContent: "center",
@@ -542,7 +627,9 @@ const styles = StyleSheet.create({
     padding: Padding.p_3xs,
     width: 362,
     borderWidth: 1,
-    marginTop: 8,
+    position:"absolute",
+    top: 20,
+    left:10,
     borderRadius: Border.br_3xs,
     flexDirection: "row",
     alignItems: "center",
@@ -588,9 +675,14 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   btnCancel: {
-    top: 1,
+    top: -1.,
     backgroundColor: "#ec5a5a",
-    left: 0,
+    left: -6,
+  },
+  btnCancel5: {
+    top: 93,
+    backgroundColor: "#ec5a5a",
+    left: 45,
   },
   sendOrder: {
     color: Color.blueBlue900,
@@ -602,6 +694,26 @@ const styles = StyleSheet.create({
     backgroundColor: Color.blueBlue200,
     top: 0,
   },
+  btnCancel2: {
+    marginTop:75,
+    left: 90,
+    backgroundColor: Color.blueBlue200,
+    top: 0,
+  },
+  btnCancel3: {
+    marginTop:25,
+    left: -35,
+    backgroundColor: Color.blueBlue200,
+    top: 0,
+  },
+  btnCancel4: {
+    marginTop:25,
+    left: 140,
+    backgroundColor: Color.blueBlue200,
+    top: 0,
+  },
+
+  
   btnCancelParent: {
     top: 89,
     width: 330,
@@ -617,7 +729,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   total1: {
-    top: 136,
+    top: 30,
     width: 363,
     height: 148,
   },
@@ -688,7 +800,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
     backgroundColor: Color.actionsExtrasLightGray50,
-    width: 386,
+    width: 400,
     height: 312,
     borderWidth: 1,
     borderRadius: 0.001,
@@ -714,4 +826,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Order;
+export default OrderW;

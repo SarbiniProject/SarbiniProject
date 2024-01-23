@@ -3,7 +3,7 @@ const {orders,Users, Product, Sequelize}=require('../database-Sequelize/index')
 
 const AllOrders = async(req,res) => {
     try {
-    const result=await orders.findAll();
+    const result=await orders.findAll({where:{satus3:false}});
     res.json(result)   
     } catch (error) {
     res.send(error)    
@@ -22,7 +22,7 @@ const AddOrders = async(req,res) => {
 
 const UpdateStatus1 = async(req,res) => {
     try {
-        const result=await orders.update({satus1:req.body.satus1},{where:{id:req.params.id}})
+        const result=await orders.update({satus1:req.body.satus1},{where:req.params})
         res.json(result)
     } catch (error) {
         res.send("err",error)
@@ -30,7 +30,7 @@ const UpdateStatus1 = async(req,res) => {
 }
 const UpdateStatus2 = async(req,res) => {
     try {
-        const result=await orders.update({satus2:req.body.satus1},{where:{id:req.params.id}})
+        const result=await orders.update({satus2:req.body.satus2},{where:{id:req.params.id}})
         res.json(result)
     } catch (error) {
         res.send("err",error)
@@ -38,13 +38,26 @@ const UpdateStatus2 = async(req,res) => {
 }
 const UpdateStatus3 = async(req,res) => {
     try {
-        const result=await orders.update({satus3:req.body.satus1},{where:{id:req.params.id}})
+        const result=await orders.update({satus3:true},{where:{id:req.params.id}})
         res.json(result)
     } catch (error) {
         res.send("err",error)
     }
 }
 
+const OrdersByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId; // Assuming userId is passed in the request parameters
+        const userOrders = await orders.findAll({
+            where: { satus3: false,
+                userId: userId}, // Assuming the foreign key in orders table is named userId
+            include: [Users] // Include other associated models if needed
+        });
+        res.json(userOrders);
+    } catch (error) {
+        res.send(error);
+    }
+};
 const AjoutProduct = async(req,res)=>{
     try{
         const result=await orders.update({products:req.body.products},{where:{id:req.params.id}})
@@ -85,7 +98,7 @@ const Orderon = async(req,res) => {
 };
 const Note=async(req,res)=>{
     try{
-        const result=await orders.update({description:req.body.description},{where:{id:req.params.id}})
+        const result=await orders.update({note:req.body.note},{where:{id:req.params.id}})
         res.json(result)
     }
     catch (error) {
@@ -125,24 +138,40 @@ const Deleteprod = async (req, res) => {
       res.status(500).json({ error: 'Erreur lors de la suppression du produit', details: error.message });
     }
   };
-// const Deleteprod=async(req,res)=>{
-//     const idprodtodelete=req.body.id
-//     const idorder=req.params.id
-//     try{
-//         const result=await orders.update({
-//             products:Sequelize.literal(`CONCAT(REPLACE(CONCAT(',', "products", ','), ',${idprodtodelete},', ','), ',')`)
-//         },
-//         {
-//             where:{id:idorder},returning:true,plain:true
-//         }
-//         )
-//         const updatedDocument = result[1];
-//         res.json(updatedDocument)
-//     }
-//     catch (error) {
-//         res.send(error)    
-//         }
-// }
+  const GetOrderById = async (req, res) => {
+    try {
+        const orderId = req.params.id;
 
+        // Assuming the primary key in the orders table is named 'id'
+        const order = await orders.findOne({
+            where: { id: orderId },
+      
+        });
 
-module.exports={AllOrders,AddOrders,UpdateStatus1,UpdateStatus2,UpdateStatus3,AjoutProduct,Opnedtable,Getproduct,Orderon,Note,Deleteprod}
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        res.json(order);
+    } catch (error) {
+        console.error('Error fetching order by ID:', error);
+        res.status(500).json({ error: 'Error fetching order by ID', details: error.message });
+    }}
+ 
+ 
+    
+    module.exports = {
+        AllOrders,
+        AddOrders,
+        UpdateStatus1,
+        UpdateStatus2,
+        AjoutProduct,
+        Opnedtable,
+        Getproduct,
+        Orderon,
+        Note,
+        Deleteprod,
+        UpdateStatus3,
+        OrdersByUserId,
+        GetOrderById,
+    };

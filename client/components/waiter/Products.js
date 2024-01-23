@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
-import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
+import { Color, FontFamily, FontSize, Border, Padding } from "../styles/ProductsStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 
@@ -19,15 +19,26 @@ const Products = () => {
   const [opnedtable,setOpnedtabel]=React.useState([])
   const navigation = useNavigation();
 console.log(order,"order");
-  ;
+  console.log(wordsea);
+  console.log(searched,'searchedfor');
 
 
-  let info={
-    product_name:wordsea
+  // let info={
+  //  product_name:wordsea
+  // }
+  const getOrder = async () => {
+    try {
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
+      console.log("allprod", res.data[0].products);
+      setOrder(res.data[0].products);
+      setIsLoading(!isLoading)
+      
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
   }
-
   const getcat=()=>{
-    axios.get("http://172.20.10.4:3000/api/sarbini/category")
+    axios.get("http://172.20.10.6:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -37,7 +48,7 @@ console.log(order,"order");
     })
   }
   const getproducts=()=> {
-    axios.get("http://172.20.10.4:3000/api/sarbini/products")
+    axios.get("http://172.20.10.6:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -46,7 +57,7 @@ console.log(order,"order");
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://172.20.10.4:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://172.20.10.6:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -56,55 +67,71 @@ console.log(order,"order");
       console.error("error",err);
     })
   }
-  const getsarch=(mot)=>{
-    axios.get("http://172.20.10.4:3000/api/sarbini/searchprod",mot)
-    .then((res)=>{
-      setSearched(res.data)
-      console.log(res.data,"searched2")}
-      )
-    .catch((err)=>{
-      console.log('erreur1',err)
-    })  
+
+  const getsarch = () => {
+    axios.get("http://172.20.10.6:3000/api/sarbini/searchprod/"+wordsea)
+    .then((res) => {
+      console.log('Données de la réponse Axios :', res.data);
+      setSearched(res.data);
+    })
+    .catch((err) => {
+      console.log('Erreur lors de la requête Axios :', err);
+    });
+
   }
+  
   const getopnedtable=()=>{
-    axios.get("http:/172.20.10.4:3000/api/sarbini/opned")
+    axios.get("http://172.20.10.6:3000/api/sarbini/opned")
     .then((res)=>{
-      setOpnedtabel(res.data.id)
+      console.log("id",res.data.id);
+      setOpnedtabel(res.data)
     })
     .catch((err)=>{
       console.log('erreur1',err)
     })  
   }
-  const ajoutproduct=(id,info)=>{
-    axios.put("http://172.20.10.4:3000/api/sarbini/addprod/"+id,{products:info})
-    .then(()=>{
-      console.log("added");
-      navigation.navigate("Orders");
-    })
-    .catch((err)=>{
-      console.log('erreur2',err)
-    })  
+  const ajoutproduct = (id, info) => {
+    axios.get("http://172.20.10.6:3000/api/sarbini/orders/products")
+      .then(response => {
+        const existingProducts = response.data[0]?.products || [];
+        const updatedProducts = [...existingProducts, info];
+  
+        // Check if the products array was initially empty
+        const isInitialEmpty = existingProducts.length === 0;
+  
+        axios.put("http://172.20.10.6:3000/api/sarbini/addprod/" + id, { products: updatedProducts })
+          .then(() => {
+            if (isInitialEmpty) {
+              console.log("added");
+            } else {
+              console.log("updated");
+            }
+          })
+          .catch((err) => {
+            console.log('erreur2', err);
+          });
+      })
+      .catch((err) => {
+        console.log('erreur1', err);
+      });
   }
+  
 
   React.useEffect(()=>{
     getcat();
     getproducts()
     getopnedtable()
-  },[])
+  },[!isLoading])
   
   const renderbycateg=(categ)=>{
-    const addToOrder = (el) => {
-      // Create a new array with the current order plus the clicked item
-      const newOrder = [...order, el];
-      setOrder(newOrder);
-    };
-  
+
     return(
     categ.map((el,i)=>{
       return(
         <>    
         <TouchableOpacity 
-        onPress={()=>{ addToOrder(el)}}
+        onPress={()=>{ajoutproduct(opnedtable.id,el)
+        }}
         >
         <View style={[styles.cardMenu1, styles.cardLayout]}>
         <View style={[styles.cardMenuChild, styles.cardPosition]} />
@@ -134,22 +161,31 @@ console.log(order,"order");
 
   const handleCategoryPress=(idcat)=>{
     setOnecateg(idcat)
-      
+    setDosearch(false)
     getprodbycateg(idcat)
   }
 
   
+  const hundelsearch=()=>{
+    console.log("search");
+    getsarch();
+    setTimeout(() => {
 
-  const conditionCategory=()=>{
-    console.log(searched,"searched");
-    if(onecateg==0){
-      return renderbycateg(allproducts)
-    }
-    else if(dosearch===true){
-      return renderbycateg(searched)
-    }
-    else{
-     return renderbycateg(filtrprod)
+      setOnecateg(null);
+      setDosearch(true);      
+    }, 2000);
+
+  }
+
+  const conditionCategory = () => {
+    console.log(searched, "searched");
+    
+    if (dosearch===true) {
+      return renderbycateg(searched);
+    } else if (onecateg === 0) {
+      return renderbycateg(allproducts);
+    } else {
+      return renderbycateg(filtrprod);
     }
   }
 
@@ -165,7 +201,7 @@ console.log(order,"order");
         style={styles.Products}>
         </TouchableOpacity>
         <TouchableOpacity 
-        //////
+        ////
         onPress={()=>{navigation.navigate("Tables");
       }}
         style={styles.tables}>
@@ -191,7 +227,7 @@ console.log(order,"order");
             
             <View style={[styles.groupChild, styles.childBorder]} />
             <TouchableOpacity   
-            onPress={()=>{ console.log("search");getsarch(info); setDosearch(true);setOnecateg(null);  }}
+            onPress={hundelsearch}
             > 
       <View style={styles.iconsearch}>
          <Image
@@ -202,7 +238,9 @@ console.log(order,"order");
             </View>
             </TouchableOpacity>
 
-            <TextInput placeholder="Search item" onChangeText={(text)=>{console.log(text);setWordsea(text)}} style={[styles.searchItem, styles.iceTypo2]}></TextInput>
+            <TextInput placeholder="Search item" onChangeText={(text) => {
+  setWordsea(text);
+}}style={[styles.searchItem, styles.iceTypo2]}></TextInput>
           </View>
         </View>
         <View style={styles.frameWrapper}>
@@ -241,9 +279,10 @@ console.log(order,"order");
       </ScrollView>
       </View>
       <TouchableOpacity
-      onPress={()=>{ajoutproduct(opnedtable,order), setTimeout(() => {
-        setOrder([])
-      }, 1000);}}
+      onPress={()=>{
+        navigation.navigate("Orders");
+      
+      ;}}
       >
       <View style={[styles.iconButton1, styles.frameViewBorder]}>
         <Image
@@ -253,10 +292,7 @@ console.log(order,"order");
         />
       </View>
       </TouchableOpacity>
-      <View style={styles.categoryButton1}>
-        <Text style={[styles.iceCream5, styles.iceTypo2]}>Ice Cream</Text>
-      </View>
-    
+
       <View style={styles.productsItem} />
       <View style={styles.productsItem} />
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>
@@ -365,7 +401,6 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   cardParentLayout1: {
-    width: 303,
     flexDirection: "row",
     flexWrap:"wrap",
     width: "100%",
