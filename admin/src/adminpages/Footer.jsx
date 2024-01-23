@@ -7,7 +7,7 @@ export const Footer = () => {
     <div className="footer">
     <div className="footer-child" />
     <div className="copyright-2023-safelet-all-parent">
-        <div className="terms-of-use">Copyright @ 2023 Safelet. All rights reserved.</div>
+        <div className="terms-of-use">Copyright @ 2024 Sarbini. All rights reserved.</div>
         <div className="terms-of-use-parent">
             <b className="terms-of-use">Terms of Use</b>
             <div className="frame-child29" />
@@ -21,4 +21,4 @@ export const Footer = () => {
 </div>
   );
 };
-
+export default Footer;
