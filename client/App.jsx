@@ -36,7 +36,6 @@ const App = () => {
               headerShown: true,
             }}
           />
-
           <Stack.Screen
             name="Product"
             component={Products}

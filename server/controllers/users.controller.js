@@ -45,4 +45,14 @@ const DeleteUser= async(req,res) => {
     }
 };
 
-module.exports={AllUsers,AddUser,UpdateUser,DeleteUser}
+const finbypseudo=async(req,res)=>{
+    let pseudo=req.params.user_pseudo
+    try{
+        const result=await Users.findOne({where:{user_pseudo:pseudo}})
+        res.json(result)
+    } catch (error) {
+        res.send(error)    
+        }
+}
+
+module.exports={AllUsers,AddUser,UpdateUser,DeleteUser,finbypseudo}

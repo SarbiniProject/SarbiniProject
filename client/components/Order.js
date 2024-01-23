@@ -33,7 +33,7 @@ const Order = () => {
   },[products])
   const getproducts = async () => {
     try {
-      const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orders/products");
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
       console.log("allprod", res.data[0].products);
       setProducts(res.data[0].products);
       
@@ -43,7 +43,7 @@ const Order = () => {
   }
   
   const SendIt=(id)=>{
-    axios.put("http://172.20.10.3:3000/api/sarbini/orders2/"+id,{satus2:true})
+    axios.put("http://172.20.10.6:3000/api/sarbini/orders2/"+id,{satus2:true})
     .then(()=>{
       Alert.alert("send it")
       setTimeout(() => {
@@ -54,7 +54,7 @@ const Order = () => {
 
   const Tableon = async () => {
     try {
-      const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orderon");
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orderon");
       console.log("data", res.data);
       setTableon(res.data);
     } catch (err) {
@@ -63,7 +63,7 @@ const Order = () => {
   }
   const Addnote=async(id,info)=>{
     try{
-      const res = await axios.put("http://172.20.10.3:3000/api/sarbini/addnote/"+id,{note:info})
+      const res = await axios.put("http://172.20.10.6:3000/api/sarbini/addnote/"+id,{note:info})
       .then(()=>{
         console.log("note added ");
       })
@@ -74,7 +74,7 @@ const Order = () => {
   }
 
   const DeleteProd=(id,info)=>{
-    axios.put("http://172.20.10.3:3000/api/sarbini/deleteprod/"+id,{id:info})
+    axios.put("http://172.20.10.6:3000/api/sarbini/deleteprod/"+id,{id:info})
     .then(()=>{
       console.log("deleted");
       setRef(!ref)

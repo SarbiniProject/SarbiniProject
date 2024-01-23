@@ -49,7 +49,7 @@ console.log('====================================');
 
 
   const getalltables=()=>{
-    axios.get(`http://172.20.10.3:3000/api/sarbini/ordersOne/${idOrder}`)
+    axios.get(`http://172.20.10.6:3000/api/sarbini/ordersOne/${idOrder}`)
     .then((res)=>{
       console.log(res.data);
       setTables(res.data)
@@ -77,7 +77,7 @@ console.log('====================================');
   try {
     setIsLoading(true);
 
-    const response = await axios.post('http://172.20.10.3:3000/api/sarbini/pay', {
+    const response = await axios.post('http://172.20.10.6:3000/api/sarbini/pay', {
       amount: 100* amount,
     });
 
@@ -113,7 +113,7 @@ const pay = async () => {
       Alert.alert('Error', 'Payment failed. Please try again.');
       setpop(false)
     } else {
-      await axios.put(`http://172.20.10.3:3000/api/sarbini/orders3/${idOrder}`);
+      await axios.put(`http://172.20.10.6:3000/api/sarbini/orders3/${idOrder}`);
       Alert.alert('Success', 'Payment successful!');
       setpop(false)
       fetchOrders(tables.userId)
@@ -131,7 +131,7 @@ const pay = async () => {
 ////////////////////////////////////////////////////////////////////////////////////
 
 const payCash= async ()=>{
-  await axios.put(`http://172.20.10.3:3000/api/sarbini/orders3/${idOrder}`);
+  await axios.put(`http://172.20.10.6:3000/api/sarbini/orders3/${idOrder}`);
   Alert.alert('Success', 'Payment successful!');
   setpop(false)
   fetchOrders(tables.userId)

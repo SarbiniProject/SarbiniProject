@@ -23,7 +23,7 @@ const Dashboard = ({}) => {
 
   const fetchWaiters = () => {
     axios
-      .get('http://172.20.10.3:3000/api/sarbini/users')
+      .get('http://172.20.10.6:3000/api/sarbini/users')
       .then((res) => {
         const w = res.data.filter((e) => e.user_role === 'waiter');
         setWaiter(w);
@@ -36,7 +36,7 @@ const Dashboard = ({}) => {
   const fetchOrders = (userId) => {
     setLoading(true);
     axios
-      .get(`http://172.20.10.3:3000/api/sarbini/orders/${userId}`)
+      .get(`http://172.20.10.6:3000/api/sarbini/orders/${userId}`)
       .then((res) => {
         setOrders(res.data);
         console.log(res.data);

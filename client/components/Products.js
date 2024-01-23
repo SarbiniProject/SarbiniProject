@@ -28,7 +28,7 @@ console.log(order,"order");
   // }
   const getOrder = async () => {
     try {
-      const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orders/products");
+      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
       console.log("allprod", res.data[0].products);
       setOrder(res.data[0].products);
       setIsLoading(!isLoading)
@@ -38,7 +38,7 @@ console.log(order,"order");
     }
   }
   const getcat=()=>{
-    axios.get("http://172.20.10.3:3000/api/sarbini/category")
+    axios.get("http://172.20.10.6:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -48,7 +48,7 @@ console.log(order,"order");
     })
   }
   const getproducts=()=> {
-    axios.get("http://172.20.10.3:3000/api/sarbini/products")
+    axios.get("http://172.20.10.6:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -57,7 +57,7 @@ console.log(order,"order");
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://172.20.10.3:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://172.20.10.6:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -81,7 +81,7 @@ console.log(order,"order");
   }
   
   const getopnedtable=()=>{
-    axios.get("http:/172.20.10.3:3000/api/sarbini/opned")
+    axios.get("http://172.20.10.6:3000/api/sarbini/opned")
     .then((res)=>{
       console.log("id",res.data.id);
       setOpnedtabel(res.data)
@@ -91,15 +91,21 @@ console.log(order,"order");
     })  
   }
   const ajoutproduct = (id, info) => {
-    axios.get("http://172.20.10.3:3000/api/sarbini/orders/products")
+    axios.get("http://172.20.10.6:3000/api/sarbini/orders/products")
       .then(response => {
         const existingProducts = response.data[0]?.products || [];
         const updatedProducts = [...existingProducts, info];
   
-        axios.put("http://172.20.10.3:3000/api/sarbini/addprod/" + id, { products: updatedProducts })
+        // Check if the products array was initially empty
+        const isInitialEmpty = existingProducts.length === 0;
+  
+        axios.put("http://172.20.10.6:3000/api/sarbini/addprod/" + id, { products: updatedProducts })
           .then(() => {
-            console.log("added");
-            // navigation.navigate("Orders");
+            if (isInitialEmpty) {
+              console.log("added");
+            } else {
+              console.log("updated");
+            }
           })
           .catch((err) => {
             console.log('erreur2', err);

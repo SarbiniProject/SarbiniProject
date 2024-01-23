@@ -87,7 +87,7 @@ const signIn = async (req, res) => {
     }
   } catch (error) {
     console.error('Error during sign-in:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error');}}
 
 const adminGenerateToken = (userId, userName) => {
   const expiresIn = 60 * 60 * 24;
@@ -125,4 +125,4 @@ module.exports = {
   signUp,
   signIn,
   adminSignIn
-};
+}
