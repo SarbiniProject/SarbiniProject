@@ -149,7 +149,7 @@ const Order = () => {
               <Image
                 style={[styles.trashIcon, styles.iconLayout]}
                 contentFit="cover"
-                source={require("../assets/trash.png")}
+                source={require("../assets/trash.svg")}
               />
               </TouchableOpacity>
               <Text style={styles.text}>{el.price}DT</Text>

@@ -93,13 +93,13 @@ const hundelupdate = async (id, status1) => {
       <Image
         style={[styles.sideBarManager1, styles.sideLayout]}
         contentFit="cover"
-        source={require("../assets/side-bar-manager1.png")}
+        source={require("../assets/side-bar-manager2.png")}
       />
       <View style={styles.buttonLogOut}>
         <Image
           style={[styles.lucidedoorOpenIcon, styles.iconLayout]}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.png")}
+          source={require("../assets/lucidedooropen.svg")}
         />
         <Text style={[styles.logOut, styles.logOutTypo]}>Log Out</Text>
       </View>
@@ -165,8 +165,43 @@ const hundelupdate = async (id, status1) => {
       </View>
       {/*//////////////////////////////////////////////////////////////////////////////////////*/}
       <View style={styles.searchBarParent}>
+<<<<<<< HEAD:client/components/Tables.js
+        <View style={styles.searchBar}>
+          <View style={[styles.rectangleParent, styles.groupChildPosition]}>
+            <View style={[styles.groupChild, styles.groupChildBorder]} />
+            <Image
+              style={[styles.groupItem, styles.component1IconLayout]}
+              contentFit="cover"
+              source={require("../assets/frame-1260.png")}
+            />
+            <Text style={[styles.searchItem, styles.textTypo]}>
+              Search item
+            </Text>
+          </View>
+        </View>
+        <View style={styles.frameWrapper}>
+          <View>
+            <Image
+              style={styles.iconButton}
+              contentFit="cover"
+              source={require("../assets/iconbutton.png")}
+            />
+            <View style={[styles.wrapper, styles.wrapperFlexBox]}>
+              <Text style={[styles.text, styles.textTypo]}>3</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={[styles.iconButton1, styles.groupChildBorder]}>
+        <Image
+          style={styles.filterIcon}
+          contentFit="cover"
+          source={require("../assets/filter.svg")}
+        />
+=======
         
    
+>>>>>>> 3e316606c4bf56a16ec5002aacb947721a71eccd:client/components/waiter/Tables.js
       </View>
    
       <View style={styles.tablesItem} />

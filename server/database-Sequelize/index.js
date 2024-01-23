@@ -45,6 +45,7 @@ note:{
   type: DataTypes.STRING,
   allowNull: true,
 },
+
 })
 sarbini.Users.hasMany(sarbini.orders)
 

@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View ,} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import Products from './components/Products'
+import OneProduct from './components/Controller/OneProduct';
+import Report from './components/Controller/Report'
+import Product from './components/Controller/Product'
 import Login from './components/Login'
 import Dashboard from './components/cashier/dashboard.jsx'
 import Order from './components/Order.js';

@@ -10,7 +10,7 @@ const Product =(connection,DataTypes)=>{
     },
     image : {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       description : {
         type: DataTypes.STRING,
