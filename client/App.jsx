@@ -5,37 +5,46 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import Products from './components/Products'
 import Login from './components/Login'
+import Dashboard from './components/cashier/dashboard.jsx'
+import Order from './components/Order.js';
+import OrderW from './components/cashier/OrderW.jsx'
+const STRIPE_KEY =
+  'pk_test_51NfOUIFIt3rgcksJfXUm5Pv71NeMwybINDDYSd6XL4HDfdJXUN1NJnfsA9pnbVNIFVL2gfobuer8ORndXw7ZsobV00tj4N01N0';
+
+
 import Tables from './components/Tables';
-import Order from './components/Order';
+
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-    <StripeProvider>
+      <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
       <Stack.Navigator>
       <Stack.Screen
             name="Login"
             component={Login}
             options={{
-              headerShown: false,
+              headerShown: true,
+            }}
+          />
+            <Stack.Screen
+            name="Dashboard"
+            component={Dashboard}
+            options={{
+              headerShown: true,
             }}
           />
           <Stack.Screen
             name="Product"
             component={Products}
             options={{
-              headerShown: false,
+              headerShown: true,
             }}
           />
-          <Stack.Screen
-            name="Tables"
-            component={Tables}
-            options={{
-              headerShown: false,
-            }}
-          />
+      
+        
           <Stack.Screen
             name="Orders"
             component={Order}
@@ -43,7 +52,22 @@ const App = () => {
               headerShown: false,
             }}
           />
+            <Stack.Screen
+            name="Tables"
+            component={Tables}
+            options={{
+              headerShown: false,
+            }}
+          />
+            <Stack.Screen
+            name="OrderW"
+            component={OrderW}
+            options={{
+              headerShown: true,
+            }}
+          />
      </Stack.Navigator>
+     
      </StripeProvider>
      </NavigationContainer>
   );
@@ -58,4 +82,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-

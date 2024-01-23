@@ -1,14 +1,108 @@
-import * as React from "react";
-import { Text, StyleSheet,TouchableOpacity,View ,TextInput} from "react-native";
+import React, { useState } from "react";
+import { Text, StyleSheet,TouchableOpacity,View ,TextInput, Alert} from "react-native";
 import { Image } from "expo-image";
 import { Color, FontFamily, FontSize, Border } from "./styles/LoginStyle";
+import Cookies from 'js-cookie';
+import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import safeStringify from 'json-stringify-safe';
 
 const Login = () => {
-  const [pseudo,setPseudo]=React.useState("")
-  const [password,setPassword]=React.useState("")
-  console.log(pseudo);
+  const [pseudo, setPseudo] = useState("");
+  const [password, setPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [user,setUser]=useState([])
   const navigation = useNavigation();
+
+  
+  const  findbypseudo=(pseudo)=>{
+    axios.get("http://172.20.10.6:3000/api/sarbini/pseudo/"+pseudo)
+    .then((res)=>{
+      console.log(res.data);
+      console.log(pseudo);
+      if (res.data !== null) {
+        setUser(res.data);
+        console.log("User found:");
+      } else {
+        // Handle the case where the user is not found
+        console.log("User not found");
+        Alert.alert("User not found");
+        setPseudo("");
+      }
+    })
+    .catch((err)=>{
+      Alert.alert("false pseudo")
+      console.error(err);
+      setPseudo("")
+    })
+  }
+
+  const verifuser=()=>{
+    if(password===user.user_password){
+      return navigateuser(user.user_role,user.id)
+    }
+    else(
+      Alert.alert("incorecet password"),
+      setPassword("")
+    )
+  }
+  const navigateuser=(user_role,id)=>{
+    if (user_role === "controller") {
+      navigation.navigate('controller', { userId: id });
+    } else if (user_role === "waiter") {
+      navigation.navigate('Product', { userId: id });
+    } else {
+      navigation.navigate('Dashboard', { userId: id });
+    }
+  }
+
+
+ const handleSubmit = async () => {
+  try {
+    const response = await axios.post('http://172.20.10.6:3000/api/sarbini/signin', {
+      user_Pseudo: pseudo,
+      user_password: password,
+    });
+
+    const { token, id, user_name, user_role } = response.data;
+
+    if (id && token) {
+      // Exclude circular references manually
+      const cleanedData = {
+        id,
+        user_name,
+        token,
+        user_role, // Include other properties as needed
+      };
+
+      // Use safeStringify to handle circular references
+      const jsonString = safeStringify(cleanedData);
+
+      // Store the token in AsyncStorage
+      await AsyncStorage.setItem('authToken', jsonString);
+
+      setErrorMessage('');
+      setSuccessMessage('Login successful');
+
+      // Navigate based on user role
+      if (user_role === "controller") {
+        navigation.navigate('controller', { userId: id });
+      } else if (user_role === "waiter") {
+        navigation.navigate('Product', { userId: id });
+      } else {
+        navigation.navigate('Dashboard', { userId: id });
+      }
+    } else {
+      setErrorMessage('Login failed. Please check your credentials.');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    setErrorMessage('Error during login. Please try again.');
+  }
+};
+  
 
   return (
     <View style={styles.login}>
@@ -28,7 +122,7 @@ const Login = () => {
         <View style={[styles.label, styles.bg1Layout]}>
           <View style={[styles.bg1, styles.bg1Layout]} />
         </View>
-        <TextInput placeholder="Name_ID"  onChange={(text)=>{setPseudo(text)}} style={[styles.placeholder, styles.placeholderTypo]}>
+        <TextInput placeholder="Name_ID"  onChangeText={(text)=>{setPseudo(text)}} style={[styles.placeholder, styles.placeholderTypo]}>
           
         </TextInput>
       </View>
@@ -40,12 +134,12 @@ const Login = () => {
       </View>
       <Text style={[styles.pseudo, styles.pseudoTypo]}>Pseudo</Text>
       <Text style={[styles.password, styles.pseudoTypo]}>password</Text>
-      <TextInput placeholder="Your Password"  onChange={(text)=>{setPassword(text)}} secureTextEntry={true} style={[styles.yourPassword, styles.login2Typo]}>
+      <TextInput placeholder="Your Password" onPressIn={()=>{findbypseudo(pseudo)}} onChangeText={(text)=>{setPassword(text)}} secureTextEntry={true} style={[styles.yourPassword, styles.login2Typo]}>
         
       </TextInput> 
       <View>
       <TouchableOpacity
-      onPress={()=>{navigation.navigate("Product");}}
+      onPress={()=>{verifuser();}}
       style={styles.btn_login1}  
       
       >
@@ -78,16 +172,17 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   login1Typo: {
-    textAlign: "left",
+    textAlign: "",
     color: Color.colorGray,
     fontFamily: FontFamily.segoeUI,
     left: 0,
     position: "absolute",
+    
   },
   inputLayout: {
     height: 69,
     width: 325,
-    left: 14,
+    left: 35,
     position: "absolute",
   },
   bg1Layout: {
@@ -122,6 +217,7 @@ const styles = StyleSheet.create({
   },
   login1: {
     top: 36,
+    marginLeft:40,
     fontSize: 30,
     fontWeight: "700",
     width: 176,
@@ -130,7 +226,7 @@ const styles = StyleSheet.create({
   loginTitle: {
     top: 156,
     height: 80,
-    left: 14,
+    left: 110,
     width: 325,
   },
   captureDCran20240113081Icon: {
@@ -172,15 +268,15 @@ const styles = StyleSheet.create({
   },
   pseudo: {
     top: 251,
-    left: 38,
+    left: 49,
   },
   password: {
     top: 335,
-    left: 46,
+    left: 49,
   },
   yourPassword: {
     top: 364,
-    left: 36,
+    left: 49,
     width: 209,
     height: 26,
     color: Color.colorBlack,
