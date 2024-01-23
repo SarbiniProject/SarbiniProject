@@ -2,7 +2,7 @@ import * as React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from "react-native";
 import {Image} from 'expo-image'
 import { useState } from "react";
-import { Color, FontFamily, FontSize, Border, Padding } from "./styles/OneProductStyle";
+import { Color, FontFamily, FontSize, Border, Padding } from "../styles/OneProductStyle";
 import axios from 'axios'
 const OneProduct = ({route}) => {
   const { productData,refreshData } = route.params;
@@ -52,7 +52,7 @@ const OneProduct = ({route}) => {
 
   const updateProductData = async (productId, updatedData) => {
     try {
-      const apiUrl = `http://172.20.10.2:3000/api/sarbini/product/${productId}`;
+      const apiUrl = `http://192.168.104.4:3000/api/sarbini/product/${productId}`;
       await axios.put(apiUrl, updatedData);
     } catch (error) {
       throw new Error(`Failed to update product data: ${error.message}`);
@@ -61,7 +61,7 @@ const OneProduct = ({route}) => {
 
   const deleteProductData = async (productId) => {
     try {
-      const apiUrl = `http://172.20.10.2:3000/api/sarbini/product/${productId}`;
+      const apiUrl = `http://192.168.104.4:3000/api/sarbini/product/${productId}`;
       await axios.delete(apiUrl);
     } catch (error) {
       throw new Error(`Failed to delete product: ${error.message}`);
@@ -76,7 +76,7 @@ const OneProduct = ({route}) => {
             <View style={[styles.searchWrapper, styles.buttonFlexBox]}>
               <Image
                 style={styles.searchIcon}
-                source={require("../assets/search.svg")}
+                source={require("../../assets/search.svg")}
               />
             </View>
             <Text style={[styles.searchItem, styles.textTypo]}>
@@ -89,7 +89,7 @@ const OneProduct = ({route}) => {
             <View style={[styles.iconButton, styles.wrapperFlexBox]}>
               <Image
                 style={styles.notificationIcon}
-                source={require("../assets/notification.svg")}
+                source={require("../../assets/notification.svg")}
               />
             </View>
             <View style={[styles.wrapper, styles.wrapperPosition]}>
@@ -101,12 +101,12 @@ const OneProduct = ({route}) => {
       <Image
         style={[styles.oneProductChild, styles.iconButton1Position]}
         contentFit="cover"
-        source={require("../assets/ellipse-455.png")}
+        source={require("../../assets/ellipse-455.png")}
       />
       <View style={[styles.iconButton1, styles.iconLayout]}>
         <Image
           style={styles.filterIcon}
-          source={require("../assets/filter.svg")}
+          source={require("../../assets/filter.svg")}
         />
       </View>
       <View style={styles.oneProductItem} />
@@ -114,24 +114,24 @@ const OneProduct = ({route}) => {
       <Image
         style={[styles.sideBarManager, styles.sideLayout]}
         contentFit="cover"
-        source={require("../assets/side-bar-manager.png")}
+        source={require("../../assets/side-bar-manager.png")}
       />
       <Image
         style={[styles.sideBarManager1, styles.sideLayout]}
         contentFit="cover"
-        source={require("../assets/side-bar-manager.png")}
+        source={require("../../assets/side-bar-manager.png")}
       />
       <View style={styles.buttonLogOut}>
         <Image
           style={styles.iconLayout}
-          source={require("../assets/lucidedooropen.svg")}
+          source={require("../../assets/lucidedooropen.svg")}
         />
         <Text style={[styles.logOut, styles.payTypo]}>Log Out</Text>
       </View>
       <Image
         style={styles.captureDCran20240113081Icon}
         contentFit="cover"
-        source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
+        source={require("../../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
       <View style={[styles.namelemonCoffeeParent, styles.cardMenuChildBorder]}>
         <Text style={[styles.namelemonCoffee, styles.price15dtFlexBox]}>
@@ -161,14 +161,14 @@ const OneProduct = ({route}) => {
         <TouchableOpacity onPress={deleteProduct}>
         <Image
           style={styles.trashIcon}
-          source={require("../assets/trash.svg")}
+          source={require("../../assets/trash.svg")}
         />
       </TouchableOpacity>
         <TouchableOpacity onPress={toggleModal} > 
         <Image
           style={styles.image13Icon}
           contentFit="cover"
-          source={require("../assets/image-13.png")}
+          source={require("../../assets/image-13.png")}
         />
         </TouchableOpacity>
         <Modal

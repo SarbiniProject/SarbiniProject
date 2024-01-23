@@ -17,7 +17,7 @@ const App = () => {
     <NavigationContainer>
     <StripeProvider>
       <Stack.Navigator>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Product"
             component={Product}
             options={{
@@ -44,12 +44,12 @@ const App = () => {
             options={{
               headerShown: false,
             }}
-          />
-          {/* <Stack.Screen
+          /> */}
+          <Stack.Screen
               name="Report"
               component={Report}
               options={{ headerShown: false }}
-            /> */}
+            />
      </Stack.Navigator>
        </StripeProvider>
      </NavigationContainer>

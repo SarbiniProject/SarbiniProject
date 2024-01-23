@@ -41,10 +41,6 @@ products:{
   type:DataTypes.JSON,
   allowNull:true
 },
-note:{
-  type: DataTypes.STRING,
-  allowNull: false,
-},
 })
 sarbini.Users.hasMany(sarbini.orders)
 

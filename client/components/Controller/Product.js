@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet, Text, ScrollView,TouchableOpacity,View, TextInput,KeyboardAvoidingView,TouchableWithoutFeedback,Platform,Keyboard,Modal } from "react-native";
-import { Color, FontFamily, FontSize, Border, Padding } from "./styles/ProductsStyle";
+import { Color, FontFamily, FontSize, Border, Padding } from "../styles/ProductsStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from '@expo/vector-icons';
@@ -29,7 +29,7 @@ const Product = () => {
 
 
   const getcat=()=>{
-    axios.get("http://172.20.10.2:3000/api/sarbini/category")
+    axios.get("http://192.168.104.4:3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -70,7 +70,7 @@ const Product = () => {
 
 
   const getproducts=()=> {
-    axios.get("http://172.20.10.2:3000/api/sarbini/products")
+    axios.get("http://192.168.104.4:3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -79,7 +79,7 @@ const Product = () => {
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://172.20.10.2:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://192.168.104.4:3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -97,6 +97,7 @@ const Product = () => {
     getcat();
     getproducts()
     translateY.value = withTiming(isFormVisible ? 0:500)
+    refreshData()
   },[isFormVisible])
   const translateY = useSharedValue(0);
 
@@ -203,7 +204,7 @@ const Product = () => {
       };
 
       // Make an API call to save the product data
-      const response = await axios.post('http://172.20.10.2:3000/api/sarbini/product', productDataa);
+      const response = await axios.post('http://192.168.104.4:3000/api/sarbini/product', productDataa);
 
       // Handle the API response as needed
       console.log('Product saved successfully:', response.data);
@@ -225,20 +226,20 @@ const Product = () => {
       <Image
         style={styles.sideBarManager}
         contentFit="cover"
-        source={require("../assets/side-bar-manager.png")}
+        source={require("../../assets/side-bar-manager.png")}
       />
       <View style={[styles.buttonLogOut, styles.buttonLogOutFlexBox]}>
         <Image
           style={styles.lucidedoorOpenIcon}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.svg")}
+          source={require("../../assets/lucidedooropen.svg")}
         />
         <Text style={styles.logOut}>Log Out</Text>
       </View>
       <Image
         style={styles.captureDCran20240113081Icon}
         contentFit="cover"
-        source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
+        source={require("../../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
       <View style={styles.searchBarParent}>
         <View style={styles.searchBar}>
@@ -249,7 +250,7 @@ const Product = () => {
             <Image
               style={[styles.groupItem, styles.itemLayout]}
               resizeMode="cover"  
-              source={require("../assets/frame-1260.png")}
+              source={require("../../assets/frame-1260.png")}
             />
              </View>
             </TouchableOpacity >
@@ -261,7 +262,7 @@ const Product = () => {
             <Image
               style={styles.iconButton}
               contentFit="cover"
-              source={require("../assets/iconbutton.png")}
+              source={require("../../assets/iconbutton.png")}
             />
             <View style={styles.wrapper}>
               <Text style={styles.text}>3</Text>
@@ -272,7 +273,7 @@ const Product = () => {
       <Image
         style={styles.productsChild}
         contentFit="cover"
-        source={require("../assets/ellipse-454.png")}
+        source={require("../../assets/ellipse-454.png")}
       />
       <View style={styles.container} >
         <ScrollView horizontal>
@@ -296,7 +297,7 @@ const Product = () => {
         <Image
           style={styles.filterIcon}
           contentFit="cover"
-          source={require("../assets/filter.svg")}
+          source={require("../../assets/filter.svg")}
         />
       </View>
       <View style={[styles.cardMenuParent, styles.cardParentLayout1]}>

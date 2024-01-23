@@ -1,116 +1,127 @@
-import * as React from "react";
+import * as React  from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { BarChart, LineChart, PieChart } from "react-native-chart-kit";
-import { FontFamily,Color, Padding,FontSize,Border } from "./styles/ReportStyle";
+import { FontFamily,Color, Padding,FontSize,Border } from "../styles/ReportStyle";
 import axios from 'axios';
 
 const Report = () => {
   const [barChartData, setBarChartData] = React.useState([]);
   const [lineChartData, setLineChartData] = React.useState([]);
   const [pieChartData, setPieChartData] = React.useState([]);
-
-  const fetchBarChartData = async () => {
-    try {
-      const response = await axios.get('http://172.20.10.2:3000/api/sarbini/orders');
-      const barData = response.data;
-      setBarChartData(barData);
-      
-    } catch (error) {
-      console.error('Error fetching bar chart data:', error);
-    }
+  
+  const fetchBarChartData = () => {
+    axios.get('http://192.168.103.36:3000/api/sarbini/orders')
+      .then(response => {
+        const barData = response.data;
+        console.log('barchart',response.data);
+        setBarChartData(barData);
+      })
+      .catch(error => {
+        console.error('Error fetching bar chart data:', error);
+      });
   };
 
-  const fetchLineChartData = async () => {
-    try {
-      const response = await axios.get('http://172.20.10.2:3000/api/sarbini/orders');
-      const lineData = response.data;
-      setLineChartData(lineData);
-    } catch (error) {
-      console.error('Error fetching line chart data:', error);
-    }
+  const fetchLineChartData = () => {
+    axios.get('http://192.168.103.36:3000/api/sarbini/orders')
+      .then(response => {
+        const lineData = response.data;
+        setLineChartData(lineData);
+        console.log(response.data);
+        console.log('heloooo');
+      })
+      .catch(error => {
+        console.error('Error fetching line chart data:', error);
+      });
   };
 
-  const fetchPieChartData = async () => {
-    try {
-      const response = await axios.get('http://172.20.10.2:3000/api/sarbini/users');
-      const pieData = response.data;
-      setPieChartData(pieData);
-    } catch (error) {
-      console.error('Error fetching pie chart data:', error);
-    }
+  const fetchPieChartData = () => {
+    axios.get('http://192.168.103.36:3000/api/sarbini/users')
+      .then(response => {
+        const pieData = response.data;
+        setPieChartData(pieData);
+      })
+      .catch(error => {
+        console.error('Error fetching pie chart data:', error);
+      });
   };
-
+  const fetchData=()=>{
+  fetchBarChartData();
+  fetchLineChartData();
+  fetchPieChartData();
+}
+  
   React.useEffect(() => {
-    fetchBarChartData();
-    fetchLineChartData();
-    fetchPieChartData();
-  }, []);
+fetchData()
+}, []);
+const renderChart = (dataArray, chartComponent, labelsArray) => (
+  <View style={styles.oneProduct}>
+    {dataArray.map((data, index) => (
+      <View key={index} style={styles.chartContainer}>
+        {chartComponent(data)}
+        <Text style={styles.chartLabel}>{labelsArray[index]}</Text>
+      </View>
+    ))}
+  </View>
+);
 
-  const renderChart = (data, chartComponent, label) => (
-    <View style={styles.chartContainer}>
-      {data && (
-        <>
-          {chartComponent}
-          <Text style={styles.chartLabel}>{label}</Text>
-        </>
-      )}
-    </View>
-  );
+const renderBarChart = data => (
+  <BarChart
+    data={data}
+    width={300}
+    height={200}
+    yAxisLabel="$"
+    chartConfig={{
+      backgroundGradientFrom: Color.White,
+      backgroundGradientTo: Color.White,
+      decimalPlaces: 0,
+      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+      style: {
+        borderRadius: 16,
+      },
+    }}
+  />
+);
 
+const renderLineChart = data => (
+  <LineChart
+    data={data}
+    width={300}
+    height={200}
+    yAxisLabel="$"
+    chartConfig={{
+      backgroundGradientFrom: Color.White,
+      backgroundGradientTo: Color.White,
+      decimalPlaces: 0,
+      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+      style: {
+        borderRadius: 16,
+      },
+    }}
+  />
+);
+
+const renderPieChart = data => (
+  <PieChart
+    data={data}
+    width={300}
+    height={200}
+    chartConfig={{
+      backgroundGradientFrom: Color.White,
+      backgroundGradientTo: Color.White,
+      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    }}
+    accessor="population"
+    backgroundColor="transparent"
+    paddingLeft="15"
+    absolute
+  />
+);
+  
   return (
     <View style={styles.oneProduct}>
-      {renderChart(barChartData, (
-        <BarChart
-          data={barChartData}
-          width={300}
-          height={200}
-          yAxisLabel="$"
-          chartConfig={{
-            backgroundGradientFrom: Color.White,
-            backgroundGradientTo: Color.White,
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-        />
-      ), 'Total Revenue')}
-
-      {renderChart(lineChartData, (
-        <LineChart
-          data={lineChartData}
-          width={300}
-          height={200}
-          yAxisLabel="$"
-          chartConfig={{
-            backgroundGradientFrom: Color.White,
-            backgroundGradientTo: Color.White,
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-        />
-      ), 'Weekly Sales')}
-
-      {renderChart(pieChartData, (
-        <PieChart
-          data={pieChartData}
-          width={300}
-          height={200}
-          chartConfig={{
-            backgroundGradientFrom: Color.White,
-            backgroundGradientTo: Color.White,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          }}
-          accessor="population"
-          backgroundColor="transparent"
-          paddingLeft="15"
-          absolute
-        />
-      ), 'Sales Distribution')}
+       {renderChart([barChartData], renderBarChart, ['Total Revenue'])}
+      {renderChart([lineChartData], renderLineChart, ['Weekly Sales'])}
+      {renderChart([pieChartData], renderPieChart, ['Sales Distribution'])}
     </View>
   );
 };
