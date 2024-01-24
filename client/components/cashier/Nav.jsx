@@ -26,16 +26,7 @@ const Nav = ({socket,one }) => {
     setTableN(result[0]) 
   };
  
-  // useEffect(() => {
-  //   socket.on("getText", (data) => {
-  //     // setNotifications((prev) => [...prev, data]);
-  //     setNotifications(data.text);
-  //     console.log('====================================');
-  //     console.log('cccccccccc',data.text);
-  //     console.log('====================================');
-      
-  //   });
-  // }, [socket]);
+
   socket.on("getText", (data) => {
     // setNotifications((prev) => [...prev, data]);
     setNotificationPressed(true);
