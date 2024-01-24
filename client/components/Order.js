@@ -5,7 +5,7 @@ import { FontFamily, Color, Padding, Border, FontSize } from "./styles/OrderStyl
 import axios from "axios";
 
 
-const Order = () => {
+const Order = ({socket}) => {
 
   const[ref,setRef]=React.useState(true)
   const[products,setProducts]=React.useState([])
@@ -14,14 +14,34 @@ const Order = () => {
   const[note,setNote]=React.useState("")
   const[idnote,setIdnote]=React.useState(null)
   const[total,setTotal]=React.useState(0)
+  const [send, setSend] = React.useState('');
   // console.log(products[0].price);
+
+  React.useEffect(() => {
+    socket?.emit("newUser", 1);
+  }, [socket]);
+
+
+  const handleNotification = (text) => {
+    socket.emit("sendText", {
+      senderName:  1,
+      receiverName: 5,
+      text
+    });
+  };
+
+
   React.useEffect(() => {
     const fetchData = async () =>  {
       await getproducts();
       await Tableon();
+      
     };
     fetchData();
   },[ref]);
+
+
+
   React.useEffect(()=>{
     setTimeout(() => {
       
@@ -31,7 +51,6 @@ const Order = () => {
   const getproducts = async () => {
     try {
       const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orders/products");
-      console.log("allprod", res.data[0].products);
       setProducts(res.data[0].products);
       
     } catch (err) {
@@ -43,14 +62,16 @@ const Order = () => {
     axios.put("http://172.20.10.3:3000/api/sarbini/orders2/"+id,{satus2:true})
     .then(()=>{
       Alert.alert("send it")
+     
     }).catch((err)=>{console.error(err);})
   }
 
   const Tableon = async () => {
     try {
       const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orderon");
-      console.log("data", res.data);
+      
       setTableon(res.data);
+      setSend("table "+res.data[0]?.name+" is open")
     } catch (err) {
       console.error("Error fetching tableon:", err);
     }
@@ -60,6 +81,7 @@ const Order = () => {
       const res = await axios.put("http://172.20.10.3:3000/api/sarbini/addnote/"+id,{note:info})
       .then(()=>{
         console.log("note added ");
+        handleNotification(send)
       })
     }
     catch (err) {
@@ -197,7 +219,10 @@ const Order = () => {
               </Text>
             </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{SendIt(tableon[0].id)}}>
+            <TouchableOpacity onPress={()=>{
+              
+              SendIt(tableon[0].id)}
+             }>
             <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
               <Text style={[styles.sendOrder, styles.textTypo]}>
                 send order

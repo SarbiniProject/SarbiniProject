@@ -27,9 +27,7 @@ const OrderW = () => {
   const idOrder = route.params?.idOrder;
   const fetchOrders= route.params?.fetchOrders
 
-console.log('====================================');
-console.log(idOrder);
-console.log('====================================');
+
 
 
   useEffect(() => {
@@ -51,7 +49,7 @@ console.log('====================================');
   const getalltables=()=>{
     axios.get(`http://172.20.10.3:3000/api/sarbini/ordersOne/${idOrder}`)
     .then((res)=>{
-      console.log(res.data);
+     
       setTables(res.data)
       
       setProducts(res.data.products);
@@ -189,7 +187,7 @@ let generatePdf = async () => {
       <ScrollView>
       {products&&products.length > 0?products.map((el,i)=>{
         return(
-          <View style={{marginBottom:20}}>
+          <View  key={i}style={{marginBottom:20}}>
         <View>
           <View style={styles.frameContainer}>
             <View style={styles.frameContainer}>

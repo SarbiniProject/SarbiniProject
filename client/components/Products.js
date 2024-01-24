@@ -6,7 +6,7 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 
 
-const Products = () => {
+const Products = ({socket,setUser}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
   const [allproducts,setAllproducts]=React.useState([])
@@ -18,9 +18,9 @@ const Products = () => {
   const [order,setOrder]=React.useState([])
   const [opnedtable,setOpnedtabel]=React.useState([])
   const navigation = useNavigation();
-console.log(order,"order");
+ console.log(order,"order");
   ;
-
+  setUser(1)
 
   let info={
     product_name:wordsea
