@@ -1,25 +1,42 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View ,} from 'react-native';
+import { io } from "socket.io-client";
+import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import OneProduct from './components/Controller/OneProduct';
-import Report from './components/Controller/Report'
-import Product from './components/Controller/Product'
+import Products from './components/waiter/Products.js'
 import Login from './components/Login'
 import Dashboard from './components/cashier/dashboard.jsx'
-import Order from './components/Order.js';
+import Order from './components/waiter/Order.js';
 import OrderW from './components/cashier/OrderW.jsx'
 const STRIPE_KEY =
   'pk_test_51NfOUIFIt3rgcksJfXUm5Pv71NeMwybINDDYSd6XL4HDfdJXUN1NJnfsA9pnbVNIFVL2gfobuer8ORndXw7ZsobV00tj4N01N0';
 
 
-import Tables from './components/Tables';
+  import Tables from './components/waiter/Tables.js';
+  import { useEffect, useState } from "react";
 
 
 const Stack = createStackNavigator();
 
+
+
+
 const App = () => {
+  
+  const [user, setUser] = useState(1);
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    setSocket(io("http://172.20.10.6:5000"));
+  }, []);
+
+  // useEffect(() => {
+  //   socket?.emit("newUser", user);
+  // }, [socket, user]);
+
+
+
   return (
     <NavigationContainer>
       <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
@@ -31,29 +48,37 @@ const App = () => {
               headerShown: true,
             }}
           />
-            <Stack.Screen
-            name="Dashboard"
-            component={Dashboard}
-            options={{
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="Product"
-            component={Products}
-            options={{
-              headerShown: true,
-            }}
-          />
+          
+         <Stack.Screen name="Dashboard"  options={{ headerShown: false,}}>
+            {(props) => (  
+              <Dashboard {...props} socket={socket} setUser={setUser} />
+            )}
+          </Stack.Screen>
+
+          <Stack.Screen name="Product"options={{ headerShown: false,}}>
+            {(props) => (
+              <Products
+                {...props}
+                socket={socket} setUser={setUser}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )}
+          </Stack.Screen>
       
-        
-          <Stack.Screen
-            name="Orders"
-            component={Order}
-            options={{
-              headerShown: false,
-            }}
-          />
+           <Stack.Screen name="Orders"options={{
+                  headerShown: false,
+                }}>
+            {(props) => (
+              <Order
+                {...props}
+                socket={socket}
+                
+              />
+            )}
+          </Stack.Screen>
+
             <Stack.Screen
             name="Tables"
             component={Tables}
@@ -65,9 +90,10 @@ const App = () => {
             name="OrderW"
             component={OrderW}
             options={{
-              headerShown: true,
+              headerShown: false,
             }}
           />
+          
      </Stack.Navigator>
      
      </StripeProvider>

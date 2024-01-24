@@ -1,5 +1,6 @@
 import { useState,useEffect } from 'react';
 import './dashboard.css';
+import { SideBar } from './Sidebar';
 import { FaUserCircle } from "react-icons/fa";
 import { FaArrowUp } from "react-icons/fa";
 import { Footer } from './Footer';

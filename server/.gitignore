@@ -33,3 +33,6 @@ package-lock.json/
 .floobit
 .floo
 .flooignore
+# Dependency directorys
+node_modules/
+package-lock.json/

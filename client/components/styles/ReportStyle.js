@@ -1,4 +1,3 @@
-
 /* fonts */
 export const FontFamily = {
     barlowBold: "Barlow-Bold",
@@ -46,5 +45,3 @@ export const FontFamily = {
     br_3xs: 10,
     br_5xl: 24,
   };
-
-  

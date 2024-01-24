@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FontFamily, Color, Border, Padding, FontSize } from "../styles/TablesStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { Port } from "../port";
 
 const Tables = () => {
   const[ref,setref]=React.useState(false)
@@ -29,7 +30,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
   }
 
   const addtables=(info)=>{
-    axios.post("http://172.20.10.6:3000/api/sarbini/orders",info)
+    axios.post("http://"+Port+":3000/api/sarbini/orders",info)
     .then(()=>{
       console.log("aded");
       setref(!ref)
@@ -38,7 +39,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
   }
 
   const getalltables=()=>{
-    axios.get("http://172.20.10.6:3000/api/sarbini/orders")
+    axios.get("http://"+Port+":3000/api/sarbini/orders")
     .then((res)=>{
       setTables(res.data)
       console.log(res.data)
@@ -47,7 +48,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
   }
 
 const UpdateStatus1=(id,stat)=>{
-  axios.put("http://172.20.10.6:3000/api/sarbini/orders/"+id,{satus1:stat})
+  axios.put("http://"+Port+":3000/api/sarbini/orders/"+id,{satus1:stat})
   .then((res)=>{
     console.log("update",res.data[0]);
     setref(!ref)
@@ -87,19 +88,19 @@ const hundelupdate = async (id, status1) => {
       <Image
         style={[styles.sideBarManager, styles.sideLayout]}
         contentFit="cover"
-        source={require("../assets/side-bar-manager.png")}
+        source={require("../../assets/side-bar-manager.png")}
       />
       
       <Image
         style={[styles.sideBarManager1, styles.sideLayout]}
         contentFit="cover"
-        source={require("../assets/side-bar-manager2.png")}
+        source={require("../../assets/side-bar-manager1.png")}
       />
       <View style={styles.buttonLogOut}>
         <Image
           style={[styles.lucidedoorOpenIcon, styles.iconLayout]}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.svg")}
+          source={require("../../assets/lucidedooropen.png")}
         />
         <Text style={[styles.logOut, styles.logOutTypo]}>Log Out</Text>
       </View>
@@ -107,7 +108,7 @@ const hundelupdate = async (id, status1) => {
       <Image
         style={styles.captureDCran20240113081Icon}
         contentFit="cover"
-        source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
+        source={require("../../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
       
       {/*////////////////////////////////////////////////////////////////////////*/}
@@ -165,43 +166,8 @@ const hundelupdate = async (id, status1) => {
       </View>
       {/*//////////////////////////////////////////////////////////////////////////////////////*/}
       <View style={styles.searchBarParent}>
-<<<<<<< HEAD:client/components/Tables.js
-        <View style={styles.searchBar}>
-          <View style={[styles.rectangleParent, styles.groupChildPosition]}>
-            <View style={[styles.groupChild, styles.groupChildBorder]} />
-            <Image
-              style={[styles.groupItem, styles.component1IconLayout]}
-              contentFit="cover"
-              source={require("../assets/frame-1260.png")}
-            />
-            <Text style={[styles.searchItem, styles.textTypo]}>
-              Search item
-            </Text>
-          </View>
-        </View>
-        <View style={styles.frameWrapper}>
-          <View>
-            <Image
-              style={styles.iconButton}
-              contentFit="cover"
-              source={require("../assets/iconbutton.png")}
-            />
-            <View style={[styles.wrapper, styles.wrapperFlexBox]}>
-              <Text style={[styles.text, styles.textTypo]}>3</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View style={[styles.iconButton1, styles.groupChildBorder]}>
-        <Image
-          style={styles.filterIcon}
-          contentFit="cover"
-          source={require("../assets/filter.svg")}
-        />
-=======
         
    
->>>>>>> 3e316606c4bf56a16ec5002aacb947721a71eccd:client/components/waiter/Tables.js
       </View>
    
       <View style={styles.tablesItem} />

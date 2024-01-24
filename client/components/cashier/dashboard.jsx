@@ -9,21 +9,36 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { Port } from "../port";
+
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { io } from "socket.io-client";
 
-const Dashboard = ({}) => {
+import { Provider as PaperProvider } from 'react-native-paper';
+import Nav from './Nav';
+const Dashboard = ({socket,setUser}) => {
+
   const [waiter, setWaiter] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [one,setOne]=useState(1)
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
  const userId =route.params?.userId;
 
+
+ useEffect(() => {
+  socket?.emit("newUser",5);
+}, [socket]);
+
+
+
+
+ 
   const fetchWaiters = () => {
     axios
-      .get('http://172.20.10.6:3000/api/sarbini/users')
+      .get('http://'+Port+':3000/api/sarbini/users')
       .then((res) => {
         const w = res.data.filter((e) => e.user_role === 'waiter');
         setWaiter(w);
@@ -36,10 +51,11 @@ const Dashboard = ({}) => {
   const fetchOrders = (userId) => {
     setLoading(true);
     axios
-      .get(`http://172.20.10.6:3000/api/sarbini/orders/${userId}`)
+      .get(`http://${Port}:3000/api/sarbini/orders/${userId}`)
       .then((res) => {
         setOrders(res.data);
-        console.log(res.data);
+       
+       
       })
       .catch((err) => {
         console.error('error', err);
@@ -53,6 +69,8 @@ const Dashboard = ({}) => {
   // }, [loading]);
 
   useEffect(() => {
+    // setUser(userId)
+    setUser(5)
     fetchWaiters();
   }, []);
 
@@ -62,6 +80,10 @@ const Dashboard = ({}) => {
   //   // Additional logout logic if needed
   // };
   return (
+    <PaperProvider>
+    
+    <Nav socket={socket}  one={one} />
+    
     <View style={styles.container}>
       {/* Left side for Category Filters */}
       <View style={styles.filterContainer}>
@@ -69,7 +91,9 @@ const Dashboard = ({}) => {
           {waiter.map((w, index) => (
             <TouchableOpacity
               key={index}
-              onPress={() => fetchOrders(w.id)}
+              onPress={() => {
+                fetchOrders(w.id) 
+                setOne(w.id)}}
               style={[styles.categoryButton, w.id === orders[0]?.userId && styles.selectedCategory]}
             >
               <Image source={{ uri: 'https://i.pinimg.com/1200x/d3/59/b7/d359b7d4e0bd39d4a4eb261e211b46d0.jpg' }} style={styles.categoryImage} />
@@ -92,7 +116,7 @@ const Dashboard = ({}) => {
                 <View style={styles.card}>
                   <Image source={{ uri: 'https://png.pngtree.com/png-vector/20190130/ourlarge/pngtree-cartoon-restaurant-table-element-design-tabletable-and-chairillustrationhotel-png-image_680996.jpg' }} style={styles.profileImage} />
                   <View style={styles.textContainer}>
-                    <Text style={styles.username}>{item.name || 'N/A'}</Text>
+                    <Text style={styles.username}>{"Table"+item.name || 'N/A'}</Text>
                     <Text style={styles.category}>{item.satus1 ? "open" : "closed"}</Text>
                     <Text style={styles.category}>{item.satus2 ? 'finished' : 'In Process'}</Text>
                   </View>
@@ -102,7 +126,7 @@ const Dashboard = ({}) => {
           />
         )}
       </View>
-    </View>
+    </View></PaperProvider>
   );
 };
 

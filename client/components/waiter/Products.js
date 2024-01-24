@@ -4,6 +4,7 @@ import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } 
 import { Color, FontFamily, FontSize, Border, Padding } from "../styles/ProductsStyle";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { Port } from "../port";
 
 
 const Products = () => {
@@ -28,7 +29,7 @@ console.log(order,"order");
   // }
   const getOrder = async () => {
     try {
-      const res = await axios.get("http://172.20.10.6:3000/api/sarbini/orders/products");
+      const res = await axios.get("http://"+Port+":3000/api/sarbini/orders/products");
       console.log("allprod", res.data[0].products);
       setOrder(res.data[0].products);
       setIsLoading(!isLoading)
@@ -38,7 +39,7 @@ console.log(order,"order");
     }
   }
   const getcat=()=>{
-    axios.get("http://172.20.10.6:3000/api/sarbini/category")
+    axios.get("http://"+Port+":3000/api/sarbini/category")
     .then((res)=>{
       setCategorys(res.data)
       console.log(res.data);
@@ -48,7 +49,7 @@ console.log(order,"order");
     })
   }
   const getproducts=()=> {
-    axios.get("http://172.20.10.6:3000/api/sarbini/products")
+    axios.get("http://"+Port+":3000/api/sarbini/products")
     .then((res)=>{
       setAllproducts(res.data)
     })
@@ -57,7 +58,7 @@ console.log(order,"order");
     })
   }
   const getprodbycateg=(idcat)=>{
-    axios.get("http://172.20.10.6:3000/api/sarbini/prodbycateg/"+idcat)
+    axios.get("http://"+Port+":3000/api/sarbini/prodbycateg/"+idcat)
     .then((res)=>{
       setOnecateg(idcat)
       setFiltrprod(res.data)
@@ -69,7 +70,7 @@ console.log(order,"order");
   }
 
   const getsarch = () => {
-    axios.get("http://172.20.10.6:3000/api/sarbini/searchprod/"+wordsea)
+    axios.get("http://"+Port+":3000/api/sarbini/searchprod/"+wordsea)
     .then((res) => {
       console.log('Données de la réponse Axios :', res.data);
       setSearched(res.data);
@@ -81,7 +82,7 @@ console.log(order,"order");
   }
   
   const getopnedtable=()=>{
-    axios.get("http://172.20.10.6:3000/api/sarbini/opned")
+    axios.get("http://"+Port+":3000/api/sarbini/opned")
     .then((res)=>{
       console.log("id",res.data.id);
       setOpnedtabel(res.data)
@@ -91,7 +92,7 @@ console.log(order,"order");
     })  
   }
   const ajoutproduct = (id, info) => {
-    axios.get("http://172.20.10.6:3000/api/sarbini/orders/products")
+    axios.get("http://"+Port+":3000/api/sarbini/orders/products")
       .then(response => {
         const existingProducts = response.data[0]?.products || [];
         const updatedProducts = [...existingProducts, info];
@@ -99,7 +100,7 @@ console.log(order,"order");
         // Check if the products array was initially empty
         const isInitialEmpty = existingProducts.length === 0;
   
-        axios.put("http://172.20.10.6:3000/api/sarbini/addprod/" + id, { products: updatedProducts })
+        axios.put("http://"+Port+":3000/api/sarbini/addprod/" + id, { products: updatedProducts })
           .then(() => {
             if (isInitialEmpty) {
               console.log("added");
@@ -194,7 +195,7 @@ console.log(order,"order");
       <Image
         style={styles.sideBarManager}
         contentFit="cover"
-        source={require("../assets/side-bar-manager.png")}
+        source={require("../../assets/side-bar-manager.png")}
       />
         <TouchableOpacity  
         onPress={()=>{navigation.navigate("Product");}}
@@ -206,18 +207,22 @@ console.log(order,"order");
       }}
         style={styles.tables}>
         </TouchableOpacity>
+        <TouchableOpacity 
+        onPress={()=>{ navigation.navigate("Login");}}
+        >
       <View style={[styles.buttonLogOut, styles.buttonLogOutFlexBox]}>
         <Image
           style={styles.lucidedoorOpenIcon}
           contentFit="cover"
-          source={require("../assets/lucidedooropen.png")}
+          source={require("../../assets/lucidedooropen.png")}
         />
         <Text style={styles.logOut}>Log Out</Text>
       </View>
+      </TouchableOpacity>
       <Image
         style={styles.captureDCran20240113081Icon}
         contentFit="cover"
-        source={require("../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
+        source={require("../../assets/capture-d-cran-20240113-081410removebgpreview-3.png")}
       />
         
       
@@ -233,7 +238,7 @@ console.log(order,"order");
          <Image
               style={[styles.groupItem, styles.itemLayout]}
              
-              source={require("../assets/frame-1260.png")}
+              source={require("../../assets/frame-1260.png")}
             />
             </View>
             </TouchableOpacity>
@@ -244,22 +249,24 @@ console.log(order,"order");
           </View>
         </View>
         <View style={styles.frameWrapper}>
+          <TouchableOpacity>
           <View>
             <Image
               style={styles.iconButton}
               contentFit="cover"
-              source={require("../assets/iconbutton.png")}
+              source={require("../../assets/iconbutton.png")}
             />
             <View style={styles.wrapper}>
-              <Text style={styles.text}>3</Text>
+              <Text style={styles.text}></Text>
             </View>
           </View>
+          </TouchableOpacity>
         </View>
       </View>
       {/* <Image
         style={styles.productsChild}
         contentFit="cover"
-        source={require("../assets/ellipse-454.png")}
+        source={require("../../assets/ellipse-454.png")}
       /> */}
       <View style={styles.container} >
         <ScrollView horizontal>
@@ -288,7 +295,7 @@ console.log(order,"order");
         <Image
           style={styles.filterIcon}
           contentFit="cover"
-          source={require("../assets/filter.png")}
+          source={require("../../assets/filter.png")}
         />
       </View>
       </TouchableOpacity>
@@ -319,15 +326,15 @@ const styles = StyleSheet.create({
     height:52
   },
   iconsearch:{
-    width:150,
-    height:30,
+    width:175,
+    height:40,
   },
   container: {
     flexDirection: 'row', // Affiche les éléments côte à côte
     alignItems: 'center', // Centre les éléments verticalement si nécessaire
     position:"absolute",
     width:"83%",
-    top:65,
+    top:87,
     left:65,
   },
   touchableOpacity: {
@@ -388,7 +395,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   frameViewBorder: {
-    left: 353,
+    left: 348,
     borderWidth: 1.1,
     borderRadius: 5,
     justifyContent: "center",
@@ -396,7 +403,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     backgroundColor: Color.neutral100,
     flexDirection: "row",
-    height: 32,
+    height: 40,
     alignItems: "center",
     position: "absolute",
   },
@@ -561,14 +568,14 @@ const styles = StyleSheet.create({
     top: "0%",
   },
   searchBar: {
-    width: 187,
-    height: 30,
+    width: 200,
+    height: 40,
   },
   iconButton: {
-    width: 30,
+    width: 39,
     zIndex: 0,
     borderRadius: 4,
-    height: 30,
+    height: 39,
     marginLeft:4,
     marginRight:4
   },
@@ -580,12 +587,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   wrapper: {
-    top: -2,
-    left: 19,
+    top: -4,
+    left: 32,
     borderRadius: 12,
     backgroundColor: Color.redNonActive,
-    width: 14,
-    height: 12,
+    width: 15,
+    height: 15,
     padding: 2,
     zIndex: 1,
     justifyContent: "center",
@@ -593,16 +600,16 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   frameWrapper: {
-    width: 31,
-    marginLeft: 4.07,
+    width: 35,
+    marginLeft: 5,
     flexDirection: "row",
-    height: 32,
+    height: 35,
   },
   searchBarParent: {
-    top: 36,
+    top: 35,
     width: 226,
     flexDirection: "row",
-    left: 73,
+    left: 83,
     position: "absolute",
   },
   productsChild: {
@@ -690,8 +697,8 @@ const styles = StyleSheet.create({
   },
   iconButton1: {
     padding: 4,
-    top: 32,
-    width: 32,
+    top: 35,
+    width: 40,
   },
   iceCream5: {
     fontSize: 13,

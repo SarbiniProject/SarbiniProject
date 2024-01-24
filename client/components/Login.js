@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import safeStringify from 'json-stringify-safe';
+import { Port } from "./port";
 
 const Login = () => {
   const [pseudo, setPseudo] = useState("");
@@ -18,7 +19,7 @@ const Login = () => {
 
   
   const  findbypseudo=(pseudo)=>{
-    axios.get("http://172.20.10.6:3000/api/sarbini/pseudo/"+pseudo)
+    axios.get("http://"+Port+":3000/api/sarbini/pseudo/"+pseudo)
     .then((res)=>{
       console.log(res.data);
       console.log(pseudo);
@@ -61,7 +62,7 @@ const Login = () => {
 
  const handleSubmit = async () => {
   try {
-    const response = await axios.post('http://172.20.10.6:3000/api/sarbini/signin', {
+    const response = await axios.post('http://'+Port+':3000/api/sarbini/signin', {
       user_Pseudo: pseudo,
       user_password: password,
     });

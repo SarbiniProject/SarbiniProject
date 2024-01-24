@@ -11,6 +11,8 @@ import { shareAsync } from 'expo-sharing';
 import { useState, useEffect } from "react";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Print} from './print.js'
+import { Port } from "../port.js";
+
 
 const OrderW = () => {
 
@@ -27,9 +29,7 @@ const OrderW = () => {
   const idOrder = route.params?.idOrder;
   const fetchOrders= route.params?.fetchOrders
 
-console.log('====================================');
-console.log(idOrder);
-console.log('====================================');
+
 
 
   useEffect(() => {
@@ -49,9 +49,9 @@ console.log('====================================');
 
 
   const getalltables=()=>{
-    axios.get(`http://172.20.10.6:3000/api/sarbini/ordersOne/${idOrder}`)
+    axios.get(`http://${Port}:3000/api/sarbini/ordersOne/${idOrder}`)
     .then((res)=>{
-      console.log(res.data);
+     
       setTables(res.data)
       
       setProducts(res.data.products);
@@ -77,7 +77,7 @@ console.log('====================================');
   try {
     setIsLoading(true);
 
-    const response = await axios.post('http://172.20.10.6:3000/api/sarbini/pay', {
+    const response = await axios.post('http://'+Port+':3000/api/sarbini/pay', {
       amount: 100* amount,
     });
 
@@ -113,7 +113,7 @@ const pay = async () => {
       Alert.alert('Error', 'Payment failed. Please try again.');
       setpop(false)
     } else {
-      await axios.put(`http://172.20.10.6:3000/api/sarbini/orders3/${idOrder}`);
+      await axios.put(`http://${Port}:3000/api/sarbini/orders3/${idOrder}`);
       Alert.alert('Success', 'Payment successful!');
       setpop(false)
       fetchOrders(tables.userId)
@@ -131,7 +131,7 @@ const pay = async () => {
 ////////////////////////////////////////////////////////////////////////////////////
 
 const payCash= async ()=>{
-  await axios.put(`http://172.20.10.6:3000/api/sarbini/orders3/${idOrder}`);
+  await axios.put(`http://${Port}:3000/api/sarbini/orders3/${idOrder}`);
   Alert.alert('Success', 'Payment successful!');
   setpop(false)
   fetchOrders(tables.userId)
@@ -189,7 +189,7 @@ let generatePdf = async () => {
       <ScrollView>
       {products&&products.length > 0?products.map((el,i)=>{
         return(
-          <View style={{marginBottom:20}}>
+          <View  key={i}style={{marginBottom:20}}>
         <View>
           <View style={styles.frameContainer}>
             <View style={styles.frameContainer}>
