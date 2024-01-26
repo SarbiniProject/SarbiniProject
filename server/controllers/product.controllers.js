@@ -69,7 +69,7 @@ const AddProduct = async(req,res) => {
 
 const UpdateProduct = async(req,res) => {
     try {
-    const result=await Product.update(req.body,{where:req.params})
+    const result=await Product.update(req.body,{where:req.params.id})
     res.json(result)   
     } catch (error) {
     res.send(error)    

@@ -11,12 +11,10 @@ import Order from './components/waiter/Order.js';
 import OrderW from './components/cashier/OrderW.jsx'
 const STRIPE_KEY =
   'pk_test_51NfOUIFIt3rgcksJfXUm5Pv71NeMwybINDDYSd6XL4HDfdJXUN1NJnfsA9pnbVNIFVL2gfobuer8ORndXw7ZsobV00tj4N01N0';
-
-
   import Tables from './components/waiter/Tables.js';
   import { useEffect, useState } from "react";
-
-
+  import ProductsCon from './components/Controller/ProductsCon.jsx';
+  import { Port } from './components/port.js';
 const Stack = createStackNavigator();
 
 
@@ -28,7 +26,7 @@ const App = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setSocket(io("http://172.20.10.6:5000"));
+    setSocket(io("http://"+Port+":5000"));
   }, []);
 
   // useEffect(() => {
@@ -41,6 +39,13 @@ const App = () => {
     <NavigationContainer>
       <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
       <Stack.Navigator>
+      <Stack.Screen
+            name="ProductsCon"
+            component={ProductsCon}
+            options={{
+              headerShown: false,
+            }}
+          />
       <Stack.Screen
             name="Login"
             component={Login}

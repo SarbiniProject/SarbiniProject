@@ -7,7 +7,7 @@ productRouter.get('/products',AllProduct)
 productRouter.get('/prodbycateg/:categoryId',Productbycaetg)
 productRouter.get('/searchprod/:product_name',search)
 productRouter.post('/product',AddProduct)
-productRouter.put('/product/:id',UpdateProduct)
+productRouter.put('/products/:id',UpdateProduct)
 productRouter.delete('/product/:id',DeleteProduct)
 
 
