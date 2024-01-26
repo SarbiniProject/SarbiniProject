@@ -3,7 +3,7 @@ const {orders,Users, Product, Sequelize}=require('../database-Sequelize/index')
 
 const AllOrders = async(req,res) => {
     try {
-    const result=await orders.findAll();
+    const result=await orders.findAll({where:{satus3:false}});
     res.json(result)   
     } catch (error) {
     res.send(error)    

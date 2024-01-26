@@ -54,8 +54,6 @@ const updateuser = async (req, res) => {
     try {
       const id = req.params.id;
       const info = req.body;
-  
-      // Assuming 'Users' is your Sequelize model
       const result = await Users.update(info, { where: { id: id } });
   
       res.json(result);
@@ -64,8 +62,21 @@ const updateuser = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
+
+  const updateadmin = async (req, res) => {
+    try {
+      const id = req.params.id;
+      const info = req.body;
+      const result = await Admin.update(info, { where: { id: id } });
   
-  module.exports = updateuser;
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+  
+
 const deleteuser=async(req,res)=>{
     try{
         let id=req.params.id
@@ -77,8 +88,21 @@ const deleteuser=async(req,res)=>{
     }
 }
 
+
+const getOneById = async (req, res) => {
+    try {
+      const pseudo = req.params.pseudo; 
+      const result = await Admin.findOne({ where: { id: pseudo } });
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+ 
+
 const generateToken = (id, admin_name) => {
     const expiresIn = 60 * 60 * 24;
     return jwt.sign({id, admin_name}, 'secretKey', { expiresIn: expiresIn });
   };
-  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2}
+  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2,getOneById,updateadmin}

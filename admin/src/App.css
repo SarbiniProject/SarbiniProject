@@ -1,6 +1,6 @@
 
 body{
-  background-color: black;
+  background-color: rgb(245, 244, 244);
 }
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap');
@@ -112,7 +112,21 @@ margin-top: 2em;
   font-size: 20px;
   font-family: 'Noto Sans', sans-serif;;
   margin-top: -1px;  
+  background-color: white;
+  border: none;
 }
+
+.icon_colla0{
+  margin-left: 3em;
+  margin-bottom: 1em;
+  width: 200px;
+  height: 50px;
+  color: red;
+  background-color: white;
+  font-weight: bold;
+  border-radius: 15px;
+}
+
 .icon1_colla{
   margin-left: 4em;
   margin-bottom: 1em;
@@ -129,8 +143,8 @@ margin-top: 2em;
 }
 .btn1_colla{
   position: absolute;
-  right: 44.5%;
-  top: 28.2%;
+  right: 45%;
+  top: 26.5%;
   background-color: red;
 }
 .table_colla{
@@ -186,6 +200,7 @@ margin-top: 2em;
   align-items: center;
   justify-content: center;
   padding: 15px;
+  z-index: 0;
 }
 .icons {
   cursor: pointer;
@@ -240,23 +255,16 @@ margin-top: 2em;
   display: flex;
 }
 .show_sidebar{
-  margin-left: 2em;
+  margin-left: -24em;
 }
-.vertical_sidebar{
-  writing-mode: vertical-rl;  
-  color: rgb(202, 102, 102);
-  position: fixed;
-  font-size: 35px;
-  left: 20%;
-  top: 5%;
-}
+
 .footer_colla{
 position: absolute;
  }
  .searchBox-region {
   position: absolute;
   top: 130px;
-  left: 36%;
+  left: 210px;
   transform:  translate(-40%,50%);
   background: #d5d5da;
   height: 20px;
@@ -307,8 +315,8 @@ position: absolute;
 }
 /**/
 .super-container-region {
-  margin-left: 435px;
-  margin-top: 200px;
+  margin-left: 100px;
+  margin-top: 20px;
   -webkit-box-align: center !important;
   -ms-flex-align: center !important;
   align-items: center !important;
@@ -334,34 +342,20 @@ position: absolute;
   width: 300px;
   height: 100px;
   line-height: 60px;
-  flex:auto auto auto
+  flex:auto auto ;
+  border-radius: 30px;
 }
 .btn-1-region {
   
-  background: #d5d5da;
-  border-bottom: 3px solid #d5d5da;
+  background: #bebec0;
+  border-radius: 3px solid #e9e9ec;
   -webkit-box-shadow: inset 0 -3px #d5d5da;
   box-shadow: inset 0 -3px #d5d5da;
-  border-radius: 20px;
   color:black
 }
 .btn-1-region:hover{
   background-color: white;
 }
-.textt-region{
-  color: white;
-  font-size: 25px;
-  font-weight: bold;
- 
-}
-.texttt-region{
-  color: rgb(216, 214, 214);
-  font-size: 14px;
-
-}
-.texts-region{ position: absolute;
-  left :460px;
-  top:94px}
 
   .title-region {
     font-size: 2rem; 
@@ -398,6 +392,246 @@ position: absolute;
    
   }
   .icon-region{ color: red; size:lg }
+
+
+  @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap'); 
+
+
+html,
+.profile_body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px !important;
+}
+
+             
+              @import url("https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@400;500&display=swap");
+
+              .container {
+                background-image: url("https://blogger.googleusercontent.com/img/a/AVvXsEg8mpJYDkh-cOq_hHSnNeKqfex-Cg3BJNn6-wliDEAVaKnATqcws2kJZ6dt7THwF8_rBg_kSC_MY47EyeIgIBcLMIR5fFZhnB_wUINovJvjHc6XPorB1QL6PI7zM3B0l8Kkt2IA24eup4c1b9v3LOr0BP20mWy-cZhQYZbvxuW_9ajdTrHft4cBfPV3kyg1");
+                display: grid;
+                grid-template-columns: 300px 300px 300px;
+                grid-gap: 50px;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #f5f5f5;
+                font-family: 'Baloo Paaji 2', cursive;
+                
+              }
+              
+              .card {
+                background-color: #020406;
+                height: 42rem;
+                width: 800px;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                box-shadow: rgba(0, 0, 0, 0.7);
+                color: white;
+                z-index: 2;
+               margin-left: 30%;
+               
+              }
+              
+
+              .card__name {
+                margin-top: 15px;
+                font-size: 1.5em;
+              }
+              
+              .card__image {
+                height: 160px;
+                width: 160px;
+                border-radius: 50%;
+                border: 5px solid #272133;
+                margin-top: 10px;
+                box-shadow: 0 10px 50px rgba(235, 25, 110, 1);
+              }
+              
+              
+              .social-icons {
+                padding: 0;
+                list-style: none;
+                margin: 1em;
+              }
+              
+              .social-icons li {
+                display: inline-block;
+                margin: 0.15em;
+                position: relative;
+                font-size: 1em;
+              }
+              
+              .social-icons i {
+                color: #fff;
+                position: absolute;
+                top: 0.95em;
+                left: 0.96em;
+                transition: all 265ms ease-out;
+              }
+              
+              .social-icons a {
+                display: inline-block;
+              }
+              
+              .social-icons a:before {
+                transform: scale(1);
+                -ms-transform: scale(1);
+                -webkit-transform: scale(1);
+                content: " ";
+                width: 45px;
+                height: 45px;
+                border-radius: 100%;
+                display: block;
+                background: linear-gradient(45deg, #ff003c, #c648c8);
+                transition: all 265ms ease-out;
+              }
+              
+              .social-icons a:hover:before {
+                transform: scale(0);
+                transition: all 265ms ease-in;
+              }
+              
+              .social-icons a:hover i {
+                transform: scale(2.2);
+                -ms-transform: scale(2.2);
+                -webkit-transform: scale(2.2);
+                color: #ff003c;
+                background: -webkit-linear-gradient(45deg, #ff003c, #c648c8);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                transition: all 265ms ease-in;
+              }
+              
+              .grid-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 50px;
+                font-size: 1.2em;
+              }
+              
+              .grid-child-followers{
+                font-weight: bold;
+                font-size: 30px;
+                margin-top: 30px;
+              }
+              .grid-child-posts{
+                font-size: 30px;
+                margin-top: 30px;
+              }
+              .containerpopup{
+                position: absolute;
+                color: black;
+                background-color: white;
+                width:1000px;
+                height: 550px;
+                z-index: 999px;
+                margin-top: 100px;
+                margin-left: 20%;
+                border: #a71c12 solid 10px;
+                border-radius: 50px;
+                text-align: center;
+              }
+              .buttonpopup{
+                border: #a71c12 solid 4px;
+                border-radius: 50px;
+                width:60px;
+                height: 40px;
+                margin-left: 900px;
+                margin-top: 20px;
+                color:white;
+                background-color: #a71c12;
+               
+              }
+              .buttonpopup1{
+                border: #a71c12 solid 4px;
+                border-radius: 50px;
+                width:80px;
+                height: 50px;
+                
+                margin-top: 20px;
+                color:white;
+                background-color: #a71c12;
+                text-align: center;
+              }
+              .h1popup{
+                color: red;
+                margin-top: -15px;
+              }
+              .inputpopup {
+                border: #a71c12 solid 1px;
+                border-radius: 50px;
+                width:350px;
+                height: 40px;
+              }
+              .inputpopup1 {
+                border: #a71c12 solid 1px;
+                border-radius: 20px;
+                width:670px;
+                height: 120px;
+              }
+              .div_popup{
+                background-color: white;
+                color: rgb(7, 2, 2);
+                height: 2em;
+                width: 14em;
+                padding: 0.5em;
+                border-radius: 15px;
+                border: #a71c12 solid 1px;
+                margin-right: 2em;
+                cursor: pointer;
+                margin-bottom: 50px;
+              }
+              .div_popup1{
+                display: block;
+                background-color: white;
+                color: rgb(7, 2, 2);
+                height: 1.2em;
+                width: 650px;
+                padding: 0.5em;
+                border-radius: 15px;
+                border: #a71c12 solid 1px;
+                cursor: pointer;
+                margin-bottom: 50px;
+                margin-left: 170px;
+              }
+              .contpopup{
+                display: flex;
+                height: 100px;
+                width: 1000px;
+                margin-left: 240px;
+              }
+             .divvpopup{
+              display: flex;
+              align-items: center;
+              margin-left: 70px;
+              margin-right: 70px;
+              justify-content: space-between;
+             }
+             .bigdivpopup{
+              background-color: rgba(243, 237, 237, 0.4);
+              width: 50000px;
+              height: 50000px;
+              z-index: 999999px;
+              margin-left: -50px;
+             }
+             .returnToDashboard{
+              cursor: pointer;
+              margin-left: -500px;
+              margin-top: 20px;
+              color: #c91416;
+              font-size: large;
+             }
+             .commentprofile{
+              font-size: 20px;
+              margin-left: -10px;
+             }
  .test{
   background-image: url("");
  }
+

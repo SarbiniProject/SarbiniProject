@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal, Alert } from "react-native";
 import { Image } from "expo-image";
-import { FontFamily, Color, Padding, Border, FontSize } from "./styles/OrderStyle";
+import { FontFamily, Color, Padding, Border, FontSize } from "../styles/OrderStyle";
 import axios from "axios";
-
+import { useNavigation } from "@react-navigation/native";
+import { Port } from "../port";
 
 const Order = ({socket}) => {
 
@@ -15,8 +16,9 @@ const Order = ({socket}) => {
   const[idnote,setIdnote]=React.useState(null)
   const[total,setTotal]=React.useState(0)
   const [send, setSend] = React.useState('');
-  // console.log(products[0].price);
+  const navigation = useNavigation();
 
+  // console.log(products[0].price);
   React.useEffect(() => {
     socket?.emit("newUser", 1);
   }, [socket]);
@@ -30,18 +32,13 @@ const Order = ({socket}) => {
     });
   };
 
-
   React.useEffect(() => {
     const fetchData = async () =>  {
       await getproducts();
       await Tableon();
-      
     };
     fetchData();
   },[ref]);
-
-
-
   React.useEffect(()=>{
     setTimeout(() => {
       
@@ -50,7 +47,8 @@ const Order = ({socket}) => {
   },[products])
   const getproducts = async () => {
     try {
-      const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orders/products");
+      const res = await axios.get("http://"+Port+":3000/api/sarbini/orders/products");
+      console.log("allprod", res.data[0].products);
       setProducts(res.data[0].products);
       
     } catch (err) {
@@ -59,17 +57,19 @@ const Order = ({socket}) => {
   }
   
   const SendIt=(id)=>{
-    axios.put("http://172.20.10.3:3000/api/sarbini/orders2/"+id,{satus2:true})
+    axios.put("http://"+Port+":3000/api/sarbini/orders2/"+id,{satus2:true})
     .then(()=>{
       Alert.alert("send it")
-     
+      setTimeout(() => {
+        navigation.navigate("Product")
+      }, 2000);
     }).catch((err)=>{console.error(err);})
   }
 
   const Tableon = async () => {
     try {
-      const res = await axios.get("http://172.20.10.3:3000/api/sarbini/orderon");
-      
+      const res = await axios.get("http://"+Port+":3000/api/sarbini/orderon");
+      console.log("data", res.data);
       setTableon(res.data);
       setSend("table "+res.data[0]?.name+" is open")
     } catch (err) {
@@ -78,7 +78,7 @@ const Order = ({socket}) => {
   }
   const Addnote=async(id,info)=>{
     try{
-      const res = await axios.put("http://172.20.10.3:3000/api/sarbini/addnote/"+id,{note:info})
+      const res = await axios.put("http://"+Port+":3000/api/sarbini/addnote/"+id,{note:info})
       .then(()=>{
         console.log("note added ");
         handleNotification(send)
@@ -90,7 +90,7 @@ const Order = ({socket}) => {
   }
 
   const DeleteProd=(id,info)=>{
-    axios.put("http://172.20.10.3:3000/api/sarbini/deleteprod/"+id,{id:info})
+    axios.put("http://"+Port+":3000/api/sarbini/deleteprod/"+id,{id:info})
     .then(()=>{
       console.log("deleted");
       setRef(!ref)
@@ -135,7 +135,7 @@ const Order = ({socket}) => {
           <Image
             style={[styles.profileIcon, styles.iconLayout]}
             contentFit="cover"
-            source={require("../assets/profile.png")}
+            source={require("../../assets/profile.png")}
           />
         </View>
         <View style={styles.statusMenu}>
@@ -165,7 +165,7 @@ const Order = ({socket}) => {
               <Image
                 style={[styles.trashIcon, styles.iconLayout]}
                 contentFit="cover"
-                source={require("../assets/trash.png")}
+                source={require("../../assets/trash.png")}
               />
               </TouchableOpacity>
               <Text style={styles.text}>{el.price}DT</Text>
@@ -212,17 +212,14 @@ const Order = ({socket}) => {
         <View style={[styles.total1, styles.total1Position]}>
           <Text style={[styles.total2, styles.textPosition]}>total</Text>
           <View style={[styles.btnCancelParent, styles.total1Position]}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>{navigation.navigate("Product")}}>
             <View style={[styles.btnCancel, styles.btnSpaceBlock]}>
               <Text style={[styles.cancelOrder, styles.textTypo]}>
                 cancel order
               </Text>
             </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{
-              
-              SendIt(tableon[0].id)}
-             }>
+            <TouchableOpacity onPress={()=>{SendIt(tableon[0].id)}}>
             <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
               <Text style={[styles.sendOrder, styles.textTypo]}>
                 send order

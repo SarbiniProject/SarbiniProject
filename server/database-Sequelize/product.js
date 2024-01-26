@@ -14,7 +14,7 @@ const Product =(connection,DataTypes)=>{
       },
       description : {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
 
       

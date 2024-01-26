@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Modal,TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native'
+
 const Nav = ({socket,one }) => {
   const [notificationPressed, setNotificationPressed] = useState(false);
   const [profileModalVisible, setProfileModalVisible] = useState(false);
@@ -53,6 +54,9 @@ const Nav = ({socket,one }) => {
     setProfileModalVisible(false);
    
   };
+const test=()=>{
+  navigation.navigate('Chat')
+}
 
   const renderDropdownNotification = () => {
     if (notificationPressed) {
@@ -84,7 +88,13 @@ const Nav = ({socket,one }) => {
           icon="message-text"
           onPress={handleProfilePress} 
         />
+           <Appbar.Action 
+          icon="message-text"
+          onPress={test} 
+        />
+      
       </Appbar.Header>
+      
 
       {renderDropdownNotification()}
 

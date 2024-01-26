@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { Port } from "../port";
+
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { io } from "socket.io-client";
@@ -36,7 +38,7 @@ const Dashboard = ({socket,setUser}) => {
  
   const fetchWaiters = () => {
     axios
-      .get('http://172.20.10.3:3000/api/sarbini/users')
+      .get('http://'+Port+':3000/api/sarbini/users')
       .then((res) => {
         const w = res.data.filter((e) => e.user_role === 'waiter');
         setWaiter(w);
@@ -49,7 +51,7 @@ const Dashboard = ({socket,setUser}) => {
   const fetchOrders = (userId) => {
     setLoading(true);
     axios
-      .get(`http://172.20.10.3:3000/api/sarbini/orders/${userId}`)
+      .get(`http://${Port}:3000/api/sarbini/orders/${userId}`)
       .then((res) => {
         setOrders(res.data);
        
@@ -96,6 +98,7 @@ const Dashboard = ({socket,setUser}) => {
             >
               <Image source={{ uri: 'https://i.pinimg.com/1200x/d3/59/b7/d359b7d4e0bd39d4a4eb261e211b46d0.jpg' }} style={styles.categoryImage} />
               <Text style={styles.categoryText}>{w.user_name}</Text>
+              <Text style={styles.categoryText}>ID:#{w.id}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
