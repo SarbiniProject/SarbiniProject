@@ -27,18 +27,21 @@ const AddUser= async(req,res) => {
     }
 };
 
-const UpdateUser= async(req,res) => {
+const UpdateUser = async (req, res) => {
     try {
-    const result=await Users.update(req.body,{where:req.params})
-    res.json(result)   
+        console.log("Function is executing");
+        const result = await Users.update(req.body, {
+            where: { id: req.params.id } 
+        });
+        res.json(result);
     } catch (error) {
-    res.send(error)    
+        res.send(error);
     }
 };
 
 const DeleteUser= async(req,res) => {
     try {
-    const result=await Users.destroy({where:req.params})
+    const result=await Users.destroy({where:{id:req.params.id}})
     res.json(result)   
     } catch (error) {
     res.send(error)    
@@ -53,4 +56,14 @@ const finbypseudo=async(req,res)=>{
         res.send(error)
         }
 }
-module.exports={AllUsers,AddUser,UpdateUser,DeleteUser,finbypseudo}
+
+const findbyid=async(req,res)=>{
+    let id=req.params.id
+    try{
+        const result=await Users.findOne({where:{id:id}})
+        res.json(result)
+    } catch (error) {
+        res.send(error)
+        }
+}
+module.exports={AllUsers,AddUser,UpdateUser,DeleteUser,finbypseudo,findbyid}

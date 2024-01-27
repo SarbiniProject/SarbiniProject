@@ -17,7 +17,7 @@ import { io } from "socket.io-client";
 
 import { Provider as PaperProvider } from 'react-native-paper';
 import Nav from './Nav.jsx';
-const Dashboard = ({socket,setUser}) => {
+const Dashboard = ({socket}) => {
 
   const [waiter, setWaiter] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -29,7 +29,7 @@ const Dashboard = ({socket,setUser}) => {
 
 
  useEffect(() => {
-  socket?.emit("newUser",5);
+  socket?.emit("newUser",userId);
 }, [socket]);
 
 
@@ -70,7 +70,6 @@ const Dashboard = ({socket,setUser}) => {
 
   useEffect(() => {
     // setUser(userId)
-    setUser(5)
     fetchWaiters();
   }, []);
 
@@ -82,7 +81,7 @@ const Dashboard = ({socket,setUser}) => {
   return (
     <PaperProvider>
     
-    <Nav socket={socket}  one={one} />
+    <Nav socket={socket}  one={one} userId={userId}/>
     
     <View style={styles.container}>
       {/* Left side for Category Filters */}

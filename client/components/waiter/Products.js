@@ -3,11 +3,11 @@ import { Image } from "expo-image";
 import { StyleSheet,Button, Text, ScrollView,TouchableOpacity,View, TextInput } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "../styles/ProductsStyle";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation } from '@react-navigation/native'
 import { Port } from "../port";
 
 
-const Products = () => {
+const Products = ({socket,setUser}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
   const [allproducts,setAllproducts]=React.useState([])
@@ -19,6 +19,54 @@ const Products = () => {
   const [order,setOrder]=React.useState([])
   const [opnedtable,setOpnedtabel]=React.useState([])
   const navigation = useNavigation();
+  const [isVisible, setIsVisible] =React.useState(false);
+  const [notifications,setNotifications]=React.useState("")
+  const route = useRoute();
+
+  const userId =route.params?.userId;
+
+
+ 
+
+  
+/////////////////////////////////////////////////////////////////////////////µ
+
+const toggleVisibility = () => {
+  setIsVisible(!isVisible);
+};
+
+  React.useEffect(() => {
+    socket?.emit("newUser", userId);
+  }, [socket]);
+
+  socket.on("getText", (data) => {
+    // setNotifications((prev) => [...prev, data]);
+    setIsVisible(true);
+    setNotifications(data.text);
+    console.log('====================================');
+    console.log('waiter side ',data.text);
+    console.log('====================================');
+   
+    
+  });
+
+  const renderDropdownNotification = () => {
+    if (isVisible) {
+      return (
+        <View style={{zIndex:999, position: 'absolute', top: 37,width:250, left: 65 , backgroundColor: 'white', padding: 10, borderRadius: 10 }}>
+         
+          <TouchableOpacity>
+          <Text style={{textAlign:'center',fontSize:35}}>{notifications}</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return null;
+  };
+
+
+/////////////////////////////////////////////////////////////////////
+
 console.log(order,"order");
   console.log(wordsea);
   console.log(searched,'searchedfor');
@@ -249,19 +297,20 @@ console.log(order,"order");
           </View>
         </View>
         <View style={styles.frameWrapper}>
-          <TouchableOpacity>
+        <TouchableOpacity onPress={toggleVisibility}>
           <View>
             <Image
               style={styles.iconButton}
-              contentFit="cover"
+              contentFit="cover" 
               source={require("../../assets/iconbutton.png")}
             />
+             {isVisible && (
             <View style={styles.wrapper}>
-              <Text style={styles.text}></Text>
-            </View>
+            </View>)}
           </View>
           </TouchableOpacity>
         </View>
+        {renderDropdownNotification()}
       </View>
       {/* <Image
         style={styles.productsChild}

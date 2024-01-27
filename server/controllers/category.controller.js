@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const {Categories,Product}=require('../database-Sequelize/index')
 
 const AllCategory = async(req,res) => {
@@ -51,10 +52,10 @@ const DeleteCategory= async(req,res) => {
 const updateCategory = async (req, res) => {
     try {
       const { id } = req.params;
-      const { ca_name, ca_img } = req.body; // Assuming you want to update the category name and image
+      const { ca_name } = req.body; // Assuming you want to update the category name and image
   
       // Check if the category with the given ID exists
-      const existingCategory = await Categories.findByPk(id);
+      const existingCategory = await Categories.findOne({where:{id:id}});
   
       if (!existingCategory) {
         return res.status(404).json({ error: 'Category not found' });
@@ -62,7 +63,7 @@ const updateCategory = async (req, res) => {
   
       // Update the category with the new values
       const updatedCategory = await Categories.update(
-        { ca_name, ca_img },
+        { ca_name},
         { where: { id } }
       );
   
