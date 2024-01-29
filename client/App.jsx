@@ -17,15 +17,26 @@ const STRIPE_KEY =
   import ProductsCon from './components/Controller/ProductsCon.jsx';
   import { Port } from './components/port.js';
 import LocationController from './components/Controller/Location.jsx';
+import Notification from './components/waiter/Notification.jsx';
+import Loading from './components/Loading.jsx';
+import Test from './components/test.jsx';
+
 const Stack = createStackNavigator();
 
 
 
 
 const App = () => {
-  
+  const [showSignup, setShowSignup] = useState(false);
   const [user, setUser] = useState(1);
   const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowSignup(true);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   useEffect(() => {
     setSocket(io("http://"+Port+":5000"));
@@ -41,15 +52,33 @@ const App = () => {
     <NavigationContainer>
       <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
       <Stack.Navigator>
-     
-  
+      {!showSignup ? (
       <Stack.Screen
+            name="Loading"
+            component={Loading}
+            options={{
+              headerShown: false,
+            }}
+          />
+          ) : (
+
+        <Stack.Screen
             name="Login"
             component={Login}
             options={{
               headerShown: true,
             }}
-          />
+          /> 
+        //   <Stack.Screen
+        //   name="Test"
+        //   component={Test}
+        //   options={{
+        //     headerShown: true,
+        //   }}
+        // /> 
+          
+          )}
+          
               <Stack.Screen
             name="controller"
             component={ProductsCon}
@@ -110,7 +139,8 @@ const App = () => {
               headerShown: true,
             }}
           />
-        
+         
+     
       
           
      </Stack.Navigator>

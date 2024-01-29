@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, StyleSheet,TouchableOpacity,View ,TextInput, Alert} from "react-native";
+import { Text, StyleSheet,TouchableOpacity,ImageBackground,View ,TextInput, Alert} from "react-native";
 import { Image } from "expo-image";
 import { Color, FontFamily, FontSize, Border } from "./styles/LoginStyle";
 import Cookies from 'js-cookie';
@@ -107,6 +107,7 @@ const Login = () => {
 
   return (
     <View style={styles.login}>
+     
       <View style={[styles.loginTitle, styles.bgLayout]}>
         <Text style={[styles.welcomeBack, styles.login1Typo]}>
           Welcome Back!!!
@@ -325,7 +326,10 @@ const styles = StyleSheet.create({
     height: 812,
     overflow: "hidden",
     width: "100%",
+    
   },
+
+  
 });
 
 export default Login;
