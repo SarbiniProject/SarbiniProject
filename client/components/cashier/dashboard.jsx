@@ -16,8 +16,8 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { io } from "socket.io-client";
 
 import { Provider as PaperProvider } from 'react-native-paper';
-import Nav from './Nav';
-const Dashboard = ({socket,setUser}) => {
+import Nav from './Nav.jsx';
+const Dashboard = ({socket}) => {
 
   const [waiter, setWaiter] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -29,7 +29,7 @@ const Dashboard = ({socket,setUser}) => {
 
 
  useEffect(() => {
-  socket?.emit("newUser",5);
+  socket?.emit("newUser",userId);
 }, [socket]);
 
 
@@ -70,7 +70,6 @@ const Dashboard = ({socket,setUser}) => {
 
   useEffect(() => {
     // setUser(userId)
-    setUser(5)
     fetchWaiters();
   }, []);
 
@@ -82,7 +81,7 @@ const Dashboard = ({socket,setUser}) => {
   return (
     <PaperProvider>
     
-    <Nav socket={socket}  one={one} />
+    <Nav socket={socket}  one={one} userId={userId}/>
     
     <View style={styles.container}>
       {/* Left side for Category Filters */}
@@ -98,6 +97,7 @@ const Dashboard = ({socket,setUser}) => {
             >
               <Image source={{ uri: 'https://i.pinimg.com/1200x/d3/59/b7/d359b7d4e0bd39d4a4eb261e211b46d0.jpg' }} style={styles.categoryImage} />
               <Text style={styles.categoryText}>{w.user_name}</Text>
+              <Text style={styles.categoryText}>ID:#{w.id}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>

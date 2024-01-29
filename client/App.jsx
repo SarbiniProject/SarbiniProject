@@ -9,12 +9,14 @@ import Login from './components/Login'
 import Dashboard from './components/cashier/dashboard.jsx'
 import Order from './components/waiter/Order.js';
 import OrderW from './components/cashier/OrderW.jsx'
+import Chat from './components/Controller/Chat.jsx';
 const STRIPE_KEY =
   'pk_test_51NfOUIFIt3rgcksJfXUm5Pv71NeMwybINDDYSd6XL4HDfdJXUN1NJnfsA9pnbVNIFVL2gfobuer8ORndXw7ZsobV00tj4N01N0';
   import Tables from './components/waiter/Tables.js';
   import { useEffect, useState } from "react";
   import ProductsCon from './components/Controller/ProductsCon.jsx';
   import { Port } from './components/port.js';
+import LocationController from './components/Controller/Location.jsx';
 const Stack = createStackNavigator();
 
 
@@ -39,16 +41,18 @@ const App = () => {
     <NavigationContainer>
       <StripeProvider publishableKey={STRIPE_KEY} merchantIdentifier='merchant.identifier'>
       <Stack.Navigator>
-      <Stack.Screen
-            name="ProductsCon"
-            component={ProductsCon}
-            options={{
-              headerShown: false,
-            }}
-          />
+     
+  
       <Stack.Screen
             name="Login"
             component={Login}
+            options={{
+              headerShown: true,
+            }}
+          />
+              <Stack.Screen
+            name="controller"
+            component={ProductsCon}
             options={{
               headerShown: true,
             }}
@@ -72,14 +76,15 @@ const App = () => {
             )}
           </Stack.Screen>
       
-           <Stack.Screen name="Orders"options={{
+           <Stack.Screen name="Orders"  
+                 options={{
                   headerShown: false,
                 }}>
             {(props) => (
               <Order
                 {...props}
                 socket={socket}
-                
+              
               />
             )}
           </Stack.Screen>
@@ -98,6 +103,15 @@ const App = () => {
               headerShown: false,
             }}
           />
+           <Stack.Screen
+            name="Chat"
+            component={Chat}
+            options={{
+              headerShown: true,
+            }}
+          />
+        
+      
           
      </Stack.Navigator>
      

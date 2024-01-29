@@ -3,8 +3,12 @@ import {Port} from "../port"
 import { StyleSheet, Text, ScrollView,TouchableOpacity,View, Image,TextInput,KeyboardAvoidingView,TouchableWithoutFeedback,Platform,Keyboard,Modal } from "react-native";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
+import { useRoute, useNavigation } from '@react-navigation/native'
+import Payment from "./Payment";
+import LocationController from "./Location";
+import { FontAwesome } from '@expo/vector-icons';
 
-const ProductsCon =({userId})=>{
+const ProductsCon =()=>{
     const [ref,setRef]=useState(false)
     const [Categorys,setCategorys]=useState([])
     const [allproducts,setAllproducts]=useState([])
@@ -14,7 +18,10 @@ const ProductsCon =({userId})=>{
     const [pop,setPop]=useState(false)
     const [selectedId,setSelectedId]=useState(null)
     const [addclick,setAddclick]=useState(null)
-
+    const navigation = useNavigation();
+    const route = useRoute();
+   const userId =route.params?.userId;
+  
 console.log(user);
 ///////////////////////category/////////////////////////////////////
 const [categname,setCategname]=useState("")
@@ -193,8 +200,8 @@ const handleCameraCapture = async () => {
             console.error("error",err);
           })
       }
-      const getUserById=(userId)=>{
-        axios.get("http://"+Port+":3000/api/sarbini/users/3")
+      const getUserById=()=>{
+        axios.get("http://"+Port+":3000/api/sarbini/users/"+userId)
         .then((res)=>{
             setUser(res.data)
         })
@@ -220,6 +227,9 @@ const handleCameraCapture = async () => {
       calback(body)
       setPop(false)
   }
+ 
+
+
 ////////////////////////////////////////popup///////////////////////////////////////////////////////////////
       const popup=(oft,calback,submit)=>{
         console.log("itwork");
@@ -449,8 +459,21 @@ const handleCameraCapture = async () => {
                     </View>
                 </View>
             )
+            ////////////////////////////////payment/////////////////////////////////////////
+        }if (render==='payment'){
+      return(  
+         <View style={styles.container2}>
+         <Payment/>
+
+        </View>)
         }
-      }
+//////////////////////////////loction////////////////////////////////////////////////////////////////        
+          if (render==='location'){
+         return(  
+           <View style={styles.container2}>
+          <LocationController/>
+           </View>)
+            }}
 //////////////////////////views////////////////////////////////////////////
 const hundelviews=(categ)=>{
     return categ.map((el,i)=>{
@@ -565,7 +588,10 @@ return(
             </View>
            </TouchableOpacity>
            <TouchableOpacity 
-           onPress={()=>{}}
+           onPress={()=>{
+            navigation.navigate('Chat')
+           }}
+           
            >
             <View style={{position:"absolute",right:21,top:300}}>
            <Image
@@ -587,6 +613,24 @@ return(
             </View>
            </TouchableOpacity>
            <TouchableOpacity 
+           onPress={()=>{setRender("payment")}}
+           >
+            <View style={{position:"absolute",right:12,top:500}}>
+        
+              <FontAwesome name="credit-card" size={40} color="white" />
+            <Text style={{color:"#fff",marginLeft:-12}}>subscribe</Text>
+            </View>
+           </TouchableOpacity>
+           <TouchableOpacity 
+           onPress={()=>{setRender("location")}}
+           >
+            <View style={{position:"absolute",right:12,top:600}}>
+          
+             <FontAwesome name="map-marker" size={50} color="white" />
+            <Text style={{color:"#fff",marginLeft:-8}}>location</Text>
+            </View>
+           </TouchableOpacity>
+           <TouchableOpacity 
            onPress={()=>{}}
            >
             <View style={{position:"absolute",right:21,top:750}}>
@@ -599,7 +643,7 @@ return(
            </TouchableOpacity>
         </View>
       {/*//////////////////sidebar///////////////////// */}
-        <View style={styles.navbar}>
+        {render!=="payment"&&render!=='location'?<View style={styles.navbar}>
             <TouchableOpacity 
             style={styles.btnnav}
             onPress={()=>{setRender("categorys")}}>
@@ -615,7 +659,14 @@ return(
             onPress={()=>{setRender("users")}}>
                 <Text style={styles.navText}>Users</Text>
             </TouchableOpacity>
-        </View>
+        </View>:render==="location"?
+        <View style={styles.navbar}>
+        <Text style={styles.navText2} >location</Text>
+          </View>:
+          <View style={styles.navbar}>
+          <Text style={styles.navText2} >subscription</Text>
+            </View>
+          }
         <View style={styles.render} >
             {Renderview()}
         </View>
@@ -663,6 +714,7 @@ const styles=StyleSheet.create({
         left:85, 
         top:20 
     },
+    
     btnnav:{
         borderWidth:1,
         borderColor:"#fff",
@@ -675,6 +727,12 @@ const styles=StyleSheet.create({
     navText: {
         color: '#fff', // Couleur du texte
         fontSize: 16,
+        fontWeight: 'bold',
+      },
+      navText2: {
+        color: '#fff', // Couleur du texte
+        fontSize: 50,
+        marginLeft:30,
         fontWeight: 'bold',
       },
     render:{

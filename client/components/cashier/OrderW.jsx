@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   productSelected: {
-    top: 540,
+    top: 590,
     left: 12,
     borderTopLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
