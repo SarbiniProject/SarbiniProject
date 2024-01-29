@@ -115,7 +115,7 @@ import {
                source={image}
                />
              
-             <Text style={styles.textHeader}>Reservation</Text>
+             {/* <Text style={styles.textHeader}>Reservation</Text> */}
   
   
             <View style={{ width: "100%", paddingHorizontal: 22, marginTop: 64 }}>
