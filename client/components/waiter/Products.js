@@ -336,7 +336,7 @@ console.log(order,"order");
       </View>
       <TouchableOpacity
       onPress={()=>{
-        navigation.navigate("Orders");
+        navigation.navigate("Orders",{userId:userId});
       
       ;}}
       >

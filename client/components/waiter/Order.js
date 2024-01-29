@@ -3,9 +3,9 @@ import { Text,TextInput,StyleSheet, View,ScrollView,TouchableOpacity,Modal, Aler
 import { Image } from "expo-image";
 import { FontFamily, Color, Padding, Border, FontSize } from "../styles/OrderStyle";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation } from '@react-navigation/native'
 import { Port } from "../port";
-
+import { FontAwesome } from '@expo/vector-icons';
 const Order = ({socket}) => {
 
   const[ref,setRef]=React.useState(true)
@@ -17,16 +17,18 @@ const Order = ({socket}) => {
   const[total,setTotal]=React.useState(0)
   const [send, setSend] = React.useState('');
   const navigation = useNavigation();
+  const route = useRoute();
 
+  const userId =route.params?.userId;
   // console.log(products[0].price);
   React.useEffect(() => {
-    socket?.emit("newUser", 1);
+    socket?.emit("newUser", userId);
   }, [socket]);
 
 
   const handleNotification = (text) => {
     socket.emit("sendText", {
-      senderName:  1,
+      senderName:  userId,
       receiverName: 5,
       text
     });
@@ -39,10 +41,16 @@ const Order = ({socket}) => {
     };
     fetchData();
   },[ref]);
+
+
+ 
+
   React.useEffect(()=>{
     setTimeout(() => {
       
       totall()
+      
+
     }, 2000);
   },[products])
   const getproducts = async () => {
@@ -81,7 +89,7 @@ const Order = ({socket}) => {
       const res = await axios.put("http://"+Port+":3000/api/sarbini/addnote/"+id,{note:info})
       .then(()=>{
         console.log("note added ");
-        handleNotification(send)
+       
       })
     }
     catch (err) {
@@ -117,6 +125,9 @@ const Order = ({socket}) => {
       setPop(true)
     }
   }
+
+
+
 
   return (
     
@@ -226,6 +237,7 @@ const Order = ({socket}) => {
               </Text>
             </View>
             </TouchableOpacity>
+            
           </View>
           <Text style={[styles.text5, styles.textPosition]}>{total}DT</Text>
         </View>
@@ -234,6 +246,7 @@ const Order = ({socket}) => {
             style={[styles.specificationsChild, styles.productSelectedBorder]}
           />
           <Text style={{fontSize:20,marginLeft:5}}>Note : {tableon.length>0&&products.length>0?note:""}</Text>
+
         <TouchableOpacity 
         onPress={()=>{hundleNote()}}
         >
@@ -245,6 +258,18 @@ const Order = ({socket}) => {
           </View>
         </View>
           </TouchableOpacity>
+          <TouchableOpacity 
+        onPress={()=>{handleNotification(send)}}
+        >
+        <View style={styles.customerInput2}>
+          <View style={styles.tableNParent}>
+            <View style={styles.tableNParent}>
+              <Text style={[styles.edit, styles.editTypo]}>send notification</Text>
+            </View>
+          </View>
+        </View>
+          </TouchableOpacity>
+      
           
         </View>
       </View>
@@ -557,11 +582,27 @@ const styles = StyleSheet.create({
   customerInput1: {
     height: 50,
     padding: Padding.p_3xs,
-    width: 362,
+    width: 160,
     borderWidth: 1,
     position:"absolute",
     top: 20,
     left:10,
+    borderRadius: Border.br_3xs,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: Color.colorLightgray,
+    borderStyle: "solid",
+    backgroundColor: Color.neutral100,
+  },
+  customerInput2: {
+    height: 50,
+    padding: Padding.p_3xs,
+    width: 160,
+    borderWidth: 1,
+    position:"absolute",
+    top: 20,
+    left:210,
     borderRadius: Border.br_3xs,
     flexDirection: "row",
     alignItems: "center",

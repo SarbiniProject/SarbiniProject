@@ -31,16 +31,7 @@ const LocationController = () => {
 
 
 
-//  const askForLocationPermission = async () => {
-//     let { status } = await Location.requestForegroundPermissionsAsync();
-//     if (status !== 'granted') {
-//       alert('Permission to access location was denied');
-//       return;
-//     }
 
-//     let location = await Location.getCurrentPositionAsync({});
-//     setLocation(location);
-//   };
 const askForLocationPermission = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -75,7 +66,6 @@ const askForLocationPermission = async () => {
       />
      
      <TouchableOpacity 
-//    style={{ ...styles.photoInput, borderColor: 'red', borderWidth: 1 }}
    onPress={() => {
       askForLocationPermission();
       refRBSheet.current.open();

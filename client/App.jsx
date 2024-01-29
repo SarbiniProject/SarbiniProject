@@ -76,14 +76,15 @@ const App = () => {
             )}
           </Stack.Screen>
       
-           <Stack.Screen name="Orders">
+           <Stack.Screen name="Orders"  
+                 options={{
+                  headerShown: false,
+                }}>
             {(props) => (
               <Order
                 {...props}
                 socket={socket}
-                options={{
-                  headerShown: false,
-                }}
+              
               />
             )}
           </Stack.Screen>
