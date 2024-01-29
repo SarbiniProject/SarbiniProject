@@ -7,6 +7,9 @@ import { useRoute, useNavigation } from '@react-navigation/native'
 import Payment from "./Payment";
 import LocationController from "./Location";
 import { FontAwesome } from '@expo/vector-icons';
+import PaymentChart from "./PaymentChart";
+import PaymentPieChart from "./PaymentPieChart";
+import SimpleBarChart from "./SimpleBarChart";
 
 const ProductsCon =()=>{
     const [ref,setRef]=useState(false)
@@ -473,7 +476,27 @@ const handleCameraCapture = async () => {
            <View style={styles.container2}>
           <LocationController/>
            </View>)
-            }}
+            }
+///////////////////////////////////Charts/////////////////////////////////////////////////////////////////          
+           if (render==='Charts'){
+            return(  
+
+           <View style={styles.container2}>
+
+           <PaymentChart/>
+         
+           <PaymentPieChart/>
+          
+           <SimpleBarChart/>
+
+             </View>)
+
+
+                 }
+          
+          
+          
+          }
 //////////////////////////views////////////////////////////////////////////
 const hundelviews=(categ)=>{
     return categ.map((el,i)=>{
@@ -602,7 +625,7 @@ return(
             </View>
            </TouchableOpacity>
            <TouchableOpacity 
-           onPress={()=>{}}
+           onPress={()=>{setRender("Charts")}}
            >
             <View style={{position:"absolute",right:21,top:400}}>
            <Image
@@ -643,7 +666,7 @@ return(
            </TouchableOpacity>
         </View>
       {/*//////////////////sidebar///////////////////// */}
-        {render!=="payment"&&render!=='location'?<View style={styles.navbar}>
+        {render!=="payment"&&render!=='location'&&render!=='Charts'?<View style={styles.navbar}>
             <TouchableOpacity 
             style={styles.btnnav}
             onPress={()=>{setRender("categorys")}}>
@@ -662,10 +685,13 @@ return(
         </View>:render==="location"?
         <View style={styles.navbar}>
         <Text style={styles.navText2} >location</Text>
-          </View>:
+          </View>:render==='payment'?
           <View style={styles.navbar}>
           <Text style={styles.navText2} >subscription</Text>
             </View>
+            : <View style={styles.navbar}>
+             <Text style={styles.navText2} >Charts</Text>
+               </View>
           }
         <View style={styles.render} >
             {Renderview()}
