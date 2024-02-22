@@ -10,7 +10,14 @@ const AllOrders = async(req,res) => {
     }
 };
 
-
+const Orders = async(req,res) => {
+    try {
+    const result=await orders.findAll({attributes:['createdAt']});
+    res.json(result)   
+    } catch (error) {
+    res.send(error)    
+    }
+};
 const AddOrders = async(req,res) => {
     try {
     const result=await orders.create(req.body)
@@ -88,6 +95,17 @@ const Getproduct=async(req,res)=>{
         res.send("err",error)
     }   
 }
+const Allprod=async(req,res)=>{
+    try{
+        const result = await orders.findAll({
+            attributes: ['products'],
+          });
+        res.json(result)
+    }
+    catch (error) {
+        res.send("err",error)
+    }   
+}
 const Orderon = async(req,res) => {
     try {
     const result=await orders.findAll({where:{satus1:true}});
@@ -156,9 +174,10 @@ const Deleteprod = async (req, res) => {
     } catch (error) {
         console.error('Error fetching order by ID:', error);
         res.status(500).json({ error: 'Error fetching order by ID', details: error.message });
-    }}
- 
- 
+    }
+
+}
+    
     
     module.exports = {
         AllOrders,
@@ -174,4 +193,6 @@ const Deleteprod = async (req, res) => {
         UpdateStatus3,
         OrdersByUserId,
         GetOrderById,
+        Allprod,
+        Orders,
     };

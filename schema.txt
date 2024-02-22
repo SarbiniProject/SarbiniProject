@@ -1,0 +1,91 @@
+ALTER TABLE `sarbini`.`admins` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+ALTER TABLE `sarbini`.`categories` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+ALTER TABLE `sarbini`.`orders` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+ALTER TABLE `sarbini`.`payments` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+ALTER TABLE `sarbini`.`products` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+ALTER TABLE `sarbini`.`subscriptions` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+ALTER TABLE `sarbini`.`users` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL ,
+CHANGE COLUMN `updatedAt` `updatedAt` DATETIME NULL ;
+INSERT INTO `sarbini`.`admins` (`admin_name`, `admin_Pseudo`, `admin_password`) VALUES ('aziz', 'aziz01', '0000');
+INSERT INTO `sarbini`.`admins` (`admin_name`, `admin_Pseudo`, `admin_password`) VALUES ('aslen', 'aslen01', '0000');
+INSERT INTO `sarbini`.`admins` (`admin_name`, `admin_Pseudo`, `admin_password`) VALUES ('tasnime', 'tasnim01', '0000');
+INSERT INTO `sarbini`.`categories` (`ca_name`) VALUES ('Cafe');
+INSERT INTO `sarbini`.`categories` (`ca_name`) VALUES ('Juice');
+INSERT INTO `sarbini`.`categories` (`ca_name`) VALUES ('Milkshake');
+INSERT INTO `sarbini`.`categories` (`ca_name`) VALUES ('Tea');
+INSERT INTO `sarbini`.`categories` (`ca_name`) VALUES ('Crepe');
+INSERT INTO `sarbini`.`categories` (`id`, `ca_name`) VALUES ('0', 'All');
+UPDATE `sarbini`.`categories` SET `id` = '0' WHERE (`id` = '6');
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Espresso', 3, 'espresso_image_url', 'A strong and concentrated coffee shot.');
+  INSERT INTO products (product_name, price, image, description)
+  VALUES
+    ('Cappuccino', 4, 'cappuccino_image_url', 'Coffee with equal parts of espresso, steamed milk, and milk foam.'),
+    ('Latte', 4, 'latte_image_url', 'Coffee with a shot of espresso and steamed milk.'),
+    ('Mocha', 5, 'mocha_image_url', 'Coffee with espresso, steamed milk, and chocolate syrup.'),
+    ('Americano', 3, 'americano_image_url', 'A diluted espresso with hot water');
+`;
+UPDATE `sarbini`.`products` SET `categoryId` = '1' WHERE (`id` = '1');
+UPDATE `sarbini`.`products` SET `categoryId` = '1' WHERE (`id` = '2');
+UPDATE `sarbini`.`products` SET `categoryId` = '1' WHERE (`id` = '3');
+UPDATE `sarbini`.`products` SET `categoryId` = '1' WHERE (`id` = '4');
+UPDATE `sarbini`.`products` SET `categoryId` = '1' WHERE (`id` = '5');
+UPDATE `sarbini`.`products` SET `image` = 'https://aeropress.com/cdn/shop/articles/Espresso-cup-with-coffee-beans_600x.jpg?v=1681501296' WHERE (`id` = '1');
+UPDATE `sarbini`.`products` SET `image` = 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Cappuccino_at_Sightglass_Coffee.jpg' WHERE (`id` = '2');
+UPDATE `sarbini`.`products` SET `image` = 'https://www.196flavors.com/wp-content/uploads/2021/05/latte-macchiato-1.jpg' WHERE (`id` = '3');
+UPDATE `sarbini`.`products` SET `image` = 'https://images.immediate.co.uk/production/volatile/sites/2/2021/11/Mocha-1fc71f7.png?quality=90&resize=556,505' WHERE (`id` = '4');
+UPDATE `sarbini`.`products` SET `image` = 'https://assets.beanbox.com/blog_images/AB7ud4YSE6nmOX0iGlgA.jpeg' WHERE (`id` = '5');
+UPDATE `sarbini`.`products` SET `image` = 'https://thumbs.dreamstime.com/b/orange-juice-17172736.jpg', `categoryId` = '2' WHERE (`id` = '6');
+UPDATE `sarbini`.`products` SET `image` = 'https://www.shutterstock.com/image-photo/apple-juice-glass-surrounded-by-600nw-1722330661.jpg', `categoryId` = '2' WHERE (`id` = '7');
+UPDATE `sarbini`.`products` SET `image` = 'https://4.imimg.com/data4/VT/LQ/MY-31657999/grape-juice-500x500.jpg', `categoryId` = '2' WHERE (`id` = '8');
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Vanilla Milkshake', 4.5, 'https://example.com/vanilla_milkshake_image.jpg', 'Classic vanilla-flavored milkshake'); 
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Chocolate Milkshake', 5, 'https://example.com/chocolate_milkshake_image.jpg', 'Rich and creamy chocolate milkshake');
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Strawberry Milkshake', 5.5, 'https://example.com/strawberry_milkshake_image.jpg', 'Delicious strawberry-flavored milkshake');
+UPDATE `sarbini`.`products` SET `image` = 'https://therecipecritic.com/wp-content/uploads/2022/05/strawberrymilkshake.jpg', `categoryId` = '3' WHERE (`id` = '11');
+UPDATE `sarbini`.`products` SET `image` = 'https://tastesbetterfromscratch.com/wp-content/uploads/2021/06/Chocolate-Milkshake-5.jpg', `categoryId` = '3' WHERE (`id` = '10');
+UPDATE `sarbini`.`products` SET `image` = 'https://icecreamfromscratch.com/wp-content/uploads/2022/08/Vanilla-Milkshake-1.2-540x720.jpg', `categoryId` = '3' WHERE (`id` = '9');
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Green Tea', 3, 'https://example.com/green_tea_image.jpg', 'Light and refreshing green tea');
+
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Earl Grey Tea', 4, 'https://example.com/earl_grey_tea_image.jpg', 'A classic black tea with bergamot flavor');
+
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Chamomile Tea', 3.5, 'https://example.com/chamomile_tea_image.jpg', 'Soothing and caffeine-free chamomile tea');
+
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Chai Tea', 4.5, 'https://example.com/chai_tea_image.jpg', 'Spiced black tea with milk and sweeteners');
+
+INSERT INTO products (product_name, price, image, description)
+VALUES ('Peppermint Tea', 3.5, 'https://example.com/peppermint_tea_image.jpg', 'Refreshing and caffeine-free peppermint tea');
+UPDATE `sarbini`.`products` SET `image` = 'https://c.ndtvimg.com/2022-04/q1eefqk_green-tea_625x300_28_April_22.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886', `categoryId` = '4' WHERE (`id` = '12');
+UPDATE `sarbini`.`products` SET `image` = 'https://marvel-b1-cdn.bc0a.com/f00000000209353/www.whittard.co.uk/on/demandware.static/-/Sites-whittard-master-catalog/default/dw2b9ea06d/images/hi-res/314583-earl_grey_loose-2.jpg', `categoryId` = '4' WHERE (`id` = '13');
+UPDATE `sarbini`.`products` SET `image` = 'https://cdn.mos.cms.futurecdn.net/B8aQ9RLedeBi47e72tA28n-1200-80.jpg', `categoryId` = '4' WHERE (`id` = '14');
+UPDATE `sarbini`.`products` SET `image` = 'https://www.texanerin.com/content/uploads/2023/02/chai-tea-latte-starbucks-copycat-image-1200.jpg', `categoryId` = '4' WHERE (`id` = '15');
+UPDATE `sarbini`.`products` SET `image` = 'https://www.shape.com/thmb/w7DoIb88dmov1u2Po6HkReyfosQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Benefits-of-Peppermint-Tea-GettyImages-1418206475-a1f2c5074f2842fb8f56b4a59afe67cc.jpg', `categoryId` = '4' WHERE (`id` = '16');
+UPDATE `sarbini`.`products` SET `image` = 'https://images.getrecipekit.com/20220222125841-lemon-20ricotta-20crepe-20from-20loopy-20-20whisk.jpg?aspect_ratio=16:9&quality=90&', `categoryId` = '5' WHERE (`id` = '21');
+UPDATE `sarbini`.`products` SET `image` = 'https://frederickfitness.com/wp-content/uploads/2021/07/crepes-spinach-tomato-feta-3-small.jpeg', `categoryId` = '5' WHERE (`id` = '20');
+UPDATE `sarbini`.`products` SET `image` = 'https://staticcookist.akamaized.net/wp-content/uploads/sites/22/2021/03/ham-and-cheese-crepes-1200x675.jpeg', `categoryId` = '5' WHERE (`id` = '19');
+UPDATE `sarbini`.`products` SET `image` = 'https://mojo.generalmills.com/api/public/content/zShlwimhKkibo7BIS1zCgQ_gmi_hi_res_jpeg.jpeg?v=1a06c67a&t=466b54bb264e48b199fc8e83ef1136b4', `categoryId` = '5' WHERE (`id` = '18');
+UPDATE `sarbini`.`products` SET `image` = 'https://images.theyellowtable.com/best-nutella-crepe-recipe-16x9.jpg?w=2000&q=45', `categoryId` = '5' WHERE (`id` = '17');
+INSERT INTO `sarbini`.`users` (`user_name`, `user_phone`, `user_Pseudo`, `user_password`, `user_role`, `user_location`) VALUES ('waiter', '12121212', 'water01', '0000', 'waiter', 'ariana');
+INSERT INTO `sarbini`.`users` (`user_name`, `user_phone`, `user_Pseudo`, `user_password`, `user_role`, `user_location`) VALUES ('cashier', '1212212121', 'cashier01', '0000', 'cashier', 'nabeul');
+INSERT INTO `sarbini`.`users` (`user_name`, `user_phone`, `user_Pseudo`, `user_password`, `user_role`, `user_location`) VALUES ('controller', '12122121', 'controller01', '0000', 'controller', 'bizert');
+UPDATE `sarbini`.`users` SET `user_Pseudo` = 'waiter01' WHERE (`id` = '1');
+

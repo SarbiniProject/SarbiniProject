@@ -204,7 +204,9 @@ const handleCameraCapture = async () => {
           })
       }
       const getUserById=()=>{
-        axios.get("http://"+Port+":3000/api/sarbini/users/"+userId)
+        axios.get("http://"+Port+":3000/api/sarbini/users/"+
+        userId
+        )
         .then((res)=>{
             setUser(res.data)
         })

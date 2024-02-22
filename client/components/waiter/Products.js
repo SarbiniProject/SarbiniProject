@@ -6,7 +6,6 @@ import axios from "axios";
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { Port } from "../port";
 
-
 const Products = ({socket,setUser}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [category,setCategorys]= React.useState([])
@@ -251,7 +250,7 @@ console.log(order,"order");
         </TouchableOpacity>
         <TouchableOpacity 
         ////
-        onPress={()=>{navigation.navigate("Tables");
+        onPress={()=>{navigation.navigate("Tables",{userId:userId});
       }}
         style={styles.tables}>
         </TouchableOpacity>

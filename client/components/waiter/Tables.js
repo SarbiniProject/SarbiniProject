@@ -4,7 +4,7 @@ import { StyleSheet,TouchableOpacity,Text, TextInput,View,Modal,Button } from "r
 import { LinearGradient } from "expo-linear-gradient";
 import { FontFamily, Color, Border, Padding, FontSize } from "../styles/TablesStyle";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation } from '@react-navigation/native'
 import { Port } from "../port";
 
 const Tables = () => {
@@ -19,7 +19,9 @@ const Tables = () => {
   const[color,setcolor]=React.useState("rgb(197, 66, 66)")
   const [colorMap, setColorMap] =React.useState({}); // Use an object to store colors for each id
   const navigation = useNavigation();
+  const route = useRoute();
 
+  const userId =route.params?.userId;
 
 ///rgb(61, 206, 61)
 const [selectedItemId, setSelectedItemId] = React.useState(null);
@@ -27,6 +29,7 @@ const [selectedItemId, setSelectedItemId] = React.useState(null);
 
   let info={
     name:tablename,
+    userId:userId,
   }
 
   const addtables=(info)=>{

@@ -74,6 +74,20 @@ const updateCategory = async (req, res) => {
     }
   };
   
+  const photobycateg=async(req,res)=>{
+    try{
+      let id=req.params.categoryId
+      const result=await Product.findOne({
+        attributes: ['image'],
+        where:{categoryId:id},
+      })
+      res.json(result)
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+  }
   
   
 
@@ -81,4 +95,4 @@ const updateCategory = async (req, res) => {
 
 
 
-module.exports={AllCategory,OneCategory,AddCategory,DeleteCategory,updateCategory }
+module.exports={AllCategory,OneCategory,AddCategory,DeleteCategory,updateCategory,photobycateg }

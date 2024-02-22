@@ -230,7 +230,7 @@ const Order = ({socket}) => {
               </Text>
             </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{SendIt(tableon[0].id)}}>
+            <TouchableOpacity onPress={()=>{SendIt(tableon[0]?.id)}}>
             <View style={[styles.btnCancel1, styles.btnSpaceBlock]}>
               <Text style={[styles.sendOrder, styles.textTypo]}>
                 send order
